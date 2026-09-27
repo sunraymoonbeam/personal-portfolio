@@ -1,5 +1,6 @@
 ---
 import { render } from 'astro:content';
+import { articleComponents } from '../../components/article/mdx';
 import ArticleLayout from '../../layouts/ArticleLayout.astro';
 import ScreenshotFrame from '../../components/projects/ScreenshotFrame.astro';
 import { getProjectArticles, toArticleLinks, getAdjacent, keyOf } from '../../lib/content';
@@ -49,7 +50,7 @@ const { prev, next } = getAdjacent(links, keyOf('projects', entry.id));
     </div>
   )}
 
-  <Content />
+  <Content components={articleComponents} />
 </ArticleLayout>
 <style>
   .hero { margin: 0; padding-bottom: var(--s-4); }

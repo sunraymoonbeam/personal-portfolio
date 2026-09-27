@@ -1,0 +1,50 @@
+---
+interface Props { tags: string[]; }
+const { tags } = Astro.props;
+---
+{/* Without JS every project is visible and the pills simply do not appear —
+    a filter that hides content when scripting fails is worse than none. */}
+<div class="filters" data-filters hidden>
+  <span class="eyebrow">Filter</span>
+  <ul class="pills">
+    <li><button type="button" class="pill on" data-tag="all" aria-pressed="true">All</button></li>
+    {tags.map((t) => (
+      <li><button type="button" class="pill" data-tag={t} aria-pressed="false">{t}</button></li>
+    ))}
+  </ul>
+</div>
+
+<script>
+  const bar = document.querySelector<HTMLElement>('[data-filters]');
+  if (bar) {
+    bar.hidden = false;
+    const rows = [...document.querySelectorAll<HTMLElement>('[data-tags]')];
+    bar.addEventListener('click', (e) => {
+      const btn = (e.target as HTMLElement).closest<HTMLButtonElement>('.pill');
+      if (!btn) return;
+      const tag = btn.dataset.tag!;
+      for (const p of bar.querySelectorAll<HTMLButtonElement>('.pill')) {
+        const on = p === btn;
+        p.classList.toggle('on', on);
+        p.setAttribute('aria-pressed', String(on));
+      }
+      for (const row of rows) {
+        const tags = (row.dataset.tags ?? '').split('|');
+        row.hidden = tag !== 'all' && !tags.includes(tag);
+      }
+    });
+  }
+</script>
+
+<style>
+  .filters { display: flex; align-items: center; gap: var(--s-4); flex-wrap: wrap; }
+  .pills { display: flex; gap: var(--s-2); flex-wrap: wrap; }
+  .pill {
+    min-height: 36px; padding: 6px 14px; border: 0; border-radius: var(--radius-pill);
+    background: var(--chip-bg); color: var(--ink);
+    font: inherit; font-size: 14px; cursor: pointer;
+    transition: background-color 120ms linear, color 120ms linear;
+  }
+  .pill:hover { background: var(--border-strong); }
+  .pill.on { background: var(--ink); color: var(--canvas); }
+</style>

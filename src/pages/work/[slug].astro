@@ -1,5 +1,6 @@
 ---
 import { render, getEntry } from 'astro:content';
+import { articleComponents } from '../../components/article/mdx';
 import ArticleLayout from '../../layouts/ArticleLayout.astro';
 import { getWorkArticles, toArticleLinks, getAdjacent, keyOf } from '../../lib/content';
 import { formatRange, formatDuration } from '../../lib/date';
@@ -49,7 +50,7 @@ const { prev, next } = getAdjacent(links, keyOf('work', entry.id));
     <p class="t-19">{d.summary}</p>
   </div>
 
-  <Content />
+  <Content components={articleComponents} />
 </ArticleLayout>
 <style>
   .cover { margin: 0 0 var(--s-4); }

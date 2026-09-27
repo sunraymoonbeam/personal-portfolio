@@ -36,9 +36,7 @@ export const pages = {
   resume: {
     eyebrow: 'Résumé',
     title: 'One page.',
-    lede:
-      'The PDF is embedded below, and written out as text underneath it so it reads ' +
-      'on a phone and works with a screen reader.',
+    lede: 'One page, updated September 2026. Read it below, or take the file.',
   },
   contact: {
     eyebrow: 'Contact',

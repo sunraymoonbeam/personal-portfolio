@@ -3,13 +3,16 @@ import SiteLayout from '../../layouts/SiteLayout.astro';
 import ProjectRow from '../../components/projects/ProjectRow.astro';
 import { getPublishedProjects } from '../../lib/content';
 import { pages } from '../../content/pages';
+import ProjectFilters from '../../components/projects/ProjectFilters.astro';
 const projects = await getPublishedProjects();
+const tags = [...new Set(projects.flatMap((p) => p.data.tags))].sort();
 ---
 <SiteLayout title="Projects — Zack Low" description="Side projects, shipped end to end.">
   <section class="section wrap intro">
     <p class="eyebrow">{pages.projects.eyebrow}</p>
     <h1 class="t-64">{pages.projects.title}</h1>
     <p class="t-21 muted">{pages.projects.lede}</p>
+    <div class="filterbar"><ProjectFilters tags={tags} /></div>
   </section>
   <section class="wrap list">
     {projects.map((entry, i) => <ProjectRow entry={entry} index={i} />)}
@@ -17,5 +20,6 @@ const projects = await getPublishedProjects();
 </SiteLayout>
 <style>
   .intro { display: flex; flex-direction: column; gap: var(--s-4); max-width: 760px; }
+  .filterbar { margin-top: var(--s-4); }
   .list { display: flex; flex-direction: column; gap: var(--s-11); padding-bottom: var(--s-11); }
 </style>

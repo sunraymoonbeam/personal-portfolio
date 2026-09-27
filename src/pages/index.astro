@@ -3,7 +3,6 @@ import SiteLayout from '../layouts/SiteLayout.astro';
 import SectionHead from '../components/ui/SectionHead.astro';
 import ProjectGrid from '../components/projects/ProjectGrid.astro';
 import RoleRow from '../components/work/RoleRow.astro';
-import HeroScene from '../components/site/HeroScene.astro';
 import { home } from '../content/home';
 import { site } from '../config/site';
 import { getPublishedProjects, getWorkRows, selectFeatured } from '../lib/content';
@@ -24,7 +23,9 @@ const roles = (await getWorkRows()).slice(0, 3);
         <a href="/resume" class="btn btn-ghost">Résumé</a>
       </div>
     </div>
-    <div class="art"><HeroScene /></div>
+    <div class="art">
+      <img src="/img/portrait.jpg" alt="Zack Low" width="900" height="1125" />
+    </div>
   </section>
 
   {/* Proof immediately after the positioning line. */}
@@ -53,11 +54,12 @@ const roles = (await getWorkRows()).slice(0, 3);
 </SiteLayout>
 <style>
   .hero {
-    display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 420px);
+    display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 380px);
     gap: var(--s-10); align-items: center; padding-block: clamp(48px, 8vw, 96px);
   }
   .copy { display: flex; flex-direction: column; gap: var(--s-5); }
   .art { width: 100%; }
+  .art img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; border-radius: var(--radius-l); }
   @media (max-width: 900px) {
     .hero { grid-template-columns: 1fr; gap: var(--s-7); }
     .art { max-width: 340px; }

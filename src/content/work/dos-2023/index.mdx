@@ -18,6 +18,8 @@ metrics:
   - { value: "64%", label: "answers correct", context: "on our own 200-question set" }
   - { value: "200", label: "eval questions", context: "written with the analysts" }
 ---
+import detail from './detail.jpg'
+
 
 ## The ask
 
@@ -33,6 +35,8 @@ This was mid-2023. The obvious thing was to point an LLM at it.
 A LangChain pipeline over GPT-3.5 that took a plain-English question, worked out
 which table could answer it, pulled the relevant rows, and answered with a
 citation back to the source table.
+
+<Figure src={detail} alt="Placeholder" caption="A placeholder until the real screenshot exists." size="wide" />
 
 ## The part that nearly sank it
 

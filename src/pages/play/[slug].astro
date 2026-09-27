@@ -1,8 +1,10 @@
 ---
 import { render } from 'astro:content';
+import { articleComponents } from '../../components/article/mdx';
 import ArticleLayout from '../../layouts/ArticleLayout.astro';
 import { getPublishedPlay, toArticleLinks, getAdjacent, keyOf } from '../../lib/content';
 import { formatMonth } from '../../lib/date';
+import { Image } from 'astro:assets';
 
 export async function getStaticPaths() {
   const entries = (await getPublishedPlay()).filter((e) => e.data.writeup);
@@ -19,5 +21,16 @@ const { prev, next } = getAdjacent(toArticleLinks('play', all), keyOf('play', en
   title={d.title} summary={d.summary} eyebrow={`Play · ${formatMonth(d.published)}`}
   backHref="/play" backLabel="All of Play" prev={prev} next={next}
 >
-  <Content />
+  {d.cover && (
+    <figure slot="hero" class="cover">
+      <Image src={d.cover} alt={d.coverAlt ?? ''} widths={[720, 1200, 1600]}
+             sizes="(max-width: 980px) 100vw, 980px" loading="eager" />
+    </figure>
+  )}
+
+  <Content components={articleComponents} />
 </ArticleLayout>
+<style>
+  .cover { margin: 0 0 var(--s-4); }
+  .cover img { width: 100%; border-radius: var(--radius-l); aspect-ratio: 16 / 9; object-fit: cover; }
+</style>

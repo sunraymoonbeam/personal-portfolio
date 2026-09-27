@@ -9,13 +9,13 @@ const { items } = Astro.props;
     const Tag = it.href ? 'a' : 'div';
     return (
       <li>
-        <Tag {...(it.href ? { href: it.href } : {})} class="cell">
+        <Tag {...(it.href ? { href: it.href } : {})} class:list={["cell", { hoverable: !!it.href }]}>
           <div class="square">
             {it.cover
               ? <Image src={it.cover} alt={it.coverAlt ?? ''} class="img" loading="lazy" />
               : <span class="t-12 muted">{it.title}</span>}
           </div>
-          <p class="t-14 muted cap">{it.caption}</p>
+          <p class="t-14 muted cap hoverable-title">{it.caption}</p>
         </Tag>
       </li>
     );
@@ -24,6 +24,7 @@ const { items } = Astro.props;
 <style>
   .grid { display: grid; gap: var(--s-5); grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
   .cell { display: flex; flex-direction: column; gap: var(--s-3); height: 100%; }
+  .cell.hoverable { padding: var(--s-3); margin: calc(var(--s-3) * -1); }
   .square {
     aspect-ratio: 1 / 1; display: grid; place-items: center; overflow: hidden;
     border-radius: 10px; background: var(--surface); border: 1px solid var(--border);

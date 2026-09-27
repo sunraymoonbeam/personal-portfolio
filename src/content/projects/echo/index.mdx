@@ -19,6 +19,8 @@ metrics:
   - { value: "6 hrs", label: "per fine-tune", context: "single 16GB GPU" }
 featuredOrder: 3
 ---
+import detail from './detail.jpg'
+
 
 ## Why bother
 
@@ -34,6 +36,8 @@ strips anything identifying about the other person, and turns it into
 instruction pairs. Then a LoRA fine-tune of LLaMA 3 8B with Unsloth, and the
 same thing on Gemma 3 for comparison. The winner gets served behind FastAPI
 with the weights on S3.
+
+<Figure src={detail} alt="Placeholder" caption="A placeholder until the real screenshot exists." size="wide" />
 
 ## The part that actually mattered
 

@@ -2,13 +2,11 @@
 import { Image } from 'astro:assets';
 import { getEntry } from 'astro:content';
 import { formatRange, formatDuration } from '../../lib/date';
-import ArrowLink from '../ui/ArrowLink.astro';
 import type { Work } from '../../lib/content';
 
 interface Props { groups: Array<{ year: string; roles: Work[] }>; }
 const { groups } = Astro.props;
 
-// Resolve employers up front: components render, they don't query policy.
 const resolved = await Promise.all(
   groups.map(async (g) => ({
     year: g.year,
@@ -26,22 +24,27 @@ const resolved = await Promise.all(
         {roles.map(({ entry, employer }) => {
           const d = entry.data;
           const href = d.writeup ? `/work/${entry.id}` : undefined;
+          const Tag = href ? 'a' : 'div';
           const current = !d.end;
           return (
-            <li class="item" aria-current={current ? 'true' : undefined}>
-              <Image src={employer.data.logo} alt="" width={44} height={44} class="logo" loading="lazy" />
-              <div class="stack body">
-                <div class="row-top">
-                  {href ? <a href={href} class="t-19 role">{d.role}</a> : <span class="t-19 role">{d.role}</span>}
-                  {current && <span class="t-12 present"><span class="dot" aria-hidden="true"></span>Present</span>}
+            <li>
+              {/* Three columns: logo, who, what. The whole row greys on hover,
+                  so no separate "read" link is needed to signal it is clickable. */}
+              <Tag {...(href ? { href } : {})} class:list={['item', { hoverable: !!href }]}
+                   aria-current={current ? 'true' : undefined}>
+                <Image src={employer.data.logo} alt="" width={44} height={44} class="logo" loading="lazy" />
+                <div class="who">
+                  <div class="top">
+                    <span class="t-19 role hoverable-title">{d.role}</span>
+                    {current && <span class="t-12 present"><span class="dot" aria-hidden="true"></span>Present</span>}
+                  </div>
+                  <span class="t-14 muted tabular">
+                    {employer.data.name} · {d.kind} ·
+                    <time datetime={d.start}> {formatRange(d.start, d.end)}</time> · {formatDuration(d.start, d.end)}
+                  </span>
                 </div>
-                <span class="t-14 muted tabular">
-                  {employer.data.name} · {d.kind} ·
-                  <time datetime={d.start}> {formatRange(d.start, d.end)}</time> · {formatDuration(d.start, d.end)}
-                </span>
-                <span class="t-17 title">{d.title}</span>
-                {href && <span class="cta"><ArrowLink href={href} label="Read the write-up" /></span>}
-              </div>
+                <p class="t-14 muted what">{d.summary}</p>
+              </Tag>
             </li>
           );
         })}
@@ -52,23 +55,23 @@ const resolved = await Promise.all(
 <style>
   .group { display: grid; grid-template-columns: 112px 1fr; gap: var(--s-6); align-items: start; }
   .group + .group { padding-top: var(--s-9); }
-  /* The year parks while you scroll its roles. 72px clears the sticky header. */
-  .year { position: sticky; top: 72px; padding-top: var(--s-6); font-weight: 500; }
+  .year { position: sticky; top: 88px; padding-top: var(--s-6); font-weight: 500; }
+  li + li { border-top: 1px solid var(--border-strong); }
   .item {
-    display: grid; grid-template-columns: 44px 1fr; gap: var(--s-5);
-    padding-block: var(--s-6); border-top: 1px solid var(--border-strong);
+    display: grid; grid-template-columns: 44px minmax(0, 280px) minmax(0, 1fr);
+    gap: var(--s-5); align-items: start; padding-block: var(--s-6);
   }
   .logo { border-radius: 10px; object-fit: contain; background: var(--canvas); border: 1px solid var(--border); }
-  .body { gap: 7px; }
-  .row-top { display: flex; align-items: baseline; gap: var(--s-3); flex-wrap: wrap; }
+  .who { display: flex; flex-direction: column; gap: 5px; }
+  .top { display: flex; align-items: baseline; gap: var(--s-3); flex-wrap: wrap; }
   .role { font-weight: 500; }
   .present { display: inline-flex; align-items: center; gap: 6px; color: var(--ink-2); }
   .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--fill); }
-  .title { max-width: 620px; }
-  .cta { margin-top: var(--s-1); }
-
-  @media (max-width: 700px) {
+  .what { line-height: 1.5; padding-top: 2px; }
+  @media (max-width: 900px) {
     .group { grid-template-columns: 1fr; gap: var(--s-3); }
-    .year { position: static; padding-top: 0; }  /* unstick on narrow screens */
+    .year { position: static; padding-top: 0; }
+    .item { grid-template-columns: 44px 1fr; }
+    .what { grid-column: 2; }
   }
 </style>

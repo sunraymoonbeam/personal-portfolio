@@ -19,6 +19,8 @@ metrics:
   - { value: "$0.02", label: "cost per roll", context: "Lambda plus storage" }
 featuredOrder: 2
 ---
+import detail from './detail.jpg'
+
 
 ## The problem
 
@@ -32,6 +34,8 @@ better, because it makes you care.
 A small app and a FastAPI backend. Each roll is 36 exposures. When you finish,
 the roll goes to a Lambda that applies the film look and a slow develop, then
 lands in blob storage. The app only ever shows a roll after it is developed.
+
+<Figure src={detail} alt="Placeholder" caption="A placeholder until the real screenshot exists." size="wide" />
 
 ## Why Lambda instead of the phone
 
