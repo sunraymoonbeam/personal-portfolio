@@ -4,7 +4,12 @@
 
 **Read `README.md` first.** It is the only document describing the structure,
 the conventions and the verification gate, and it is kept in step with the
-code. `docs/design/apple.md` explains the design rules and why each one exists.
+code.
+
+- `docs/astro-conventions.md` — why the tree is arranged this way, checked
+  against Astro's own sites and the Google TypeScript Style Guide.
+- `docs/design/apple.md` — the design rules, and which are Apple's.
+- `TODO.md` — what is unfinished.
 
 ## Before you claim something works
 

@@ -32,31 +32,15 @@ src/
   assets/        images used by components rather than by a content entry.
 ```
 
-The three that are easy to confuse:
-
-- **`content/`** is for an entry that has its own URL, or that a schema
-  validates. Its pictures live in its own folder, beside its MDX file.
-- **`assets/`** is for an image a component reaches for directly, with no
-  entry behind it. The portrait and the cursor frames. Astro processes these,
-  which is why they are not in `public/`.
-- **`data/`** is a lookup table, not prose and not an entry. One shape,
-  repeated. The technology list is the only one.
-
-`public/` is the fourth: files served byte for byte with no processing, like
-the CV and the favicon.
-
-Imports use the `~/` alias for anything under `src`, so a path says where a
-file is rather than how far away it is. Astro reads it from the `paths` entry
-in `tsconfig.json`.
+Imports use the `~/` alias for anything under `src`.
 
 The rule that keeps this honest: **pages read content, components receive it.**
-A component never calls `getCollection`. Publication policy never leaks into a
-card. If you want to know whether something is published, there is exactly one
-place that decides, and it is `src/lib/select.ts`.
+A component never calls `getCollection`, and exactly one file decides what is
+published.
 
-`src/content/` holds only collection entries, so that everything Astro loads as
-content is content. Page copy is not content in that sense, so it lives in
-`src/copy/`.
+**[`docs/astro-conventions.md`](docs/astro-conventions.md)** has the reasoning:
+what Astro actually requires, what this repo chose, how it compares to the
+sites the Astro team ships, and the one known gap.
 
 ## Adding something
 
@@ -109,15 +93,13 @@ is an MDX component, not a schema field.
 
 ## TypeScript
 
-`tsconfig.json` extends `astro/tsconfigs/strictest` and turns on
-`verbatimModuleSyntax`, both of which Astro recommends. The site type-checks
-with zero errors, zero warnings and zero hints, and the check runs in the
-deploy gate.
+`tsconfig.json` extends `astro/tsconfigs/strictest` and adds a path alias.
+Nothing else needs setting; Astro's presets cover the rest. The site checks
+with zero errors, warnings and hints, and the check runs in the deploy gate.
 
-`strictest` adds `exactOptionalPropertyTypes`, which distinguishes a property
-that is absent from one that is present and undefined. Component props here
-are genuinely both, because a page passes a value that may be undefined, so
-optional props are written `prop?: T | undefined` rather than `prop?: T`.
+Optional props are written `prop?: T | undefined`, because `strictest` treats
+`prop?: T` as "absent" rather than "present and undefined". The reasoning is in
+[`docs/astro-conventions.md`](docs/astro-conventions.md).
 
 ## Verify
 
@@ -142,8 +124,8 @@ horizontal overflow.
   `max-width`; use `.wrap.measure-start` to constrain its children.
 - A component's `<script>` runs **once per document**. With the client router
   the DOM is swapped on every navigation, so anything binding to elements
-  belongs in `src/scripts/` and is re-bound on `astro:page-load`. Two features
-  have already died this way.
+  belongs in `src/scripts/` and is re-bound on `astro:page-load`. Search, the
+  project filters and the mobile menu have each died this way.
 - Class names in an Astro component are scoped, but a class defined in a global
   stylesheet is not. `prose` belongs to `src/styles/article.css`; reusing that
   name on a page pulls those rules in.
