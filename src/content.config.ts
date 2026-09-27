@@ -1,4 +1,4 @@
-import { defineCollection, reference, z } from 'astro:content';
+import { defineCollection, reference, z, type SchemaContext } from 'astro:content';
 import { glob } from 'astro/loaders';
 
 /**
@@ -27,7 +27,7 @@ const visibility = {
   featuredOrder: z.number().int().positive().optional(),
 };
 
-type ImageFn = () => ReturnType<typeof z.string>;
+type ImageFn = SchemaContext['image'];
 
 const common = (image: ImageFn) => ({
   title: z.string().min(1),

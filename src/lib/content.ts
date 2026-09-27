@@ -1,5 +1,5 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
-import { isPublished, sortByMonthDesc, keyOf } from './select';
+import { isPublished, sortByMonthDesc, keyOf, type EntryKey } from './select';
 
 // Pure policy lives in ./select.ts so it can be unit-tested without Astro.
 export {
@@ -26,10 +26,6 @@ export type Play = CollectionEntry<'play'>;
 
 /** Collection-qualified identity: projects/homelab and play/homelab differ. */
 
-
-/** Newest first, with the id as a stable tie-breaker so equal months never shuffle. */
-const byMonthDesc = <T extends { id: string }>(field: (e: T) => string) =>
-  (a: T, b: T) => monthKey(field(b)) - monthKey(field(a)) || a.id.localeCompare(b.id);
 
 // ── projects ────────────────────────────────────────────────────────────────
 
