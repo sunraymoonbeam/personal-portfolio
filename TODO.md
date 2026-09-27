@@ -63,6 +63,42 @@ Related to 4 but separable, and more valuable.
 - Anything added needs a cover, a claim, a summary, tags and a stack, or it
   will look unfinished next to the others.
 
+## 7. Put the site on LinkedIn and the CV
+
+The site is live and nothing points at it.
+
+- LinkedIn has two places: the **Website** field in Contact info, and the
+  **Featured** section, which shows a preview card. The Featured card is the
+  one people actually click, and it will look bare until the SEO item below
+  gives it an image.
+- The CV header lists GitHub and LinkedIn but not the site. Add it beside
+  them. Note the PDF at `public/cv.pdf` is the source of record and would need
+  regenerating from whatever produced it.
+- Anywhere else the same line appears: GitHub profile README, email signature.
+
+## 8. SEO
+
+Audited on the built output. Four things are already right and three are
+missing.
+
+Right: a sitemap with 19 URLs, a canonical link on every page, a unique
+description per page, one `h1` per page.
+
+Missing:
+
+- **No `robots.txt`.** The sitemap integration does not write one. Without it
+  crawlers have to guess where the sitemap is. One file in `public/`.
+- **No `og:image`.** Every link to this site, on LinkedIn, in a message, in a
+  Slack channel, renders as a bare text card. `SiteLayout` already accepts an
+  `image` prop and nothing passes one. Needs one image made, roughly
+  1200 by 630, plus a default wired into the layout.
+- **No structured data.** No `Person` or `WebSite` JSON-LD, so a search engine
+  has to infer who the site is about. This is what produces a rich result for
+  a personal name. About twenty lines in `SiteLayout`.
+
+Do the `og:image` before the LinkedIn item above, or the Featured card will
+look unfinished.
+
 ---
 
 ## Also worth doing, not asked for
@@ -73,3 +109,8 @@ Related to 4 but separable, and more valuable.
   32px. A tighter crop would need the shield and the wordmark separated.
 - **Cover images** are up to 256 KB. Worth a look once they are real photos
   rather than placeholders.
+- **The crayon font costs 80 KB on every page.** Shantell Sans is downloaded
+  for the Hobbies wordmark and nothing else. It is more than the HTML, the CSS
+  and the JavaScript put together. Subsetting it to the letters actually used,
+  or drawing the wordmark as an SVG, would remove it. I like the wordmark, so
+  this is a trade rather than a bug.
