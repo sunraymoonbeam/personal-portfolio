@@ -4,11 +4,13 @@ import { getEntry } from 'astro:content';
 import SiteLayout from '../../layouts/SiteLayout.astro';
 import SectionHead from '../../components/ui/SectionHead.astro';
 import YearLedger from '../../components/work/YearLedger.astro';
-import { getWorkByYear, getFeaturedRole } from '../../lib/content';
+import { getWorkByYear, getFeaturedRole, resolveWork } from '../../lib/content';
 import { formatRange } from '../../lib/date';
 import { pages } from '../../content/pages';
 
-const groups = await getWorkByYear();
+const groups = await Promise.all((await getWorkByYear()).map(async group => ({
+  year: group.year, roles: await Promise.all(group.roles.map(resolveWork)),
+})));
 const featured = await getFeaturedRole();
 const employer = featured ? await getEntry(featured.data.employer) : undefined;
 const href = featured?.data.writeup ? `/work/${featured.id}` : undefined;
@@ -37,6 +39,7 @@ const Tag = href ? 'a' : 'div';
         </div>
         <h2 class="t-40">{featured.data.title}</h2>
         <p class="t-19 muted">{featured.data.summary}</p>
+        {href && <span class="t-17 read">Read about this role →</span>}
       </Tag>
     </section>
   )}
@@ -53,6 +56,7 @@ const Tag = href ? 'a' : 'div';
   .feature { padding-bottom: var(--s-10); }
   .card { display: flex; flex-direction: column; gap: var(--s-4); }
   .linked:hover h2 { color: var(--link); }
+  .read { color: var(--link); }
   .shot { width: 100%; aspect-ratio: 21 / 9; object-fit: cover; border-radius: var(--radius-l); }
   .meta { display: flex; align-items: center; gap: var(--s-3); }
   .logo { border-radius: 10px; object-fit: contain; border: 1px solid var(--border); background: var(--canvas); }

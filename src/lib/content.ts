@@ -1,4 +1,4 @@
-import { getCollection, type CollectionEntry } from 'astro:content';
+import { getCollection, getEntry, type CollectionEntry } from 'astro:content';
 import { isPublished, sortByMonthDesc, keyOf, type EntryKey } from './select';
 
 // Pure policy lives in ./select.ts so it can be unit-tested without Astro.
@@ -23,6 +23,11 @@ export {
 export type Work = CollectionEntry<'work'>;
 export type Project = CollectionEntry<'projects'>;
 export type Play = CollectionEntry<'play'>;
+export type ResolvedWork = { entry: Work; employer: CollectionEntry<'employers'> };
+
+export async function resolveWork(entry: Work): Promise<ResolvedWork> {
+  return { entry, employer: await getEntry(entry.data.employer) };
+}
 
 /** Collection-qualified identity: projects/homelab and play/homelab differ. */
 

@@ -5,11 +5,11 @@ import ProjectGrid from '../components/projects/ProjectGrid.astro';
 import RoleRow from '../components/work/RoleRow.astro';
 import { home } from '../content/home';
 import { site } from '../config/site';
-import { getPublishedProjects, getWorkRows, selectFeatured } from '../lib/content';
+import { getPublishedProjects, getWorkRows, selectFeatured, resolveWork } from '../lib/content';
 
 // Pages request content; lib applies policy; components render.
 const projects = selectFeatured(await getPublishedProjects(), 3);
-const roles = (await getWorkRows()).slice(0, 3);
+const roles = await Promise.all((await getWorkRows()).slice(0, 3).map(resolveWork));
 ---
 <SiteLayout>
   <section class="hero wrap">
@@ -36,7 +36,7 @@ const roles = (await getWorkRows()).slice(0, 3);
   <section class="section band">
     <div class="wrap">
       <SectionHead {...home.sections.work} href="/work" linkLabel="All roles" />
-      <div>{roles.map((entry) => <RoleRow entry={entry} />)}</div>
+      <div>{roles.map((role) => <RoleRow {...role} />)}</div>
     </div>
   </section>
 

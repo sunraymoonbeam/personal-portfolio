@@ -1,13 +1,11 @@
 ---
 import { Image } from 'astro:assets';
-import { getEntry } from 'astro:content';
 import { formatRange, formatDuration, yearOf } from '../../lib/date';
-import type { Work } from '../../lib/content';
+import type { ResolvedWork } from '../../lib/content';
 
-interface Props { entry: Work; }
-const { entry } = Astro.props;
+type Props = ResolvedWork;
+const { entry, employer } = Astro.props;
 const d = entry.data;
-const employer = await getEntry(d.employer);
 const href = d.writeup ? `/work/${entry.id}` : undefined;
 const Wrapper = href ? 'a' : 'div';
 ---

@@ -1,23 +1,14 @@
 ---
 import { Image } from 'astro:assets';
-import { getEntry } from 'astro:content';
 import { formatRange, formatDuration } from '../../lib/date';
-import type { Work } from '../../lib/content';
+import type { ResolvedWork } from '../../lib/content';
 
-interface Props { groups: Array<{ year: string; roles: Work[] }>; }
+interface Props { groups: Array<{ year: string; roles: ResolvedWork[] }>; }
 const { groups } = Astro.props;
 
-const resolved = await Promise.all(
-  groups.map(async (g) => ({
-    year: g.year,
-    roles: await Promise.all(
-      g.roles.map(async (r) => ({ entry: r, employer: await getEntry(r.data.employer) })),
-    ),
-  })),
-);
 ---
 <div class="ledger">
-  {resolved.map(({ year, roles }) => (
+  {groups.map(({ year, roles }) => (
     <section class="group">
       <h2 class="t-28 tabular year">{year}</h2>
       <ol>
@@ -30,12 +21,12 @@ const resolved = await Promise.all(
             <li>
               {/* Three columns: logo, who, what. The whole row greys on hover,
                   so no separate "read" link is needed to signal it is clickable. */}
-              <Tag {...(href ? { href } : {})} class:list={['item', { hoverable: !!href }]}
+              <Tag {...(href ? { href } : {})} class:list={['item', { linked: !!href }]}
                    aria-current={current ? 'true' : undefined}>
                 <Image src={employer.data.logo} alt="" width={44} height={44} class="logo" loading="lazy" />
                 <div class="who">
                   <div class="top">
-                    <span class="t-19 role hoverable-title">{d.role}</span>
+                    <span class="t-19 role">{d.role}</span>
                     {current && <span class="t-12 present"><span class="dot" aria-hidden="true"></span>Present</span>}
                   </div>
                   <span class="t-14 muted tabular">
@@ -65,6 +56,7 @@ const resolved = await Promise.all(
   .who { display: flex; flex-direction: column; gap: 5px; }
   .top { display: flex; align-items: baseline; gap: var(--s-3); flex-wrap: wrap; }
   .role { font-weight: 500; }
+  .linked:hover .role { color: var(--link); }
   .present { display: inline-flex; align-items: center; gap: 6px; color: var(--ink-2); }
   .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--fill); }
   .what { line-height: 1.5; padding-top: 2px; }
