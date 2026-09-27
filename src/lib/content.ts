@@ -59,28 +59,6 @@ export async function getWorkArticles(): Promise<Work[]> {
   return (await getPublishedWork()).filter((e) => e.data.writeup);
 }
 
-/**
- * The latest VISIBLE role — not the latest with a write-up. If it has no
- * article or cover, the feature renders without them rather than silently
- * promoting an older employer.
- */
-export async function getFeaturedRole(): Promise<Work | undefined> {
-  return (await getWorkRows())[0];
-}
-
-/** Grouped by start year, newest first, for the ledger. */
-export async function getWorkByYear(): Promise<Array<{ year: string; roles: Work[] }>> {
-  const rows = await getWorkRows();
-  const groups = new Map<string, Work[]>();
-  for (const r of rows) {
-    const y = r.data.start.slice(0, 4);
-    (groups.get(y) ?? groups.set(y, []).get(y)!).push(r);
-  }
-  return [...groups.entries()]
-    .sort(([a], [b]) => Number(b) - Number(a))
-    .map(([year, roles]) => ({ year, roles }));
-}
-
 // ── hobbies ─────────────────────────────────────────────────────────────────
 
 export async function getPublishedHobbies(): Promise<Hobby[]> {

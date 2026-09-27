@@ -25,6 +25,3 @@ export function splitEmphasis(input: string): TextRun[] {
   if (rest.length > 0) runs.push({ text: rest });
   return runs;
 }
-
-/** The plain string, as it appears in the résumé. */
-export const stripEmphasis = (input: string): string => input.replaceAll('**', '');

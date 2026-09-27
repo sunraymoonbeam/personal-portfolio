@@ -13,7 +13,7 @@ const BUSY_FRAMES = 4;
 const BUSY_MS = 200;
 
 /** Spin the meso coin while something is loading. Returns a stop function. */
-export function busy(): () => void {
+function busy(): () => void {
   const root = document.documentElement;
   if (!root.classList.contains('ms')) return () => {};
   let i = 0;
