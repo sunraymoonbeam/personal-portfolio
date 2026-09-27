@@ -79,7 +79,12 @@ const work = defineCollection({
         /** Does it appear in work surfaces at all? A published article may be unlisted. */
         showInWork: z.boolean().default(true),
         stack: z.array(z.string().min(1)).default([]),
-        cardHighlights,
+        /**
+         * Verbatim from the résumé, in résumé order. Kept verbatim on purpose:
+         * the site and the PDF must never disagree about what I did. `**…**`
+         * marks where the emphasis falls; it adds no words. See lib/text.ts.
+         */
+        bullets: z.array(z.string().min(1).max(280)).max(6).optional(),
         metrics: z.array(metric).max(4).optional(),
       })
       .strict()
@@ -95,8 +100,10 @@ const projects = defineCollection({
     z
       .object({
         ...common(image),
-        /** One-line claim shown on the card, above the summary. */
+        /** One-line claim shown on the row, under the name. */
         claim: z.string().min(1).max(120),
+        /** Overrides the 280-char base: a project row carries a full paragraph. */
+        summary: z.string().min(1).max(640),
         published: month,
         status: z.enum(['Shipped', 'Ongoing', 'Archived']).default('Shipped'),
         tags: z.array(z.string().min(1)).min(1),

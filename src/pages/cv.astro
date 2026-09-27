@@ -1,0 +1,51 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import { site } from '../config/site';
+import { pages } from '../content/pages';
+---
+<SiteLayout title="CV — Zack Low" description={pages.cv.lede}>
+  <section class="wrap head">
+    <div class="actions">
+      <a href="/cv.pdf" class="btn" download="Ren Hwa Low CV.pdf">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M12 3v12" /><path d="M6 11l6 6 6-6" /><path d="M5 21h14" />
+        </svg>
+        Download PDF
+      </a>
+      <a href="/cv.pdf" class="open t-17" target="_blank" rel="noopener">
+        Open in new tab
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M7 17L17 7" /><path d="M9 7h8v8" />
+        </svg>
+      </a>
+    </div>
+  </section>
+
+  <section class="wrap viewer">
+    <object data="/cv.pdf#view=FitH" type="application/pdf" class="pdf" aria-label="CV, PDF">
+      <div class="fallback">
+        <p class="t-17">Your browser will not show the PDF inline.</p>
+        <a href="/cv.pdf" class="btn" download>Download it instead</a>
+      </div>
+    </object>
+  </section>
+</SiteLayout>
+<style>
+  .head { display: flex; justify-content: flex-end; padding-block: var(--s-8) var(--s-5); }
+  .actions { display: flex; align-items: center; gap: var(--s-5); flex-wrap: wrap; }
+  .open { display: inline-flex; align-items: center; gap: 7px; color: var(--ink-2); }
+  .open:hover { color: var(--ink); }
+  .open svg { transition: transform 260ms cubic-bezier(0.22, 1, 0.36, 1); }
+  .open:hover svg { transform: translate(2px, -2px); }
+
+  .viewer { padding-bottom: var(--s-11); }
+  .pdf {
+    width: 100%; max-width: 840px; margin-inline: auto; display: block;
+    height: min(1180px, 140vh);
+    border: 1px solid var(--border); border-radius: var(--radius-m); background: var(--surface);
+  }
+  .fallback { display: grid; place-items: center; gap: var(--s-4); height: 100%; padding: var(--s-7); }
+  @media (max-width: 734px) { .pdf { height: 70vh; } }
+</style>

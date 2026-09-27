@@ -43,12 +43,23 @@ export function getAdjacent(
   return { prev: ordered[i + 1], next: ordered[i - 1] };
 }
 
+/**
+ * The collection name is not always the URL segment: the `play` collection is
+ * served at /hobbies. Building hrefs from the collection name directly produced
+ * /play/<slug> links that 404'd.
+ */
+export const ROUTE_SEGMENT: Record<'projects' | 'work' | 'play', string> = {
+  projects: 'projects',
+  work: 'work',
+  play: 'hobbies',
+};
+
 export const toArticleLinks = (
   collection: 'projects' | 'work' | 'play',
   entries: Array<{ id: string; data: { title: string; shortTitle?: string } }>,
 ): ArticleLink[] =>
   entries.map((e) => ({
     key: keyOf(collection, e.id),
-    href: `/${collection}/${e.id}`,
+    href: `/${ROUTE_SEGMENT[collection]}/${e.id}`,
     title: e.data.shortTitle ?? e.data.title,
   }));

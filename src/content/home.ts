@@ -1,39 +1,47 @@
 /** Home page copy. Edit sentences here, never in a component. */
 export const home = {
   name: 'Ren Hwa (Zack) Low',
-  role: 'Software engineer, specialising in data',
+  role: 'Software engineer (AI)',
 
-  /* The positioning line: what he is, not what he does. */
-  tagline: 'I solve problems. The code is just how I do it.',
-
-  lede:
-    'I build full-stack software end to end, and I specialise in AI — with real ' +
-    'breadth across computer vision, audio and speech, and large language models. ' +
-    'Most of my useful work happens before any code is written: working out what ' +
-    'is actually broken, and for whom.',
+  /**
+   * The opening. Two paragraphs. `em` sets a phrase in the ink colour and
+   * `hi` sets it in the accent, so the emphasis lives with the sentence rather
+   * than in a component.
+   * No tagline above it: the positioning is woven into the prose instead.
+   */
+  lede: [
+    [
+      { text: 'I love building ' },
+      { text: 'full-stack software', em: true },
+      { text: ', real working applications that people actually use. I also specialise in ' },
+      { text: 'AI', em: true },
+      { text: ', and I have worked across a large number of domains, including computer vision and audio / speech processing.' },
+    ],
+    [
+      { text: 'I take pride in my programming fundamentals, and I try to ' },
+      { text: 'work the problem from first principles', em: true },
+      { text: ': understand the cause deeply, come up with the best solution, and then own it end to end. ' },
+      { text: 'Problem solving is my forte', hi: true },
+      { text: '. Writing code is only one of the ways I do it.' },
+    ],
+  ],
 
   sections: {
     projects: {
+      index: '01',
       title: 'Projects',
-      sub: 'The things I build on my own time, usually instead of sleeping.',
+      sub: 'Things I build when I should probably be sleeping.',
     },
     work: {
+      index: '02',
       title: 'Work',
-      sub: 'Five roles across AI, research and data. Each one has the long version.',
+      sub: 'The roles, teams and experiences that shaped me.',
     },
-    stack: {
-      title: 'Tools I reach for',
-      sub: 'Everything here shows up in something above.',
-    },
-    hobbies: {
-      title: 'Hobbies',
-      sub: 'The things I do when nobody is paying me.',
-    },
+    skills: { index: '03', title: 'Skills' },
+    /** The subtitle carries an inline <code>, so it is passed as a slot. */
+    hobbies: { index: '04' },
   },
 
-  cta: {
-    title: 'Have something worth building?',
-    sub: 'Open to roles where I can own a problem end to end. Or just say hello.',
-    action: 'Get in touch',
-  },
+  /** Title and body come from `pages.contact`: one message, in one place. */
+  cta: { action: 'Contact' },
 } as const;

@@ -7,11 +7,11 @@ import { pages } from '../../content/pages';
 
 const rows = await Promise.all((await getWorkRows()).map(resolveWork));
 ---
-<SiteLayout title="Work — Zack Low" description={pages.work.lede}>
+<SiteLayout title="Work — Zack Low" description={pages.work.body[0]}>
   <section class="section wrap intro">
     <p class="eyebrow">{pages.work.eyebrow}</p>
     <h1 class="t-64">{pages.work.title}</h1>
-    <p class="t-21 muted lede">{pages.work.lede}</p>
+    {pages.work.body.map((para) => <p class="t-19 muted body">{para}</p>)}
   </section>
 
   <section class="wrap list">
@@ -20,6 +20,7 @@ const rows = await Promise.all((await getWorkRows()).map(resolveWork));
 </SiteLayout>
 <style>
   .intro { display: flex; flex-direction: column; gap: var(--s-4); }
-  .intro h1, .intro .lede { max-width: 760px; }
+  .intro h1 { max-width: 760px; }
+  .intro .body { max-width: 66ch; }
   .list { padding-bottom: var(--s-11); }
 </style>

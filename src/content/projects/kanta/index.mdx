@@ -1,11 +1,14 @@
 ---
 title: Kanta
 claim: A shared camera app for events, with face detection and photo organisation.
-summary: I built the FastAPI backend and cloud storage so event photos could be collected, found and shared.
+summary: >-
+  Basically Google Drive, but for sharing pictures at an event. Everyone shoots on their own phone, every photo lands in one place, and face detection sorts them so each guest can find the shots they are actually in. The backend is FastAPI, with Azure Blob Storage holding the images and Azure PostgreSQL keeping them fast to retrieve and query, deployed on Azure Container Apps. The unsupervised clustering job that groups faces runs separately on AWS Lambda, so a burst of uploads never blocks the app.
 published: 2025-05
 status: Shipped
 tags: [Full-stack, Photography]
 stack: [python, fastapi, postgresql, azure, aws]
+links:
+  repo: https://github.com/sunraymoonbeam/kanta
 cardHighlights:
   - Shared photo collection for events
   - Azure storage and PostgreSQL backend

@@ -9,10 +9,10 @@ const d = entry.data;
 const href = d.writeup ? `/projects/${entry.id}` : undefined;
 const Tag = href ? 'a' : 'div';
 ---
-{/* Home card: title, year beside it, one line. Nothing else — the detail page
+{/* Home card: title, year beside it, one line. Nothing else: the detail page
     is one click away and does the explaining. */}
-<Tag {...(href ? { href } : {})} class:list={['card', { linked: !!href }]}>
-  <ScreenshotFrame title={d.title} src={d.cover} alt={d.coverAlt ?? ''} dim={d.coverDim} />
+<Tag {...(href ? { href } : {})} class:list={['card', 'rise', { linked: !!href }]}>
+  <ScreenshotFrame title={d.title} src={d.cover} alt={d.coverAlt ?? ''} dim={d.coverDim} morph={`shot-${entry.id}`} />
   <div class="body">
     <div class="head">
       <h3 class="t-21 name">{d.shortTitle ?? d.title}</h3>

@@ -1,0 +1,156 @@
+---
+import { getPublishedProjects, getWorkRows, getPlayIndex, resolveWork } from '../../lib/content';
+import { site } from '../../config/site';
+
+// The index is built at build time — no runtime search service, no API.
+const [projects, work, hobbies] = await Promise.all([
+  getPublishedProjects(), getWorkRows().then((r) => Promise.all(r.map(resolveWork))), getPlayIndex(),
+]);
+
+const items = [
+  ...site.nav.map((n) => ({ group: 'Pages', title: n.label, sub: '', href: n.href })),
+  { group: 'Pages', title: 'CV', sub: '', href: '/cv' },
+  { group: 'Pages', title: 'Contact', sub: '', href: '/contact' },
+  ...projects.filter((p) => p.data.writeup).map((p) => ({
+    group: 'Projects', title: p.data.title, sub: p.data.claim, href: `/projects/${p.id}`,
+  })),
+  ...work.filter(({ entry }) => entry.data.writeup).map(({ entry, employer }) => ({
+    group: 'Work', title: entry.data.role, sub: employer.data.name, href: `/work/${entry.id}`,
+  })),
+  ...hobbies.filter((h) => h.href).map((h) => ({
+    group: 'Hobbies', title: h.title, sub: h.caption, href: h.href,
+  })),
+];
+---
+<button type="button" class="trigger" data-search-open aria-label="Search">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+       stroke-width="2.2" stroke-linecap="round" aria-hidden="true">
+    <circle cx="11" cy="11" r="7" /><path d="M20 20l-3.5-3.5" />
+  </svg>
+  <span class="label">Search</span>
+  <kbd>⌘K</kbd>
+</button>
+
+<dialog class="panel" data-search-panel aria-label="Search">
+  <input type="search" class="input" placeholder="Search projects, work, hobbies…"
+         autocomplete="off" data-search-input aria-label="Search" />
+  <ul class="results" data-search-results>
+    {items.map((it) => (
+      <li data-item data-text={`${it.title} ${it.sub} ${it.group}`.toLowerCase()}>
+        <a href={it.href}>
+          <span class="t-17 title">{it.title}</span>
+          {it.sub && <span class="t-14 muted sub">{it.sub}</span>}
+          <span class="t-12 group">{it.group}</span>
+        </a>
+      </li>
+    ))}
+  </ul>
+  <p class="t-14 muted empty" data-search-empty hidden>No matches.</p>
+</dialog>
+
+<script>
+  const openBtn = document.querySelector<HTMLButtonElement>('[data-search-open]');
+  const panel = document.querySelector<HTMLDialogElement>('[data-search-panel]');
+  const input = document.querySelector<HTMLInputElement>('[data-search-input]');
+  const empty = document.querySelector<HTMLElement>('[data-search-empty]');
+  const items = [...document.querySelectorAll<HTMLElement>('[data-item]')];
+
+  if (openBtn && panel && input) {
+    const open = () => { panel.showModal(); input.value = ''; filter(''); input.focus(); };
+    const filter = (q: string) => {
+      const needle = q.trim().toLowerCase();
+      let shown = 0;
+      for (const li of items) {
+        const hit = !needle || (li.dataset.text ?? '').includes(needle);
+        li.hidden = !hit;
+        if (hit) shown++;
+      }
+      if (empty) empty.hidden = shown > 0;
+    };
+
+    openBtn.addEventListener('click', open);
+    input.addEventListener('input', () => filter(input.value));
+
+    document.addEventListener('keydown', (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); open(); }
+    });
+
+    // Click the backdrop to dismiss. Escape is handled by <dialog> itself.
+    panel.addEventListener('click', (e) => { if (e.target === panel) panel.close(); });
+
+    // Arrow keys move through the visible results.
+    panel.addEventListener('keydown', (e) => {
+      if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
+      e.preventDefault();
+      const links = items.filter((li) => !li.hidden).map((li) => li.querySelector('a')!);
+      if (!links.length) return;
+      const at = links.indexOf(document.activeElement as HTMLAnchorElement);
+      const next = e.key === 'ArrowDown' ? at + 1 : at - 1;
+      links[(next + links.length) % links.length].focus();
+    });
+  }
+</script>
+
+<style>
+  /* Sized like the reference: a 36px box, 6px corners, mono label, and the
+     shortcut pushed to the right edge once the box is wide enough to show it. */
+  .trigger {
+    display: none; align-items: center; gap: 8px;
+    height: 36px; padding: 0 8px 0 10px;
+    border: 1px solid var(--border); border-radius: var(--radius-s);
+    background: var(--subtle); color: var(--ink-2);
+    font-family: var(--font-mono); font-size: 12.2px; cursor: pointer;
+    transition: border-color 200ms ease, color 200ms ease;
+  }
+  .trigger:hover { border-color: var(--border-strong); color: var(--ink); }
+  /* The word "Search" next to a magnifier says nothing the icon has not
+     already said, and it costs about 180px of bar. Icon and shortcut only. */
+  .trigger .label {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap;
+  }
+  kbd {
+    font-family: var(--font-mono); font-size: 10.4px;
+    line-height: 1; padding: 3px 6px;
+    border: 1px solid var(--border-strong); border-radius: 4px; color: var(--ink-3);
+  }
+
+  @media (min-width: 880px) { .trigger { display: inline-flex; } }
+  /* Wide enough to read as a field rather than a button, with the shortcut
+     pinned to the right edge. The word "Search" still stays out. */
+  @media (min-width: 1040px) {
+    .trigger { width: 200px; }
+    kbd { margin-left: auto; }
+  }
+
+  .panel {
+    width: min(560px, 92vw); margin-top: 12vh; padding: 0;
+    border: 1px solid var(--border-strong); border-radius: var(--radius-l);
+    background: var(--canvas); color: var(--ink);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.18);
+  }
+  .panel::backdrop { background: rgba(0, 0, 0, 0.35); backdrop-filter: blur(3px); }
+
+  .input {
+    width: 100%; box-sizing: border-box; padding: var(--s-5);
+    border: 0; border-bottom: 1px solid var(--border);
+    background: transparent; color: var(--ink);
+    font: inherit; font-size: 19px;
+  }
+  .input:focus { outline: none; }
+
+  .results { max-height: 52vh; overflow-y: auto; padding: var(--s-2); }
+  .results a {
+    display: grid; grid-template-columns: 1fr auto; gap: 2px var(--s-3);
+    padding: var(--s-3) var(--s-4); border-radius: var(--radius-s);
+  }
+  .results a:hover, .results a:focus-visible { background: var(--chip-bg); color: inherit; outline: none; }
+  .title { grid-column: 1; }
+  .sub { grid-column: 1; }
+  .group {
+    grid-column: 2; grid-row: 1 / -1; align-self: center;
+    font-family: var(--font-mono); color: var(--ink-3);
+    text-transform: uppercase; letter-spacing: 0.1em;
+  }
+  .empty { padding: var(--s-5); text-align: center; }
+</style>

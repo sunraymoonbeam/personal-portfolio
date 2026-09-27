@@ -72,8 +72,8 @@ test('months format without inventing a day or shifting a timezone', () => {
 });
 
 test('an open-ended range reads as Present', () => {
-  assert.equal(formatRange('2025-07'), 'Jul 2025 — Present');
-  assert.equal(formatRange('2023-09', '2024-01'), 'Sep 2023 — Jan 2024');
+  assert.equal(formatRange('2025-07'), 'Jul 2025 – Present');
+  assert.equal(formatRange('2023-09', '2024-01'), 'Sep 2023 – Jan 2024');
 });
 
 test('durations are inclusive of both endpoints', () => {

@@ -1,11 +1,24 @@
 ---
-interface Props { href: string; label: string; }
-const { href, label } = Astro.props;
+/** `back` puts the chevron before the label and points it the other way, so a
+    "back to the index" link never reads as "forward". */
+interface Props { href: string; label: string; back?: boolean; }
+const { href, label, back = false } = Astro.props;
 ---
-<a href={href} class="link-arrow">
+<a href={href} class:list={['link-arrow', { back }]}>
+  {back && (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+         stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M15 6l-6 6 6 6" />
+    </svg>
+  )}
   {label}
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-       stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-    <path d="M9 6l6 6-6 6" />
-  </svg>
+  {!back && (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+         stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M9 6l6 6-6 6" />
+    </svg>
+  )}
 </a>
+<style>
+  .back:hover svg { transform: translateX(-4px); }
+</style>

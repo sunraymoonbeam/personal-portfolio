@@ -31,7 +31,7 @@ export const monthKey = (m: string): number => {
 
 /** "Jul 2025 — Present" */
 export const formatRange = (start: string, end?: string): string =>
-  `${formatMonth(start)} — ${end ? formatMonth(end) : 'Present'}`;
+  `${formatMonth(start)} – ${end ? formatMonth(end) : 'Present'}`;
 
 /** "1 yr 3 mos" — inclusive of both endpoints. */
 export const formatDuration = (start: string, end?: string): string => {

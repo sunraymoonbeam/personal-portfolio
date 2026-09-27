@@ -29,12 +29,17 @@ export function busy(): () => void {
   };
 }
 
+/** The running frame timer, so a re-init after a navigation does not stack. */
+let frameTimer: number | null = null;
+let wired = false;
+
 export function initCursor() {
   // Never on touch: a cursor nobody has is pure cost.
   if (!window.matchMedia('(pointer: fine)').matches) return;
 
   const root = document.documentElement;
   root.classList.add('ms');
+  if (frameTimer !== null) { window.clearInterval(frameTimer); frameTimer = null; }
 
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     root.classList.add('pointer-0');   // static first frame
@@ -49,21 +54,25 @@ export function initCursor() {
     root.classList.add(`pointer-${i}`);
   };
   const timer = window.setInterval(tick, POINTER_MS);
+  frameTimer = timer;
+
+  if (wired) return;
+  wired = true;
 
   // Stop the timer when the tab is hidden; nothing to animate.
   document.addEventListener('visibilitychange', () => {
-    if (document.hidden) window.clearInterval(timer);
+    if (document.hidden && frameTimer !== null) {
+      window.clearInterval(frameTimer);
+      frameTimer = null;
+    }
   });
 
-  // Spin the coin during page navigations, so a slow load has a cursor that
-  // says "working" rather than nothing at all.
+  // Spin the coin while a navigation is in flight, so a slow load has a cursor
+  // that says "working" rather than nothing at all. The router's own events
+  // cover every link, including ones added after this ran.
   let stop: (() => void) | null = null;
-  for (const a of document.querySelectorAll('a[href^="/"]')) {
-    a.addEventListener('click', () => {
-      stop?.();
-      stop = busy();
-      window.setTimeout(() => { stop?.(); stop = null; }, 4000);
-    });
-  }
-  window.addEventListener('pageshow', () => { stop?.(); stop = null; });
+  const clear = () => { stop?.(); stop = null; };
+  document.addEventListener('astro:before-preparation', () => { clear(); stop = busy(); });
+  document.addEventListener('astro:page-load', clear);
+  window.addEventListener('pageshow', clear);
 }

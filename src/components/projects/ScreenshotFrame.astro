@@ -3,13 +3,15 @@ import { Image } from 'astro:assets';
 interface Props {
   title?: string; src?: ImageMetadata; alt?: string; dim?: boolean;
   ratio?: string; eager?: boolean; chrome?: boolean;
+  /** Pairs this frame with the same frame on the page it opens. */
+  morph?: string;
 }
 const {
   title = '', src, alt = '', dim = false,
-  ratio = '16 / 10', eager = false, chrome = true,
+  ratio = '16 / 10', eager = false, chrome = true, morph,
 } = Astro.props;
 ---
-<div class:list={['frame', { chrome }]}>
+<div class:list={['frame', { chrome }]} style={morph ? `view-transition-name:${morph}` : undefined}>
   {chrome && (
     <div class="bar" aria-hidden="true">
       <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>

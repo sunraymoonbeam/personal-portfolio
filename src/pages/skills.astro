@@ -1,0 +1,35 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import TechChip from '../components/ui/TechChip.astro';
+import { STACK_GROUPS } from '../data/technologies';
+import { pages } from '../content/pages';
+---
+{/* The same groups as the home page section, from the same data file. */}
+<SiteLayout title="Skills — Zack Low" description={pages.skills.lede}>
+  <section class="section wrap intro measure-start">
+    <p class="eyebrow">{pages.skills.eyebrow}</p>
+    <h1 class="t-64">{pages.skills.title}</h1>
+    <p class="t-21 muted">{pages.skills.lede}</p>
+  </section>
+
+  <section class="wrap groups">
+    {STACK_GROUPS.map((g) => (
+      <div class="group rise">
+        <h2 class="t-21">{g.title}</h2>
+        <ul class="chips">{g.items.map((id) => <TechChip id={id} />)}</ul>
+      </div>
+    ))}
+  </section>
+</SiteLayout>
+<style>
+  .intro { display: flex; flex-direction: column; gap: var(--s-4); }
+  .groups { display: flex; flex-direction: column; padding-bottom: var(--s-11); }
+  .group {
+    display: grid; grid-template-columns: 200px 1fr; gap: var(--s-7);
+    align-items: start; padding-block: var(--s-6); border-top: 1px solid var(--border);
+  }
+  .chips { display: flex; flex-wrap: wrap; gap: var(--s-2); }
+  @media (max-width: 860px) {
+    .group { grid-template-columns: 1fr; gap: var(--s-3); }
+  }
+</style>

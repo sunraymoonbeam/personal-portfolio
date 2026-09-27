@@ -76,7 +76,33 @@ function syncButtons() {
   }
 }
 
+/**
+ * Re-apply the stored theme to the document.
+ *
+ * With the client router the whole document is swapped, which drops the
+ * `data-theme` attribute the head bootstrap set. This runs on `astro:after-swap`,
+ * before the new page paints, so a navigation never flashes the wrong theme.
+ */
+export function syncDocument() {
+  reconcile();
+  syncButtons();
+}
+
+/** Per-page: the buttons are new DOM after every swap. */
+export function bindToggles() {
+  for (const el of document.querySelectorAll('[data-theme-toggle]')) {
+    el.addEventListener('click', toggle);
+  }
+  syncButtons();
+}
+
+/** Window-level listeners must be attached exactly once per document. */
+let wired = false;
+
 export function initTheme() {
+  if (wired) { bindToggles(); return; }
+  wired = true;
+
   // Listeners attach BEFORE the first reconcile, so a change between the head
   // bootstrap and this module starting is not lost.
   window.addEventListener('storage', (e) => {
@@ -91,9 +117,5 @@ export function initTheme() {
   window.addEventListener('pageshow', () => { reconcile(); syncButtons(); });
 
   reconcile();
-  syncButtons();
-
-  for (const el of document.querySelectorAll('[data-theme-toggle]')) {
-    el.addEventListener('click', toggle);
-  }
+  bindToggles();
 }

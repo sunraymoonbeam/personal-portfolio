@@ -7,14 +7,14 @@ const { label, path, hex } = resolveTech(id);
 <li class="chip t-14">
   {path
     ? <svg viewBox="0 0 24 24" aria-hidden="true"><path fill={`#${hex}`} d={path} /></svg>
-    : <span class="mono" aria-hidden="true">{label.slice(0, 1)}</span>}
+    : <span class="mono" aria-hidden="true">{label.slice(0, 2)}</span>}
   {label}
 </li>
 <style>
   .mono {
-    width: 15px; height: 15px; border-radius: 4px; flex-shrink: 0;
+    min-width: 15px; height: 15px; padding: 0 3px; border-radius: 4px; flex-shrink: 0;
     background: var(--ink); color: var(--canvas);
-    font-size: 9px; font-weight: 600; display: inline-flex;
+    font-family: var(--font-mono); font-size: 9px; font-weight: 600; display: inline-flex;
     align-items: center; justify-content: center;
   }
 </style>

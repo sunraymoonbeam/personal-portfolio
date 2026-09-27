@@ -4,40 +4,58 @@ import TechChip from '../ui/TechChip.astro';
 import { yearOf } from '../../lib/date';
 import type { Project } from '../../lib/content';
 
-interface Props { entry: Project; }
-const { entry } = Astro.props;
+interface Props { entry: Project; index: number; }
+const { entry, index } = Astro.props;
+const flipped = index % 2 === 1;
 const d = entry.data;
 const href = d.writeup ? `/projects/${entry.id}` : undefined;
+const number = String(index + 1).padStart(2, '0');
 ---
-{/* Image left, text right. The image is the link and zooms on hover; the
-    Write-up and Source links below are separate targets. */}
-<article class="row" data-tags={d.tags.join('|')}>
+{/* Row order follows the reference: index, year and status, then the name, the
+    one-line claim, a full paragraph, what it is built with, and finally the
+    write-up beside the source. The image alternates side down the page, and
+    hovering it also turns the title blue, so the pair reads as one target. */}
+<article class:list={["row", "rise", { flipped }]} data-tags={d.tags.join('|')}>
   <div class="visual">
     {href
       ? <a href={href} class="shot-link" aria-label={d.title}>
-          <ScreenshotFrame title={d.title} src={d.cover} alt={d.coverAlt ?? ''} dim={d.coverDim} />
+          <ScreenshotFrame title={d.title} src={d.cover} alt={d.coverAlt ?? ''} dim={d.coverDim} morph={`shot-${entry.id}`} />
         </a>
       : <ScreenshotFrame title={d.title} src={d.cover} alt={d.coverAlt ?? ''} dim={d.coverDim} />}
   </div>
 
   <div class="text">
     <div class="meta">
-      <span class="eyebrow tabular">{yearOf(d.published)}</span>
-      <span class="eyebrow status">{d.status}</span>
+      <span class="num tabular">{number}</span>
+      <span class="eyebrow bare tabular">{yearOf(d.published)}</span>
+      {/* Shipped is the normal case and needs no label. Only a status that
+          changes how you read the project earns the space. */}
+      {d.status === 'Ongoing' && (
+        <>
+          <span class="rule" aria-hidden="true"></span>
+          <span class="eyebrow bare living"><span class="dot" aria-hidden="true"></span>Actively maintained</span>
+        </>
+      )}
+      {d.status === 'Archived' && (
+        <>
+          <span class="rule" aria-hidden="true"></span>
+          <span class="eyebrow bare status">Archived</span>
+        </>
+      )}
     </div>
 
     <h2 class="t-32 name">{href ? <a href={href}>{d.shortTitle ?? d.title}</a> : (d.shortTitle ?? d.title)}</h2>
-    <p class="t-19">{d.claim}</p>
-    <p class="t-17 muted">{d.summary}</p>
+    <p class="t-19 claim">{d.claim}</p>
+    <p class="t-17 muted body">{d.summary}</p>
 
     <ul class="tags">{d.stack.slice(0, 6).map((id) => <TechChip id={id} />)}</ul>
 
     <div class="links">
       {href && (
-        <a href={href} class="act t-17">
+        <a href={href} class="act primary t-17">
           Write-up
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-               stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+               stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="arrow" aria-hidden="true">
             <path d="M9 6l6 6-6 6" />
           </svg>
         </a>
@@ -48,24 +66,44 @@ const href = d.writeup ? `/projects/${entry.id}` : undefined;
           Source
         </a>
       )}
+      {d.links?.live && <a href={d.links.live} class="act t-17" rel="noopener">Live</a>}
+      {d.links?.docs && <a href={d.links.docs} class="act t-17" rel="noopener">Docs</a>}
     </div>
   </div>
 </article>
 <style>
   .row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--s-9); align-items: center; }
+  /* Alternate the sides so a long list does not read as a column of cards. */
+  .flipped .visual { order: 2; }
+  .flipped .text { order: 1; }
   .shot-link { display: block; }
   .text { display: flex; flex-direction: column; gap: var(--s-3); }
-  .meta { display: flex; align-items: center; gap: var(--s-4); }
+
+  .meta { display: flex; align-items: center; gap: var(--s-3); }
+  .num { font-family: var(--font-mono); font-size: 12px; color: var(--link); }
+  .rule { width: 20px; height: 1px; background: var(--border-strong); }
   .status { color: var(--ink-3); }
+
+  /* Status reads as a state, not a label: a slow pulse and the accent colour. */
+  .living { display: inline-flex; align-items: center; gap: 7px; color: var(--link); }
+  .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; animation: pulse 2.4s ease-in-out infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+  @media (prefers-reduced-motion: reduce) { .dot { animation: none; } }
+
   .name { font-weight: 600; }
+  .name a { transition: color 200ms ease; }
+  /* Hovering the screenshot colours the title too. :has scopes it to this row. */
+  .row:has(.visual:hover) .name a { color: var(--link); }
+  .claim { color: var(--ink); }
+  .body { max-width: 56ch; }
   .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: var(--s-1); }
 
-  .links { display: flex; align-items: center; gap: var(--s-6); margin-top: var(--s-3); }
-  .act { display: inline-flex; align-items: center; gap: 8px; color: var(--ink); }
+  .links { display: flex; align-items: center; flex-wrap: wrap; gap: var(--s-5); margin-top: var(--s-3); }
+  .act { display: inline-flex; align-items: center; gap: 8px; color: var(--ink-2); }
+  .act.primary { color: var(--link); }
   .act:hover { color: var(--link); }
-  .act svg { transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1); }
-  .act:hover svg:first-child { transform: none; }
-  .act:hover svg:last-child { transform: translateX(3px); }
+  .arrow { transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1); }
+  .act:hover .arrow { transform: translateX(3px); }
 
   @media (max-width: 860px) { .row { grid-template-columns: 1fr; gap: var(--s-5); } }
 </style>

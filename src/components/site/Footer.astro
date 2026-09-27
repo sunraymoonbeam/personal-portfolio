@@ -7,8 +7,13 @@ const year = new Date().getFullYear();
 ---
 <footer class="footer">
   <nav aria-label="Footer" class="links">
-    {site.nav.map((l) => <a href={l.href} class="t-14 muted">{l.label}</a>)}
-    <a href="/hobbies" aria-label="Play"><PlayWord size={16} /></a>
+    {/* Hobbies gets the crayon wordmark here too, so the row is not listing it twice. */}
+    {site.nav.map((l) => (
+      <a href={l.href} class:list={['t-14', { muted: l.href !== '/hobbies' }]}
+         aria-label={l.href === '/hobbies' ? 'Hobbies' : undefined}>
+        {l.href === '/hobbies' ? <PlayWord size={16} /> : l.label}
+      </a>
+    ))}
     <span class="sep" aria-hidden="true"></span>
     <a href={site.socials.github} class="t-14 muted" rel="me">GitHub</a>
     <a href={site.socials.linkedin} class="t-14 muted" rel="me">LinkedIn</a>

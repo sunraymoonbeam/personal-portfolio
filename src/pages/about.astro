@@ -3,53 +3,95 @@ import { Image } from 'astro:assets';
 import portrait from '../assets/portrait.jpg';
 import SiteLayout from '../layouts/SiteLayout.astro';
 import SectionHead from '../components/ui/SectionHead.astro';
+import PlayWord from '../components/site/PlayWord.astro';
 import HobbyGrid from '../components/hobbies/HobbyGrid.astro';
 import { getPlayIndex } from '../lib/content';
 import { pages } from '../content/pages';
 
 const play = (await getPlayIndex()).slice(0, 4);
+const a = pages.about;
 ---
-<SiteLayout title="About — Zack Low" description={pages.about.lede}>
-  <section class="hero">
-    <div class="copy wrap measure-start">
-      <p class="eyebrow">{pages.about.eyebrow}</p>
-      <h1 class="t-64">{pages.about.title}</h1>
-      <p class="t-21 muted">{pages.about.lede}</p>
-      <div class="actions">
-        <a href="/resume" class="btn btn-dark">Résumé</a>
-        <a href="/contact" class="btn btn-ghost">Get in touch</a>
+{/* Reference shape: portrait and a facts table in a narrow left column, the
+    name and the long version beside it. */}
+<SiteLayout title="About — Zack Low" description={a.lede}>
+  <section class="section wrap">
+    <p class="eyebrow">{a.eyebrow}</p>
+
+    <div class="cols">
+      <div class="side">
+        <div class="portrait">
+          <Image src={portrait} alt="Ren Hwa (Zack) Low" widths={[400, 700, 1000]}
+                 sizes="(max-width: 900px) 70vw, 340px" loading="eager" />
+        </div>
+        <dl class="facts">
+          {a.facts.map((f) => (
+            <div class="fact">
+              <dt class="eyebrow bare">{f.k}</dt>
+              <dd class="t-14">{f.v}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+
+      <div class="main">
+        <h1 class="t-64">{a.title}</h1>
+        <p class="t-21 muted summary">{a.summary}</p>
+        <div class="actions">
+          <a href="/cv" class="btn">CV</a>
+          <a href="/contact" class="btn btn-ghost">Contact</a>
+        </div>
+
+        <p class="eyebrow label">{a.quoteLabel}</p>
+        <blockquote class="bio rise">
+          <p>I studied Computer Science at NTU. After working on analytics projects, I became interested in the systems that make data useful. I went to AI Singapore to explore AI, and that is where I specialise now, though I describe myself as a software engineer first.</p>
+          <p>Building a model also means understanding the database, the pipeline, and the people who use the result.</p>
+          <p>At AI Singapore I worked on a generative animation MVP for a gaming company. At NIE I worked on speech and signal processing for classroom discussions. At the Singapore Department of Statistics I prototyped LLM and text analytics tools. I now build agent workflows and their infrastructure at Carro.</p>
+          <p>I enjoy finding the cause of a bug. I step back to understand the input, the expected result and the surrounding system, then work through a fix. I also care about explaining technical ideas clearly to teammates and stakeholders. Teaching others has made me check my own understanding.</p>
+          <p>I have learned to keep priorities visible, and to avoid polishing a small piece while the real problem waits.</p>
+        </blockquote>
       </div>
     </div>
   </section>
 
-  <section class="section"><div class="wrap prose">
-    <p>I studied Computer Science at NTU. After working on analytics projects, I became interested in data and the systems that make it useful. I chose to explore AI at AI Singapore, but I describe myself as a software engineer specialising in data. Building a model also means understanding the database, the pipeline and the people who use the result.</p>
-    <p>At AI Singapore I worked on a generative animation MVP for a gaming company. At NIE I worked on speech and signal processing for classroom discussions. At the Singapore Department of Statistics I prototyped LLM and text analytics tools. I now build agent workflows and their infrastructure at Carro.</p>
-    <p>I enjoy finding the cause of a bug. I step back to understand the input, the expected result and the surrounding system, then work through a fix. I also care about explaining technical ideas clearly to teammates and stakeholders. Teaching others has made me check my own understanding.</p>
-    <p>I have learned to keep priorities visible and to avoid polishing a small piece while the real problem waits. Outside work, I spend time climbing, cooking and enjoying coffee. There is more of that on <a href="/hobbies">Play</a>.</p>
-  </div></section>
-
-  
-
   <section class="section"><div class="wrap">
-    <SectionHead title="Play" sub="Climbing, coffee and cooking." href="/hobbies" linkLabel="All three" />
+    <SectionHead href="/hobbies" linkLabel="View all hobbies">
+      <PlayWord slot="title" />
+    </SectionHead>
     <HobbyGrid items={play} />
   </div></section>
 </SiteLayout>
 <style>
-  .hero { background: var(--surface); }
-  .copy {
-    display: flex; flex-direction: column; gap: var(--s-4); justify-content: center;
-    padding-block: clamp(48px, 8vw, 120px);
+  .cols {
+    display: grid; grid-template-columns: minmax(0, 320px) minmax(0, 1fr);
+    gap: var(--s-10); align-items: start; margin-top: var(--s-7);
   }
-  .actions { display: flex; gap: var(--s-3); flex-wrap: wrap; margin-top: var(--s-2); }
-  .groups { display: flex; flex-direction: column; }
-  .group {
-    display: grid; grid-template-columns: 200px 1fr; gap: var(--s-7);
-    align-items: start; padding-block: var(--s-6); border-top: 1px solid var(--border);
+  .side { display: flex; flex-direction: column; gap: var(--s-6); }
+  .portrait img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; border-radius: var(--radius-l); }
+
+  /* A small table of the things people scan for first. */
+  .facts { border-top: 1px solid var(--border); }
+  .fact {
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: var(--s-4); padding-block: 11px; border-bottom: 1px solid var(--border);
   }
-  .chips { display: flex; flex-wrap: wrap; gap: var(--s-2); }
-  @media (max-width: 860px) {
-    .group { grid-template-columns: 1fr; gap: var(--s-3); }
+  .fact dd { margin: 0; text-align: right; }
+
+  .main { display: flex; flex-direction: column; }
+  .summary { max-width: 46ch; margin-top: var(--s-4); }
+  .actions { display: flex; gap: var(--s-3); flex-wrap: wrap; margin-top: var(--s-6); }
+  .label { margin-top: var(--s-10); margin-bottom: var(--s-4); }
+
+  /* The whole bio is the quote, so the rule runs its full height. */
+  .bio {
+    display: flex; flex-direction: column; gap: var(--s-5);
+    max-width: 62ch; margin: 0;
+    padding-left: var(--s-6); border-left: 2px solid var(--link);
   }
+  .bio p { font-size: 19px; line-height: 1.55; letter-spacing: -0.02em; color: var(--ink); }
+
+  @media (max-width: 900px) {
+    .cols { grid-template-columns: 1fr; gap: var(--s-7); }
+    .side { max-width: 320px; }
+  }
+  @media (max-width: 600px) { .bio { padding-left: var(--s-4); } }
 </style>

@@ -18,8 +18,8 @@ const all = (await getPublishedPlay()).filter((e) => e.data.writeup);
 const { prev, next } = getAdjacent(toArticleLinks('play', all), keyOf('play', entry.id));
 ---
 <ArticleLayout
-  title={d.title} summary={d.summary} eyebrow={`Play · ${formatMonth(d.published)}`}
-  backHref="/play" backLabel="All of Play" prev={prev} next={next}
+  title={d.title} summary={d.summary} eyebrow={`Hobbies · ${formatMonth(d.published)}`}
+  backHref="/hobbies" backLabel="All hobbies" prev={prev} next={next}
 >
   {d.cover && (
     <figure slot="hero" class="cover">

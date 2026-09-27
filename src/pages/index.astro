@@ -3,12 +3,14 @@ import { Image } from 'astro:assets';
 import SiteLayout from '../layouts/SiteLayout.astro';
 import SectionHead from '../components/ui/SectionHead.astro';
 import ProjectGrid from '../components/projects/ProjectGrid.astro';
-import RoleRow from '../components/work/RoleRow.astro';
+import WorkList from '../components/work/WorkList.astro';
+import PlayWord from '../components/site/PlayWord.astro';
 import HobbyGrid from '../components/hobbies/HobbyGrid.astro';
 import TechChip from '../components/ui/TechChip.astro';
 import ArrowLink from '../components/ui/ArrowLink.astro';
 import portrait from '../assets/portrait.jpg';
 import { home } from '../content/home';
+import { pages } from '../content/pages';
 import { site } from '../config/site';
 import { STACK_GROUPS } from '../data/technologies';
 import {
@@ -24,23 +26,28 @@ const hobbies = (await getPlayIndex()).slice(0, 3);
     <div class="copy">
       <h1 class="name"><span class="given">Ren Hwa</span> <span class="nick">(Zack)</span> <span class="family">Low</span></h1>
       <p class="t-24 role">{home.role}</p>
-      <p class="t-28 tagline">{home.tagline}</p>
-      <p class="t-19 muted lede">{home.lede}</p>
-      <div class="actions">
-        <a href="/projects" class="btn btn-dark cta">
-          See the work
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-               stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M5 12h13M13 6l6 6-6 6" />
-          </svg>
-        </a>
-        <a href="/work" class="btn btn-ghost">Work</a>
-        <a href="/hobbies" class="btn btn-ghost">Hobbies</a>
-      </div>
+      {home.lede.map((para) => (
+        <p class="t-19 muted lede">
+          {para.map((part) => {
+            if ('hi' in part && part.hi) return <strong class="hi">{part.text}</strong>;
+            if ('em' in part && part.em) return <strong>{part.text}</strong>;
+            return part.text;
+          })}
+        </p>
+      ))}
     </div>
     <div class="art">
       <Image src={portrait} alt="Ren Hwa (Zack) Low" widths={[400, 700, 1000]}
              sizes="(max-width: 900px) 70vw, 380px" loading="eager" />
+      {/* The arrow points back up at the photo, so the label reads as a caption
+          for it rather than as a hint to keep scrolling. */}
+      <a href="/about" class="more pop t-14">
+        <svg class="bob" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M12 19V5" /><path d="M6 11l6-6 6 6" />
+        </svg>
+        More about me
+      </a>
     </div>
   </section>
 
@@ -54,13 +61,14 @@ const hobbies = (await getPlayIndex()).slice(0, 3);
   <section class="section">
     <div class="wrap">
       <SectionHead {...home.sections.work} href="/work" linkLabel="All roles" />
-      <div>{roles.map((role) => <RoleRow {...role} />)}</div>
+      {/* Same rows as /work, without the bullets: the shape, not the detail. */}
+      <WorkList rows={roles} compact />
     </div>
   </section>
 
-  <section class="section band">
+  <section class="section band" id="skills">
     <div class="wrap">
-      <SectionHead {...home.sections.stack} />
+      <SectionHead {...home.sections.skills} href="/skills" linkLabel="All skills" />
       <div class="groups">
         {STACK_GROUPS.map((g) => (
           <div class="group">
@@ -74,15 +82,20 @@ const hobbies = (await getPlayIndex()).slice(0, 3);
 
   <section class="section">
     <div class="wrap">
-      <SectionHead {...home.sections.hobbies} href="/hobbies" linkLabel="See all hobbies" />
+      <SectionHead {...home.sections.hobbies} href="/hobbies" linkLabel="View all hobbies">
+        <PlayWord slot="title" />
+        <Fragment slot="sub">Because there is more to life than <code>git push</code>.</Fragment>
+      </SectionHead>
       <HobbyGrid items={hobbies} />
     </div>
   </section>
 
   <section class="section band closing">
     <div class="wrap inner">
-      <h2 class="t-48">{home.cta.title}</h2>
-      <p class="t-21 muted">{home.cta.sub}</p>
+      <h2 class="t-48">{pages.contact.title}</h2>
+      <blockquote class="lede">
+        {pages.contact.lede.map((line) => <p class="t-19">{line}</p>)}
+      </blockquote>
       <a href="/contact" class="btn">{home.cta.action}</a>
       <a href={`mailto:${site.email}`} class="t-14 small">{site.email}</a>
     </div>
@@ -108,14 +121,18 @@ const hobbies = (await getPlayIndex()).slice(0, 3);
   }
   .name .nick { white-space: nowrap; }
   .role { color: var(--ink-2); font-weight: 500; }
-  .tagline { margin-top: var(--s-2); }
   .lede { max-width: 620px; }
+  .lede strong { color: var(--ink); font-weight: 600; }
+  .lede .hi { color: var(--link); }
 
-  .actions { display: flex; gap: var(--s-3); flex-wrap: wrap; margin-top: var(--s-3); }
-  .cta svg { transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1); }
-  .cta:hover svg { transform: translateX(3px); }
 
+  .art { display: flex; flex-direction: column; align-items: center; gap: var(--s-3); }
   .art img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; border-radius: var(--radius-l); }
+  .more { display: inline-flex; align-items: center; gap: 7px; color: var(--ink-2); }
+  .more:hover { color: var(--link); }
+  /* The hover lift has to beat the idle hop, so it wins on the element. */
+  .more:hover svg { animation: none; transform: translateY(-7px); transition: transform 260ms cubic-bezier(0.34, 1.56, 0.64, 1); }
+  .more { gap: 9px; }
 
   .groups { display: flex; flex-direction: column; }
   .group {
@@ -124,7 +141,7 @@ const hobbies = (await getPlayIndex()).slice(0, 3);
   }
   .chips { display: flex; flex-wrap: wrap; gap: var(--s-2); }
 
-  .closing .inner { display: flex; flex-direction: column; align-items: center; gap: var(--s-4); text-align: center; }
+  .closing .inner { display: flex; flex-direction: column; align-items: flex-start; gap: var(--s-5); }
 
   @media (max-width: 900px) {
     .hero { grid-template-columns: 1fr; gap: var(--s-7); }

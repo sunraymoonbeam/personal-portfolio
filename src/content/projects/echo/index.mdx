@@ -1,11 +1,14 @@
 ---
 title: Echo
 claim: A personal language-model experiment trained on my Telegram history.
-summary: I fine-tuned open models with Unsloth and built a FastAPI service around the result.
+summary: >-
+  A digital clone of myself, built from five years of my own Telegram history. The model was never the hard part. Five years of messages is not a dataset, and most of the work went into turning it into one. I fine-tuned open-source models, LLaMA 3 and Gemma 3, with Unsloth for fast memory-efficient training, then wrapped the result in a modular microservice architecture behind a FastAPI backend, with the Telegram data itself on AWS S3.
 published: 2025-05
 status: Shipped
 tags: [AI/ML, Backend]
 stack: [python, pytorch, huggingface, fastapi, aws]
+links:
+  repo: https://github.com/sunraymoonbeam/echo
 cardHighlights:
   - Training data from five years of my Telegram history
   - LLaMA 3 and Gemma 3 fine-tuned with Unsloth

@@ -5,7 +5,7 @@ const { tags } = Astro.props;
 {/* Without JS every project is visible and the pills simply do not appear —
     a filter that hides content when scripting fails is worse than none. */}
 <div class="filters" data-filters hidden>
-  <span class="eyebrow">Filter</span>
+  <span class="eyebrow bare">Filter</span>
   <ul class="pills">
     <li><button type="button" class="pill on" data-tag="all" aria-pressed="true">All</button></li>
     {tags.map((t) => (

@@ -5,7 +5,8 @@
 *, *::before, *::after { box-sizing: border-box; }
 [hidden] { display: none !important; }
 
-html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+/* 64px of sticky header plus air, so an anchored heading is not hidden by it. */
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; scroll-padding-top: 88px; }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after {
@@ -57,11 +58,21 @@ a:hover { color: var(--link); }
 .small { color: var(--ink-3); }
 .tabular { font-variant-numeric: tabular-nums; }
 
+/* The rule before the label is the reference's, and it is what makes a section
+   label read as a marker rather than as small text. `.eyebrow.bare` opts out
+   where the label sits inline, e.g. beside a date. */
 .eyebrow {
+  display: inline-flex; align-items: center; gap: 12px;
   font-family: var(--font-mono); font-size: 12px; font-weight: 500;
   line-height: 1.3334; letter-spacing: 0.07em; text-transform: uppercase;
   color: var(--ink-2);
 }
+.eyebrow::before {
+  content: ''; width: 28px; height: 1px; flex-shrink: 0;
+  background: var(--border-strong);
+}
+.eyebrow.bare { gap: 0; }
+.eyebrow.bare::before { content: none; }
 
 /* ── layout ── */
 .wrap { width: min(var(--content), 100% - var(--gutter) * 2); margin-inline: auto; }
@@ -74,16 +85,21 @@ a:hover { color: var(--link); }
 /* ── controls ── */
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-  min-height: 44px; padding: 12px 22px; border: 0; border-radius: var(--radius-pill);
-  background: var(--fill); color: var(--on-fill);
-  font: inherit; font-size: 17px; letter-spacing: -0.016em; cursor: pointer;
-  transition: background-color 100ms linear;
+  min-height: 44px; padding: 12px 24px; border: 1px solid transparent;
+  border-radius: var(--radius-pill);
+  background: var(--ink); color: var(--canvas);
+  font: inherit; font-size: 17px; font-weight: 500; letter-spacing: -0.016em;
+  cursor: pointer;
+  transition: opacity 150ms ease, transform 150ms cubic-bezier(0.22, 1, 0.36, 1);
 }
-.btn:hover { background: var(--link); color: var(--on-fill); }
-.btn-dark { background: var(--ink); color: var(--canvas); }
-.btn-dark:hover { background: var(--ink); opacity: 0.85; color: var(--canvas); }
-.btn-ghost { background: transparent; color: var(--ink); border: 1px solid var(--border-strong); }
-.btn-ghost:hover { background: var(--chip-bg); color: var(--ink); }
+.btn:hover { background: var(--ink); color: var(--canvas); opacity: 0.86; }
+.btn:active { transform: scale(0.98); }
+
+/* Secondary: outlined, never a second fill colour. */
+.btn-ghost {
+  background: transparent; color: var(--ink); border-color: var(--border-strong);
+}
+.btn-ghost:hover { background: var(--chip-bg); color: var(--ink); border-color: var(--control); }
 
 .link-arrow {
   display: inline-flex; align-items: center; gap: 6px;
@@ -98,6 +114,76 @@ a:hover { color: var(--link); }
   background: var(--chip-bg); font-size: 14px; letter-spacing: -0.01em; color: var(--ink);
 }
 .chip svg { width: 15px; height: 15px; flex-shrink: 0; }
+
+/* Inline code in running copy. Block code is styled in article.css. */
+code {
+  font-family: var(--font-mono); font-size: 0.86em;
+  padding: 2px 7px; border-radius: 6px;
+  background: var(--chip-bg); color: var(--ink);
+}
+
+/* ── motion ────────────────────────────────────────────────────────────────
+   Scroll-driven, in CSS, with no JavaScript and no observer. The whole block
+   sits inside @supports, so a browser without scroll timelines simply renders
+   the content: there is no hidden state to get stuck in, which is the usual
+   failure of the IntersectionObserver version of this.
+   ------------------------------------------------------------------------ */
+@keyframes rise {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* A little overshoot, so it lands rather than fades. */
+@keyframes pop {
+  0%   { opacity: 0; transform: translateY(16px) scale(0.94); }
+  65%  { opacity: 1; transform: translateY(-5px) scale(1.03); }
+  100% { opacity: 1; transform: none; }
+}
+
+/* A hop, not a hover: fast up, slower down, and a squash where it lands.
+   Two beats in the cycle then a rest, so it reads as deliberate. */
+@keyframes bob {
+  0%   { transform: translateY(0) scaleY(1); }
+  8%   { transform: translateY(0) scaleY(0.78); }
+  20%  { transform: translateY(-11px) scaleY(1.12); }
+  32%  { transform: translateY(0) scaleY(0.88); }
+  40%  { transform: translateY(-5px) scaleY(1.05); }
+  48%  { transform: translateY(0) scaleY(0.95); }
+  56%  { transform: translateY(0) scaleY(1); }
+  100% { transform: translateY(0) scaleY(1); }
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .rise, .pop {
+      animation: rise linear both;
+      animation-timeline: view();
+      /*
+       * The range is a LENGTH, not a percentage, on purpose. A percentage of
+       * `entry` or `cover` scales with the element's own height, so a tall
+       * block (a work row with five bullets) is still near zero opacity long
+       * after it is fully on screen. A fixed distance behaves the same for a
+       * 60px tile and a 400px row: start as it appears, finish 320px later.
+       */
+      animation-range: entry 0% entry 320px;
+    }
+    .pop { animation-name: pop; animation-range: entry 0% entry 260px; }
+  }
+}
+
+/* The bob is a plain loop, not scroll-driven: it says "this is a control". */
+@media (prefers-reduced-motion: no-preference) {
+  .bob { animation: bob 2.8s cubic-bezier(0.3, 0, 0.2, 1) infinite; transform-origin: 50% 100%; }
+}
+
+/* View transitions: the default cross-fade is right for text, but a morph
+   between a card and the page it opens is the one that reads as a connection. */
+@media (prefers-reduced-motion: no-preference) {
+  ::view-transition-old(root) { animation: vt-out 180ms ease both; }
+  ::view-transition-new(root) { animation: vt-in 260ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+}
+@keyframes vt-out { to { opacity: 0; } }
+@keyframes vt-in { from { opacity: 0; transform: translateY(10px); } }
 
 mark {
   background: var(--mark-bg); color: var(--ink); font-weight: 500;

@@ -34,9 +34,9 @@ const { prev, next } = getAdjacent(links, keyOf('work', entry.id));
   )}
 
   <dl slot="aside" class="facts">
-    <div><dt class="eyebrow">Role</dt><dd class="t-14">{d.role} · {d.kind}</dd></div>
-    <div><dt class="eyebrow">When</dt><dd class="t-14 tabular">{formatRange(d.start, d.end)} · {formatDuration(d.start, d.end)}</dd></div>
-    <div><dt class="eyebrow">Where</dt><dd class="t-14">{d.location}</dd></div>
+    <div><dt class="eyebrow bare">Role</dt><dd class="t-14">{d.role} · {d.kind}</dd></div>
+    <div><dt class="eyebrow bare">When</dt><dd class="t-14 tabular">{formatRange(d.start, d.end)} · {formatDuration(d.start, d.end)}</dd></div>
+    <div><dt class="eyebrow bare">Where</dt><dd class="t-14">{d.location}</dd></div>
     {d.metrics && (
       <div><dt class="eyebrow">Outcome</dt>
         <dd class="metrics">{d.metrics.map((m) => (

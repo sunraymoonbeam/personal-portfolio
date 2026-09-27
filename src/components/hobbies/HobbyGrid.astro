@@ -8,14 +8,14 @@ const { items } = Astro.props;
   {items.map((it) => {
     const Tag = it.href ? 'a' : 'div';
     return (
-      <li>
+      <li class="rise">
         <Tag {...(it.href ? { href: it.href } : {})} class="cell">
           <div class="square">
             {it.cover
               ? <Image src={it.cover} alt={it.coverAlt ?? ''} class="img" loading="lazy" />
               : <span class="t-28">{it.title}</span>}
           </div>
-          <p class="t-14 muted cap">{it.caption}</p>
+          <p class="t-17 cap">{it.title}</p>
         </Tag>
       </li>
     );
@@ -24,11 +24,16 @@ const { items } = Astro.props;
 <style>
   .grid { display: grid; gap: var(--s-5); grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
   .cell { display: flex; flex-direction: column; gap: var(--s-3); height: 100%; }
-  a.cell:hover .cap { color: var(--link); }
+  .cell:hover .cap { color: var(--link); }
   .square {
     aspect-ratio: 1 / 1; display: grid; place-items: center; overflow: hidden;
     border-radius: 10px; background: var(--surface); border: 1px solid var(--border);
   }
-  .img { width: 100%; height: 100%; object-fit: cover; }
-  .cap { line-height: 1.45; }
+  .img {
+    width: 100%; height: 100%; object-fit: cover;
+    transition: transform 800ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .cell:hover .img { transform: scale(1.04); }
+  @media (prefers-reduced-motion: reduce) { .img { transition: none; } }
+  .cap { text-align: center; font-weight: 500; }
 </style>

@@ -13,10 +13,12 @@ const { title, summary, eyebrow, backHref, backLabel, prev, next } = Astro.props
 <SiteLayout title={`${title} — Zack Low`} description={summary}>
   <article>
     <header class="head wrap measure-start">
-      <ArrowLink href={backHref} label={backLabel} />
+      <ArrowLink href={backHref} label={backLabel} back />
       {eyebrow && <p class="eyebrow">{eyebrow}</p>}
       <h1 class="t-64">{title}</h1>
       {summary && <p class="t-21 muted">{summary}</p>}
+      {/* Links and numbers sit with the title, as on the reference page. */}
+      <div class="head-extra"><slot name="head" /></div>
     </header>
 
     <div class="hero-slot wrap"><slot name="hero" /></div>
@@ -28,14 +30,15 @@ const { title, summary, eyebrow, backHref, backLabel, prev, next } = Astro.props
 
     {(prev || next) && (
       <nav class="wrap adjacent" aria-label="More">
-        <span>{next && <a href={next.href} class="stack"><span class="eyebrow">Next</span><span class="t-21">{next.title}</span></a>}</span>
-        <span class="right">{prev && <a href={prev.href} class="stack"><span class="eyebrow">Previous</span><span class="t-21">{prev.title}</span></a>}</span>
+        <span>{next && <a href={next.href} class="stack"><span class="eyebrow bare">Next</span><span class="t-21">{next.title}</span></a>}</span>
+        <span class="right">{prev && <a href={prev.href} class="stack"><span class="eyebrow bare">Previous</span><span class="t-21">{prev.title}</span></a>}</span>
       </nav>
     )}
   </article>
 </SiteLayout>
 <style>
   .head { display: flex; flex-direction: column; gap: var(--s-4); padding-block: var(--s-10) var(--s-6); }
+  .head-extra:empty { display: none; }
   .hero-slot:empty { display: none; }
   .body {
     display: grid; grid-template-columns: minmax(0, var(--reading)) minmax(0, 1fr);

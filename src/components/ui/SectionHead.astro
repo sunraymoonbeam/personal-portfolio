@@ -1,11 +1,17 @@
 ---
-interface Props { title: string; sub?: string; href?: string; linkLabel?: string; }
-const { title, sub, href, linkLabel } = Astro.props;
+/**
+ * `title` and `sub` cover the plain case. The matching slots take over when the
+ * text needs markup inside it, e.g. a coloured word or an inline code span.
+ */
+interface Props { index?: string; title?: string; sub?: string; href?: string; linkLabel?: string; }
+const { index, title, sub, href, linkLabel } = Astro.props;
+const hasSub = sub !== undefined || Astro.slots.has('sub');
 ---
-<div class="head">
+<div class="head rise">
   <div class="stack">
-    <h2 class="t-48">{title}</h2>
-    {sub && <p class="t-21 muted sub">{sub}</p>}
+    {index && <p class="eyebrow num">{index}</p>}
+    <h2 class="t-48">{title}<slot name="title" /></h2>
+    {hasSub && <p class="t-21 muted sub">{sub}<slot name="sub" /></p>}
   </div>
   {href && (
     <a href={href} class="link-arrow">
@@ -23,5 +29,6 @@ const { title, sub, href, linkLabel } = Astro.props;
     gap: var(--s-8); padding-bottom: var(--s-9); flex-wrap: wrap;
   }
   .stack { gap: var(--s-3); }
+  .num { color: var(--link); margin-bottom: var(--s-1); }
   .sub { max-width: 560px; }
 </style>
