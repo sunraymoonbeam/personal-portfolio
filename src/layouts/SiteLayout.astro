@@ -13,7 +13,7 @@ interface Props { title?: string; description?: string; image?: string; }
 const {
   title = `${site.name} — ${site.role}`,
   description = site.motto,
-  image = '/og.png',
+  image,
 } = Astro.props;
 const canonical = new URL(Astro.url.pathname, site.origin).href;
 ---
@@ -33,8 +33,8 @@ const canonical = new URL(Astro.url.pathname, site.origin).href;
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
-    <meta property="og:image" content={new URL(image, site.origin).href} />
-    <meta name="twitter:card" content="summary_large_image" />
+    {image && <meta property="og:image" content={new URL(image, site.origin).href} />}
+    <meta name="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="sitemap" href="/sitemap-index.xml" />
 

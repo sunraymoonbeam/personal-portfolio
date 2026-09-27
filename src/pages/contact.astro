@@ -3,14 +3,13 @@ import SiteLayout from '../layouts/SiteLayout.astro';
 import { site } from '../config/site';
 import { pages } from '../content/pages';
 ---
-<SiteLayout title="Contact — Zack Low" description="Email is fastest.">
+<SiteLayout title="Contact — Zack Low" description={pages.contact.lede}>
   <section class="section wrap grid">
     <div class="copy">
       <p class="eyebrow">{pages.contact.eyebrow}</p>
       <h1 class="t-64">{pages.contact.title}</h1>
       <p class="t-21 muted">
-        Have something worth building, or just want to talk shop? Email is fastest.
-        I reply to everything that is not spam, usually the same day.
+        {pages.contact.lede}
       </p>
       <div class="email">
         <a href={`mailto:${site.email}`} class="t-24">{site.email}</a>
@@ -20,7 +19,7 @@ import { pages } from '../content/pages';
         <a href={site.socials.linkedin} class="tile t-17">LinkedIn ↗</a>
         <a href={site.socials.github} class="tile t-17">GitHub ↗</a>
       </div>
-      <p class="t-14 small">Based in Singapore, GMT+8. If it is 3am here I will reply in the morning.</p>
+      <p class="t-14 small">Based in Singapore, GMT+8.</p>
     </div>
   </section>
 </SiteLayout>
@@ -39,10 +38,9 @@ import { pages } from '../content/pages';
   }
 </script>
 <style>
-  .grid { max-width: 720px; }
-  .copy { display: flex; flex-direction: column; gap: var(--s-4); }
+  .copy { max-width: 720px; display: flex; flex-direction: column; gap: var(--s-4); }
   .email {
-    display: flex; align-items: center; justify-content: space-between; gap: var(--s-5);
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--s-5);
     padding: var(--s-5); border-radius: var(--radius-m); background: var(--surface); margin-top: var(--s-3);
   }
   .email a { color: var(--ink); }

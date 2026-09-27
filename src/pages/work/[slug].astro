@@ -40,7 +40,7 @@ const { prev, next } = getAdjacent(links, keyOf('work', entry.id));
     {d.metrics && (
       <div><dt class="eyebrow">Outcome</dt>
         <dd class="metrics">{d.metrics.map((m) => (
-          <span class="metric"><span class="t-28 tabular">{m.value}</span><span class="t-14 muted">{m.label}</span></span>
+          <span class="metric"><span class="t-28 tabular">{m.value}</span><span class="t-14 muted">{m.label}</span>{m.context && <span class="t-14 small">{m.context}</span>}</span>
         ))}</dd>
       </div>
     )}

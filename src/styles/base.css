@@ -3,6 +3,7 @@
 /* Geist's own tracking table. NOT Apple's — those values are tuned for SF Pro's
    optical-size curve and are wrong on any other typeface. */
 *, *::before, *::after { box-sizing: border-box; }
+[hidden] { display: none !important; }
 
 html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
 @media (prefers-reduced-motion: reduce) {
@@ -69,7 +70,6 @@ a:hover { color: var(--link); }
 .section { padding-block: clamp(56px, 8vw, 120px); }
 .band { background: var(--surface); }
 .stack { display: flex; flex-direction: column; }
-.row { display: flex; align-items: center; }
 
 /* ── controls ── */
 .btn {

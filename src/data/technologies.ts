@@ -42,7 +42,7 @@ export const TECHNOLOGIES: Record<string, Tech> = {
 /** The About page's grouped view. */
 export const STACK_GROUPS: Array<{ title: string; items: string[] }> = [
   { title: 'Languages',       items: ['python', 'typescript', 'javascript', 'postgresql'] },
-  { title: 'Web & product',   items: ['astro', 'fastapi', 'django', 'threedotjs'] },
+  { title: 'Web & product',   items: ['astro', 'fastapi', 'django'] },
   { title: 'AI & agents',     items: ['langgraph', 'langchain', 'langfuse', 'litellm', 'pytorch', 'huggingface', 'nvidia'] },
-  { title: 'Cloud & systems', items: ['docker', 'n8n', 'traefikproxy', 'terraform', 'googlecloud', 'hetzner', 'linux', 'gnubash', 'azure', 'aws'] },
+  { title: 'Cloud & systems', items: ['docker', 'n8n', 'terraform', 'googlecloud', 'git', 'linux', 'gnubash', 'azure', 'aws'] },
 ];

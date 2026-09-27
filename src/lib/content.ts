@@ -92,7 +92,7 @@ export async function getPublishedPlay(): Promise<Play[]> {
  * body is never duplicated.
  */
 export async function getPlayIndex(): Promise<
-  Array<{ key: EntryKey; href: string; title: string; caption: string; cover?: unknown; coverAlt?: string }>
+  Array<{ key: EntryKey; href: string; title: string; caption: string; cover?: ImageMetadata; coverAlt?: string }>
 > {
   const [play, projects] = await Promise.all([getPublishedPlay(), getPublishedProjects()]);
   const fromPlay = play.map((e) => ({

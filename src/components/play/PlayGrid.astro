@@ -1,6 +1,6 @@
 ---
 import { Image } from 'astro:assets';
-interface Item { key: string; href: string; title: string; caption: string; cover?: any; coverAlt?: string; }
+interface Item { key: string; href: string; title: string; caption: string; cover?: ImageMetadata; coverAlt?: string; }
 interface Props { items: Item[]; }
 const { items } = Astro.props;
 ---
@@ -13,7 +13,7 @@ const { items } = Astro.props;
           <div class="square">
             {it.cover
               ? <Image src={it.cover} alt={it.coverAlt ?? ''} class="img" loading="lazy" />
-              : <span class="t-12 muted">{it.title}</span>}
+              : <span class="t-28">{it.title}</span>}
           </div>
           <p class="t-14 muted cap">{it.caption}</p>
         </Tag>

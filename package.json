@@ -12,6 +12,7 @@
     "astro": "astro",
     "test": "node --experimental-strip-types --test tests/*.test.ts",
     "check": "astro check",
+    "cursors": "node scripts/generate-cursors.mjs",
     "verify": "npm run check && npm run test && npm run build"
   },
   "dependencies": {

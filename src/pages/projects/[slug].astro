@@ -3,6 +3,7 @@ import { render } from 'astro:content';
 import { articleComponents } from '../../components/article/mdx';
 import ArticleLayout from '../../layouts/ArticleLayout.astro';
 import ScreenshotFrame from '../../components/projects/ScreenshotFrame.astro';
+import ProjectVisual from '../../components/projects/ProjectVisual.astro';
 import { getProjectArticles, toArticleLinks, getAdjacent, keyOf } from '../../lib/content';
 import { formatMonth } from '../../lib/date';
 
@@ -23,18 +24,16 @@ const { prev, next } = getAdjacent(links, keyOf('projects', entry.id));
   backHref="/projects" backLabel="All projects"
   prev={prev} next={next}
 >
-  {d.cover && (
-    <figure slot="hero" class="hero">
-      <ScreenshotFrame title={d.title} src={d.cover} alt={d.coverAlt ?? ''} dim={d.coverDim} height={520} eager />
-    </figure>
-  )}
+  <div slot="hero" class="hero">
+    {d.cover ? <ScreenshotFrame title={d.title} src={d.cover} alt={d.coverAlt ?? ''} dim={d.coverDim} height={520} eager /> : <ProjectVisual title={d.shortTitle ?? d.title} wide />}
+  </div>
   <div slot="aside" class="facts">
     <div><span class="eyebrow">Built with</span>
       <ul class="tags">{d.stack.map((s) => <li class="chip t-14">{s}</li>)}</ul></div>
     {d.metrics && (
       <div><span class="eyebrow">Numbers</span>
         <div class="metrics">{d.metrics.map((m) => (
-          <span class="metric"><span class="t-28 tabular">{m.value}</span><span class="t-14 muted">{m.label}</span></span>
+          <span class="metric"><span class="t-28 tabular">{m.value}</span><span class="t-14 muted">{m.label}</span>{m.context && <span class="t-14 small">{m.context}</span>}</span>
         ))}</div></div>
     )}
     {d.cardHighlights && (

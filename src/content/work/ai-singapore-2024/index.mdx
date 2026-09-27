@@ -2,54 +2,34 @@
 employer: ai-singapore
 role: AI Engineer
 kind: Apprenticeship
-location: Singapore · On-site
+location: Singapore
 start: 2024-06
 end: 2025-04
-title: Teaching a diffusion model to animate a character from one sentence
-summary: Generative 3D character animation from a text prompt, using PyTorch diffusion models and multimodal video LLMs. Most of the year went into data, not models.
+title: Generating 3D animation from a text prompt
+summary: At AI Singapore I helped build a GenAI MVP for a gaming company, from motion data preparation to model training and deployment.
 stack: [pytorch, huggingface]
-cover: ./cover.jpg
-coverAlt: Frames from a generated character animation
 cardHighlights:
-  - Text-to-motion for 3D characters
-  - Built the data pipeline the models trained on
-  - Diffusion over motion sequences, in PyTorch
+  - A text-to-motion MVP for game development
+  - One training format for varied motion datasets
+  - Video-assisted captioning for missing descriptions
 metrics:
-  - { value: "1,100 hrs", label: "of motion capture", context: "cleaned and retargeted" }
-  - { value: "9 mos", label: "apprenticeship" }
+  - { value: "20%", label: "improvement over baseline", context: "text-to-motion metrics reported in my résumé" }
+  - { value: "80%", label: "faster testing and deployment", context: "after GitLab CI/CD changes" }
 featuredOrder: 2
 ---
-import detail from './detail.jpg'
 
+## What we were trying to make easier
 
-## The problem
+Animating a game character usually involves designing a character, rigging it and building each movement by hand. At AI Singapore, I worked on a GenAI MVP for a gaming company that would turn a text prompt into 3D motion. A prompt such as “a man walking” could produce motion that a developer could bring into Unity.
 
-Type "a tired man walks up a hill" and get a 3D character actually doing it.
-Animation is expensive and slow to produce by hand, so the prize is obvious.
+## Making the data usable
 
-The model architecture was the part everyone wanted to work on. It was not the
-part that was blocking us.
+The motion came from different sources and in different formats. It included joint positions, movement relationships and velocities. I worked on a modular pipeline to bring those datasets into one training format. That preparation mattered as much as the diffusion model we trained with PyTorch.
 
-## Most of the year went into data
+The model also needed motion clips paired with descriptions. Some clips had missing or incomplete prompts, so we used a video captioning model to generate descriptions in the data pipeline. The resulting work improved our text-to-motion metrics by 20% over baseline, as recorded in my résumé.
 
-Motion capture archives are long, inconsistently rigged, barely labelled, and
-full of takes where someone walks to their mark and stands still for nine
-seconds. Before any of it can train a model it has to be cleaned, retargeted
-onto one skeleton, segmented into meaningful motions, and described in words.
+## Beyond the model
 
-I built that pipeline, and processed about **1,100 hours** through it. It is not
-a glamorous sentence to write. It was the whole project.
+I helped build the training and deployment pipeline and improved the GitLab CI/CD checks. Testing and deployment time fell by 80%. I also made onboarding materials and a small interactive repository for practising Linux and version control. Explaining those basics to teammates with different backgrounds made me a clearer engineer.
 
-<Figure src={detail} alt="Placeholder" caption="A placeholder until the real screenshot exists." size="wide" />
-
-## What I built on top
-
-A diffusion model over motion sequences in PyTorch, conditioned on text, plus
-experiments using multimodal video LLMs to generate captions for clips nobody
-had labelled — bootstrapping the descriptions we were missing.
-
-## What it taught me
-
-Two things. First, that the bottleneck is almost never the model. Second, that
-being the person willing to fix the data is a genuinely useful thing to be,
-even though nobody puts it in the demo.
+This project taught me to work from the data backwards. A more capable model cannot compensate for inconsistent motion files and missing descriptions.

@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="660" height="330" viewBox="0 0 660 330">
+  <rect width="660" height="330" rx="16" fill="#f5f5f7"/>
+  <g fill="#fff" stroke="#727277" stroke-width="2">
+    <rect x="30" y="100" width="220" height="130" rx="12"/>
+    <rect x="350" y="35" width="280" height="105" rx="12"/>
+    <rect x="350" y="190" width="280" height="105" rx="12"/>
+    <path d="M250 165H295V88H350M295 165V243H350" fill="none"/>
+  </g>
+  <g font-family="system-ui,sans-serif" text-anchor="middle" fill="#1d1d1f">
+    <text x="140" y="155" font-size="24" font-weight="600">FastAPI</text>
+    <text x="140" y="184" font-size="16">Azure Container Apps</text>
+    <text x="490" y="81" font-size="22" font-weight="600">Blob Storage</text>
+    <text x="490" y="108" font-size="16">Image files</text>
+    <text x="490" y="235" font-size="22" font-weight="600">PostgreSQL</text>
+    <text x="490" y="263" font-size="16">Queryable photo data</text>
+  </g>
+</svg>

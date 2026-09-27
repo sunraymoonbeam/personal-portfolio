@@ -1,20 +1,17 @@
 ---
-import { getEntry, render } from 'astro:content';
 import SiteLayout from '../layouts/SiteLayout.astro';
 import SectionHead from '../components/ui/SectionHead.astro';
 import TechChip from '../components/ui/TechChip.astro';
 import PlayGrid from '../components/play/PlayGrid.astro';
 import { STACK_GROUPS } from '../data/technologies';
 import { getPlayIndex } from '../lib/content';
-import { site } from '../config/site';
 import { pages } from '../content/pages';
 
-const about = await getEntry('about' as never, 'about' as never).catch(() => undefined);
 const play = (await getPlayIndex()).slice(0, 4);
 ---
-<SiteLayout title="About — Zack Low" description="Software engineer in Singapore, specialising in AI.">
+<SiteLayout title="About — Zack Low" description={pages.about.lede}>
   <section class="hero">
-    <div class="copy">
+    <div class="copy wrap measure-start">
       <p class="eyebrow">{pages.about.eyebrow}</p>
       <h1 class="t-64">{pages.about.title}</h1>
       <p class="t-21 muted">{pages.about.lede}</p>
@@ -23,35 +20,17 @@ const play = (await getPlayIndex()).slice(0, 4);
         <a href="/contact" class="btn btn-ghost">Get in touch</a>
       </div>
     </div>
-    <div class="portrait">
-      <img src="/img/portrait.jpg" alt="Zack Low" width="900" height="1125" />
-    </div>
   </section>
 
   <section class="section"><div class="wrap prose">
-    <p>I build full-stack systems, end to end: the database, the API, the screen,
-      the deploy, and the bill at the end of the month. AI goes in
-      <strong>where it earns its place</strong> — which, after a year of doing this
-      professionally, is less often than the industry would like you to believe.</p>
-    <p>The part I actually like is before any code gets written. Working out what is
-      genuinely broken, who it is broken for, and what the smallest thing is that
-      would fix it. Then owning that thing until it works in production — not until
-      the ticket closes.</p>
-    <p>The most useful thing I have built at work is
-      <mark>a tracing dashboard</mark>, which is not a sentence anyone wants to hear.
-      But you cannot make an agent cheaper or better until you can see what it is
-      doing, and almost nobody builds that first. The most fun thing I have built is
-      a camera app that deliberately makes you wait four minutes.</p>
-    <p>Before Carro I spent a year at AI Singapore on generative 3D animation, did
-      speech research at NIE, and wrote my first LLM tooling at the Department of
-      Statistics back when nobody was calling it an agent. I studied Computer
-      Science at NTU.</p>
-    <p>Outside work I run a two-server homelab, climb badly, cook constantly, and
-      shoot film. There is more of that on <a href="/play">Play</a>.</p>
+    <p>I studied Computer Science at NTU. After working on analytics projects, I became interested in data and the systems that make it useful. I chose to explore AI at AI Singapore, but I describe myself as a software engineer specialising in data. Building a model also means understanding the database, the pipeline and the people who use the result.</p>
+    <p>At AI Singapore I worked on a generative animation MVP for a gaming company. At NIE I worked on speech and signal processing for classroom discussions. At the Singapore Department of Statistics I prototyped LLM and text analytics tools. I now build agent workflows and their infrastructure at Carro.</p>
+    <p>I enjoy finding the cause of a bug. I step back to understand the input, the expected result and the surrounding system, then work through a fix. I also care about explaining technical ideas clearly to teammates and stakeholders. Teaching others has made me check my own understanding.</p>
+    <p>I have learned to keep priorities visible and to avoid polishing a small piece while the real problem waits. Outside work, I spend time climbing, cooking and enjoying coffee. There is more of that on <a href="/play">Play</a>.</p>
   </div></section>
 
   <section class="section band"><div class="wrap">
-    <SectionHead title="Tech stack" sub="The stuff I use every week." />
+    <SectionHead title="Tools I use" sub="From the projects and roles described here." />
     <div class="groups">
       {STACK_GROUPS.map((g) => (
         <div class="group">
@@ -63,20 +42,17 @@ const play = (await getPlayIndex()).slice(0, 4);
   </div></section>
 
   <section class="section"><div class="wrap">
-    <SectionHead title="Play" sub="The other half." href="/play" linkLabel="All of it" />
+    <SectionHead title="Play" sub="Climbing, coffee and cooking." href="/play" linkLabel="All three" />
     <PlayGrid items={play} />
   </div></section>
 </SiteLayout>
 <style>
-  .hero { display: grid; grid-template-columns: 1fr 1fr; align-items: stretch; background: var(--surface); }
+  .hero { background: var(--surface); }
   .copy {
     display: flex; flex-direction: column; gap: var(--s-4); justify-content: center;
-    padding: clamp(48px, 8vw, 120px) var(--s-9) clamp(48px, 8vw, 120px) var(--gutter);
+    padding-block: clamp(48px, 8vw, 120px);
   }
   .actions { display: flex; gap: var(--s-3); flex-wrap: wrap; margin-top: var(--s-2); }
-  /* Full-bleed, no radius, no shadow — the pattern every good portrait hero uses. */
-  .portrait { min-height: 560px; background: var(--border); }
-  .portrait img { width: 100%; height: 100%; object-fit: cover; }
   .groups { display: flex; flex-direction: column; }
   .group {
     display: grid; grid-template-columns: 200px 1fr; gap: var(--s-7);
@@ -84,9 +60,6 @@ const play = (await getPlayIndex()).slice(0, 4);
   }
   .chips { display: flex; flex-wrap: wrap; gap: var(--s-2); }
   @media (max-width: 860px) {
-    .hero { grid-template-columns: 1fr; }
-    .copy { padding-inline: var(--gutter); }
-    .portrait { min-height: 360px; order: -1; }
     .group { grid-template-columns: 1fr; gap: var(--s-3); }
   }
 </style>

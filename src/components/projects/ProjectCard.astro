@@ -1,5 +1,6 @@
 ---
 import ScreenshotFrame from './ScreenshotFrame.astro';
+import ProjectVisual from './ProjectVisual.astro';
 import ArrowLink from '../ui/ArrowLink.astro';
 import { yearOf } from '../../lib/date';
 import type { Project } from '../../lib/content';
@@ -11,8 +12,8 @@ const href = d.writeup ? `/projects/${entry.id}` : undefined;
 ---
 <article class="card">
   {href
-    ? <a href={href} aria-label={d.title}><ScreenshotFrame title={d.title} src={d.cover} alt={d.coverAlt ?? ''} dim={d.coverDim} /></a>
-    : <ScreenshotFrame title={d.title} src={d.cover} alt={d.coverAlt ?? ''} dim={d.coverDim} />}
+    ? <a href={href} aria-label={d.title}>{d.cover ? <ScreenshotFrame title={d.title} src={d.cover} alt={d.coverAlt ?? ''} dim={d.coverDim} /> : <ProjectVisual title={d.shortTitle ?? d.title} />}</a>
+    : (d.cover ? <ScreenshotFrame title={d.title} src={d.cover} alt={d.coverAlt ?? ''} dim={d.coverDim} /> : <ProjectVisual title={d.shortTitle ?? d.title} />)}
 
   <div class="body">
     <div class="meta">

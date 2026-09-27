@@ -1,50 +1,31 @@
 ---
 title: Kanta
-claim: 36 shots, then you wait.
-summary: A film camera for your phone. One roll of 36 exposures, no preview, and a four-minute develop you cannot skip. Built to make people take fewer, better photos.
-published: 2024-06
+claim: A shared camera app for events, with face detection and photo organisation.
+summary: I built the FastAPI backend and cloud storage so event photos could be collected, found and shared.
+published: 2025-05
 status: Shipped
-tags: [Full-stack, Mobile]
-stack: [python, fastapi]
-cover: ./cover.jpg
-coverAlt: The Kanta develop screen counting down
-links: { repo: "https://github.com/sunraymoonbeam" }
+tags: [Full-stack, Photography]
+stack: [python, fastapi, postgresql, azure, aws]
 cardHighlights:
-  - Fixed roll of 36, no preview, no retakes
-  - Film grade runs on Lambda, not the phone
-  - Recipe changes without an app update
-metrics:
-  - { value: "1,200", label: "rolls developed", context: "first eight months" }
-  - { value: "4m 10s", label: "median develop", context: "padded on purpose" }
-  - { value: "$0.02", label: "cost per roll", context: "Lambda plus storage" }
-featuredOrder: 2
+  - Shared photo collection for events
+  - Azure storage and PostgreSQL backend
+  - Clustering job on AWS Lambda
+featuredOrder: 1
 ---
-import detail from './detail.jpg'
+import storage from './storage.svg'
 
+## Why I built it
 
-## The problem
+Kanta is a collaborative camera app for events. The idea was to make it easier for people to put their photos in one place and find the ones they care about. I wanted sharing to work more like a common photo library than a set of separate chats and albums.
 
-Phone cameras make it free to take 40 photos of the same plate of noodles, and
-nobody looks at them again. I wanted the disposable-camera feeling back: a
-limited roll, no preview, a wait before you see anything. Not because it is
-better, because it makes you care.
+## The backend
 
-## What I built
+I built the backend with FastAPI. Images live in Azure Blob Storage, and Azure PostgreSQL stores the data we need to query them. The application runs on Azure Container Apps. I used an AWS Lambda job for unsupervised clustering to help organise the photo collection.
 
-A small app and a FastAPI backend. Each roll is 36 exposures. When you finish,
-the roll goes to a Lambda that applies the film look and a slow develop, then
-lands in blob storage. The app only ever shows a roll after it is developed.
+<Figure src={storage} alt="FastAPI on Azure Container Apps connects to Blob Storage for image files and PostgreSQL for queryable photo data." caption="The storage split in Kanta's backend. An architecture summary, not a product screenshot." />
 
-<Figure src={detail} alt="Placeholder" caption="A placeholder until the real screenshot exists." size="wide" />
+Kanta also uses face detection to make a large set of event photos easier to navigate.
 
-## Why Lambda instead of the phone
+## What I took from it
 
-The first version processed film on-device. It killed the battery and the look
-drifted between Android and iOS. Moving it server-side made every roll
-identical and let me change the recipe without shipping an app update. The trade
-is latency, which here was free, because waiting is the product.
-
-## How I know it works
-
-Every roll writes a timing record. Median develop is 4 minutes 10 seconds.
-Failed rolls retry three times.
+Building a photo app forced me to think about both sides of a file upload: where the image bytes live and how a person finds the right image afterwards. The storage and query model had to support the experience together.

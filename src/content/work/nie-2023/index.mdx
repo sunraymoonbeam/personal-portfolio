@@ -3,61 +3,30 @@ employer: nie
 role: Research Assistant
 kind: Part-time
 location: Singapore
-start: 2023-09
-end: 2024-01
-title: Working out who said what, when six people talk at once
-summary: Speaker diarization and ASR on real classroom recordings, using NVIDIA NeMo. The audio was the hard part, not the model.
+start: 2023-10
+end: 2024-03
+title: Finding who spoke when in classroom recordings
+summary: I worked with researchers on speech recognition and speaker diarization to study participation in classroom discussions.
 stack: [python, pytorch, nvidia]
-cover: ./cover.jpg
-coverAlt: A diarization timeline showing overlapping speakers
 cardHighlights:
-  - Real classroom audio, not clean benchmark data
-  - Diarization error rate 31% down to 19%
-  - Built the evaluation set by hand
+  - Speaker diarization and transcription
+  - Audio preprocessing and manual labelling
+  - NVIDIA NeMo models for classroom recordings
 metrics:
-  - { value: "19%", label: "diarization error", context: "from 31% at baseline" }
-  - { value: "40 hrs", label: "of audio labelled", context: "mostly by me" }
+  - { value: "200+", label: "hours of recordings studied", context: "classroom discussion data described in my notes" }
+  - { value: "30%", label: "above open-source benchmarks", context: "result reported in my résumé" }
 ---
-import detail from './detail.jpg'
 
+## Listening for participation
 
-## What the project was
+At the National Institute of Education, I worked with researchers studying how students take part in discussions. The recordings covered more than 200 hours. We needed to know who spoke when, alongside what was said, before the researchers could examine interruptions and participation patterns.
 
-Researchers wanted transcripts of classroom lessons so they could study how
-teachers distribute their attention — who gets asked questions, who gets
-interrupted, how long a pause is before the teacher fills it. You cannot study
-any of that without knowing **who** is speaking, not just what was said.
+That is a speaker diarization problem. Classroom audio makes it difficult: voices overlap, microphones pick up noise and short turns can be hard to assign to the right person.
 
-That is speaker diarization, and it is much harder than transcription when the
-recording is a real room.
+## The work behind the transcript
 
-## Why the audio was the problem
+I worked on an automatic speech recognition and diarization pipeline using NVIDIA NeMo. I also labelled and transcribed recordings for evaluation and model fine-tuning. My résumé reports performance 30% above the open-source benchmarks we compared against.
 
-Benchmark datasets are people taking polite turns into good microphones. A
-classroom is one ceiling mic, thirty children, chairs scraping, and two people
-talking over each other roughly every ninety seconds. My first pipeline scored
-well on the benchmark and fell apart on the first real lesson.
+We used audio preprocessing, including beamforming with two microphones, to make the speech signal clearer. The microphones receive the same voice at slightly different times. Aligning those signals can reinforce sound from one direction and reduce noise from others.
 
-<Figure src={detail} alt="Placeholder" caption="A placeholder until the real screenshot exists." size="wide" />
-
-## What I actually did
-
-- Rebuilt the pipeline on **NVIDIA NeMo** instead of the framework we started with.
-- Hand-labelled about **40 hours** of real lessons to make an evaluation set that
-  looked like the actual problem.
-- Tuned segmentation for short overlapping turns, which is where almost all the
-  error was concentrated.
-- Wrote the tooling the researchers used to correct transcripts themselves,
-  because they were going to have to either way.
-
-## What changed
-
-Diarization error rate went from **31% to 19%** on our own set. That is still a
-long way from good, and I want to be straight about it: the useful outcome was
-an honest evaluation set and a pipeline the team could keep improving, not a
-solved problem.
-
-## What I learned
-
-That I would rather spend a week building the measurement than a week guessing.
-Every real gain we made came after we could see where the errors actually were.
+I learned how much research depends on careful labels and an evaluation set that resembles the real recordings. A transcript that looks plausible is not enough if the speaker assignments are wrong.

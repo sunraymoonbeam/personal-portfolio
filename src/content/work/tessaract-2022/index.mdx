@@ -2,60 +2,29 @@
 employer: tessaract
 role: Database Administrator Intern
 kind: Internship
-location: Singapore · On-site
+location: Singapore
 start: 2022-07
 end: 2023-02
-title: 300,000 rows, a lot of PL/pgSQL, and my first on-call
-summary: My first real job. I learned that a slow query is usually a people problem wearing a database costume.
+title: Database migrations for legal and insurance clients
+summary: I maintained production databases and wrote Python and PostgreSQL scripts for client migrations and reporting.
 stack: [postgresql, python]
-cover: ./cover.jpg
-coverAlt: A database schema diagram
 cardHighlights:
-  - Migrations across 300k+ legal records
-  - One report from 40s to under 2s
-  - Wrote the runbook the next intern used
+  - Production database maintenance
+  - Client migration and reporting scripts
+  - Data integrity under launch deadlines
 metrics:
-  - { value: "300k+", label: "records managed" }
-  - { value: "40s → 2s", label: "slowest report", context: "one composite index" }
+  - { value: "300,000+", label: "records migrated", context: "reported in my résumé" }
+  - { value: "10+", label: "law firms", context: "reported in my résumé" }
 ---
-import detail from './detail.jpg'
 
+## The work
 
-## What the job was
+At Tessaract.io, I maintained databases for law and insurance clients. I used Python and PostgreSQL scripts to improve performance, prepare reports and move client data into production systems. My résumé records migrations of more than 300,000 records for over ten law firms.
 
-Tessaract builds software for law firms, which means the data is messy,
-regulated, and somebody's actual case. I maintained the Postgres side: schema
-migrations, stored procedures in PL/pgSQL, and the reporting queries that the
-product ran on.
+This was also client-facing work. I spoke with people about migration needs and the workflows they relied on. Technical correctness mattered, but so did explaining what could be delivered by a deadline.
 
-## The thing I still think about
+## A lesson in assumptions
 
-There was a report that took **forty seconds**. Everyone knew. It had been
-forty seconds for over a year, and the accepted wisdom was that it was "a big
-query on a lot of data".
+On one migration, confidentiality meant we did not receive representative client data until close to delivery. The real files had inconsistent columns, missing values and formatting we had not planned for. We had to clean and revalidate the data late, which caused delays.
 
-It was a missing composite index. Adding it took an afternoon, most of which
-was spent being nervous about touching production. The report now takes **under
-two seconds**.
-
-Nobody had fixed it because it was nobody's job, and because complaining about
-it had become easier than owning it. That lesson has been more useful to me
-than anything I learned about Postgres.
-
-<Figure src={detail} alt="Placeholder" caption="A placeholder until the real screenshot exists." size="wide" />
-
-## What I actually did day to day
-
-- Wrote and reviewed migrations against 300,000-plus records, on a system where
-  losing a row is a legal problem, not a support ticket.
-- Moved reporting logic into PL/pgSQL where it belonged, and out of it where it
-  did not.
-- Took my first on-call rotation, and discovered that most incidents are the
-  same three things.
-- Wrote the runbook, because I had needed one and there wasn't one.
-
-## Why it still matters
-
-It is the reason I care about tracing now. When I joined, I could not see
-anything: no query logs I trusted, no timings, no history. Every debugging
-session started with an hour of building visibility I should have already had.
+I learned to ask for a representative sample early, leave time for unexpected formats and make assumptions visible in the migration plan. When the data is sensitive and the deadline is fixed, discovering its shape at the end is an avoidable risk.

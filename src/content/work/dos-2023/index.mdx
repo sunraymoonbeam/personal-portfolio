@@ -2,60 +2,26 @@
 employer: dos
 role: Machine Learning Engineer Intern
 kind: Internship
-location: Singapore · On-site
+location: Singapore
 start: 2023-05
-end: 2023-07
-title: My first LLM at work, back when nobody called it an agent
-summary: A LangChain and GPT-3.5 tool for answering questions about statistical tables. It was wrong often enough to teach me why evaluation matters.
+end: 2023-08
+title: Prototyping text tools for public-sector analysts
+summary: At Singapore's Department of Statistics I explored LLMs and text analytics for classification, Q&A and report generation.
 stack: [python, langchain]
-cover: ./cover.jpg
-coverAlt: The internal question-answering tool over statistical tables
 cardHighlights:
-  - Natural-language questions over official statistics
-  - Built the first internal eval set
-  - Shipped with an explicit "I am not sure" path
-metrics:
-  - { value: "64%", label: "answers correct", context: "on our own 200-question set" }
-  - { value: "200", label: "eval questions", context: "written with the analysts" }
+  - FAQ answers about statistical definitions
+  - Retrieval from PDFs, articles and CSVs
+  - Text classification and report prototypes
 ---
-import detail from './detail.jpg'
 
+## Where the questions came from
 
-## The ask
+During my internship at the Singapore Department of Statistics, I worked with different departments on possible uses for large language models. The tasks included text classification, answering questions and drafting reports. These were prototypes at an early point in the technology's development.
 
-The department publishes a lot of tables. Internally, people spent real time
-answering questions that were technically already public — "what was the median
-household income in 2019" — because finding the right table is harder than
-reading it.
+One use case was a chatbot for recurring questions about statistics, such as definitions and data sources. Another supported analysts preparing sector outlooks for the Economic Development Board. They had to bring together PDFs, news articles and CSV files.
 
-This was mid-2023. The obvious thing was to point an LLM at it.
+## What I tried
 
-## What I built
+I worked with LangChain and GPT-3.5 to retrieve relevant material before generating an answer. That retrieval step was important for both the question-answering and report tasks: the answer had to be grounded in the right source material.
 
-A LangChain pipeline over GPT-3.5 that took a plain-English question, worked out
-which table could answer it, pulled the relevant rows, and answered with a
-citation back to the source table.
-
-<Figure src={detail} alt="Placeholder" caption="A placeholder until the real screenshot exists." size="wide" />
-
-## The part that nearly sank it
-
-It was **confidently wrong**. Not often, but enough. And a confidently wrong
-number attached to an official statistic is far worse than no answer, because
-someone will repeat it in a meeting.
-
-So I spent the second half of the internship on the unglamorous half:
-
-- Wrote **200 evaluation questions** with the analysts, including ones we knew
-  the system should refuse.
-- Measured it honestly. It got **64%** right.
-- Added an explicit "I am not confident, here is the table, check it yourself"
-  path, and made that the default whenever retrieval was ambiguous.
-
-## What I took away
-
-That a demo and a system are different things, and the gap between them is
-almost entirely measurement. I did not know the word "eval" at the time. I was
-building one anyway, badly, because there was no other way to know if it worked.
-
-Everything I do now with tracing and evaluation started here.
+This internship showed me the practical side of text analytics. A useful system begins with the documents people already work with and the question they need to answer. A fluent response alone does not establish that the answer is sound.

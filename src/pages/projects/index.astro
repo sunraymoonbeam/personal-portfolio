@@ -7,7 +7,7 @@ import ProjectFilters from '../../components/projects/ProjectFilters.astro';
 const projects = await getPublishedProjects();
 const tags = [...new Set(projects.flatMap((p) => p.data.tags))].sort();
 ---
-<SiteLayout title="Projects — Zack Low" description="Side projects, shipped end to end.">
+<SiteLayout title="Projects — Zack Low" description={pages.projects.lede}>
   <section class="section wrap intro measure-start">
     <p class="eyebrow">{pages.projects.eyebrow}</p>
     <h1 class="t-64">{pages.projects.title}</h1>

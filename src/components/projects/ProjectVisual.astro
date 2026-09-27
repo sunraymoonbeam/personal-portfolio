@@ -1,0 +1,19 @@
+---
+interface Props { title: string; wide?: boolean; }
+const { title, wide = false } = Astro.props;
+---
+<div class:list={['visual', { wide }]} aria-hidden="true">
+  <span class="label">PROJECT</span>
+  <span class="title">{title}</span>
+</div>
+<style>
+  .visual {
+    aspect-ratio: 16 / 10; width: 100%; min-width: 0; padding: var(--s-5);
+    display: flex; flex-direction: column; justify-content: space-between; gap: 20px;
+    border: 1px solid var(--border-strong); border-radius: var(--radius-m);
+    background: linear-gradient(135deg, var(--subtle), var(--surface)); overflow: hidden;
+  }
+  .label { color: var(--ink-3); font: 500 12px/1.4 var(--font-mono); letter-spacing: .07em; }
+  .wide { aspect-ratio: 21 / 9; min-height: 190px; max-height: 380px; }
+  .title { color: var(--ink); font-size: 32px; font-weight: 600; line-height: 1.1; letter-spacing: -.03em; }
+</style>

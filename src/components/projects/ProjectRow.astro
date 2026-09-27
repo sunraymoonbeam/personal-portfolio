@@ -1,6 +1,6 @@
 ---
-import { Image } from 'astro:assets';
 import ScreenshotFrame from './ScreenshotFrame.astro';
+import ProjectVisual from './ProjectVisual.astro';
 import ArrowLink from '../ui/ArrowLink.astro';
 import TechChip from '../ui/TechChip.astro';
 import { yearOf } from '../../lib/date';
@@ -14,8 +14,8 @@ const n = String(index + 1).padStart(2, '0');
 ---
 <article class="row" data-tags={d.tags.join('|')}>
   {href
-    ? <a href={href} aria-label={d.title}><ScreenshotFrame title={d.title} src={d.cover} alt={d.coverAlt ?? ''} dim={d.coverDim} height={380} /></a>
-    : <ScreenshotFrame title={d.title} src={d.cover} alt={d.coverAlt ?? ''} dim={d.coverDim} height={380} />}
+    ? <a href={href} aria-label={d.title}>{d.cover ? <ScreenshotFrame title={d.title} src={d.cover} alt={d.coverAlt ?? ''} dim={d.coverDim} height={380} /> : <ProjectVisual title={d.shortTitle ?? d.title} wide />}</a>
+    : (d.cover ? <ScreenshotFrame title={d.title} src={d.cover} alt={d.coverAlt ?? ''} dim={d.coverDim} height={380} /> : <ProjectVisual title={d.shortTitle ?? d.title} wide />)}
 
   {/* Both columns start on the same line — the eyebrow row sets the baseline. */}
   <div class="under">
@@ -24,7 +24,7 @@ const n = String(index + 1).padStart(2, '0');
         <span class="eyebrow tabular">{n} · {yearOf(d.published)}</span>
         <ul class="tags">{d.tags.map((t) => <li class="chip t-14">{t}</li>)}</ul>
       </div>
-      <h2 class="t-40 hoverable-title">{href ? <a href={href}>{d.shortTitle ?? d.title}</a> : (d.shortTitle ?? d.title)}</h2>
+      <h2 class="t-40">{href ? <a href={href}>{d.shortTitle ?? d.title}</a> : (d.shortTitle ?? d.title)}</h2>
       <p class="t-21">{d.claim}</p>
     </div>
     <div class="col">
@@ -45,7 +45,7 @@ const n = String(index + 1).padStart(2, '0');
   </div>
 </article>
 <style>
-  .row { display: flex; flex-direction: column; gap: var(--s-5); }
+  .row { display: flex; flex-direction: column; align-items: stretch; gap: var(--s-5); }
   .under { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-9); align-items: start; }
   .col { display: flex; flex-direction: column; gap: var(--s-3); }
   .meta { display: flex; align-items: center; gap: var(--s-3); flex-wrap: wrap; min-height: 28px; }
@@ -54,5 +54,6 @@ const n = String(index + 1).padStart(2, '0');
   .links { display: flex; align-items: center; gap: var(--s-6); flex-wrap: wrap; }
   .src { display: inline-flex; align-items: center; gap: 8px; color: var(--ink); }
   .src:hover { color: var(--link); }
+  .row:has(a:hover) h2 a { color: var(--link); }
   @media (max-width: 860px) { .under { grid-template-columns: 1fr; gap: var(--s-5); } }
 </style>

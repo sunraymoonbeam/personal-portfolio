@@ -5,7 +5,7 @@ import { getPlayIndex } from '../../lib/content';
 import { pages } from '../../content/pages';
 const items = await getPlayIndex();
 ---
-<SiteLayout title="Play — Zack Low" description="Cooking, climbing, guitar, film.">
+<SiteLayout title="Play — Zack Low" description={pages.play.lede}>
   <section class="section wrap intro measure-start">
     <p class="eyebrow">{pages.play.eyebrow}</p>
     <h1 class="t-64">{pages.play.title}</h1>

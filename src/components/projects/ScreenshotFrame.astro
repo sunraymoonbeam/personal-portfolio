@@ -2,15 +2,15 @@
 import { Image } from 'astro:assets';
 interface Props {
   title?: string; src?: ImageMetadata; alt?: string; dim?: boolean;
-  height?: number; eager?: boolean;
+  height?: number; eager?: boolean; chrome?: boolean;
 }
-const { title = '', src, alt = '', dim = false, height = 190, eager = false } = Astro.props;
+const { title = '', src, alt = '', dim = false, height = 190, eager = false, chrome = false } = Astro.props;
 ---
 <div class="frame">
-  <div class="bar" aria-hidden="true">
+  {chrome && <div class="bar" aria-hidden="true">
     <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
     {title && <span class="t-12 title">{title}</span>}
-  </div>
+  </div>}
   <div class="shot" style={`--h:${height}px`}>
     {src
       ? <Image src={src} alt={alt} class:list={['img', { dim }]} loading={eager ? 'eager' : 'lazy'} />

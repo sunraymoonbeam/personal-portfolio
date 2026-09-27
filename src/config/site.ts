@@ -2,9 +2,9 @@
 export const site = {
   name: 'Zack Low',
   fullName: 'Renhwa (Zack) Low',
-  role: 'Software engineer, AI',
+  role: 'Software engineer specialising in data',
   location: 'Singapore',
-  motto: 'Zack Low builds real, good things.', // TODO: make this his own before launch
+  motto: 'I build useful systems around data.',
   origin: 'https://renhwa.com',
   email: 'zack.low.dev@gmail.com',
   socials: {

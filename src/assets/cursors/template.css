@@ -1,0 +1,13 @@
+/* MapleStory cursors. Frames are cropped to 32x32 at native resolution.
+   Animated states swap the real CSS cursor on a timer, so there is no pointer lag. */
+@media (pointer: fine) {
+  html.ms { cursor: url(./frame-0.png) 0 0, auto; }
+  html.ms.pointer-0 :is(a,button,[role="button"],label,summary):hover { cursor: url(./frame-1.png) 3 6, pointer; }
+  html.ms.pointer-1 :is(a,button,[role="button"],label,summary):hover { cursor: url(./frame-2.png) 3 6, pointer; }
+  html.ms.busy-0, html.ms.busy-0 * { cursor: url(./frame-3.png) 12 12, wait !important; }
+  html.ms.busy-1, html.ms.busy-1 * { cursor: url(./frame-4.png) 12 12, wait !important; }
+  html.ms.busy-2, html.ms.busy-2 * { cursor: url(./frame-5.png) 12 12, wait !important; }
+  html.ms.busy-3, html.ms.busy-3 * { cursor: url(./frame-6.png) 12 12, wait !important; }
+  html.ms .lightbox, html.ms [data-grab] { cursor: url(./frame-7.png) 5 2, grab; }
+  html.ms :is(input,textarea,[contenteditable]) { cursor: text; }
+}
