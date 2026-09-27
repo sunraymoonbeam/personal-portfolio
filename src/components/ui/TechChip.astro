@@ -1,5 +1,5 @@
 ---
-import { resolveTech } from '../../lib/icons';
+import { resolveTech } from '~/lib/icons';
 interface Props { id: string; }
 const { id } = Astro.props;
 const { label, path, hex } = resolveTech(id);

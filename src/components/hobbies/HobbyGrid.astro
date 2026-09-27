@@ -1,6 +1,6 @@
 ---
 import { Image } from 'astro:assets';
-interface Item { key: string; href: string; title: string; caption: string; cover?: ImageMetadata; coverAlt?: string; }
+interface Item { key: string; href: string; title: string; caption: string; cover?: ImageMetadata | undefined; coverAlt?: string | undefined; }
 interface Props { items: Item[]; }
 const { items } = Astro.props;
 ---

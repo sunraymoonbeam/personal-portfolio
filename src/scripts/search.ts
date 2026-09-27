@@ -60,7 +60,8 @@ export function initSearch() {
     if (!links.length) return;
     const at = links.indexOf(document.activeElement as HTMLAnchorElement);
     const next = e.key === 'ArrowDown' ? at + 1 : at - 1;
-    links[(next + links.length) % links.length].focus();
+    // Indexing an array is not a guarantee, even after the length check above.
+    links[(next + links.length) % links.length]?.focus();
   });
 
   if (wired) return;

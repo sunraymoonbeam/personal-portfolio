@@ -1,10 +1,10 @@
 ---
 import { render } from 'astro:content';
-import { articleComponents } from '../../components/article/mdx';
-import ArticleLayout from '../../layouts/ArticleLayout.astro';
-import Gallery from '../../components/article/Gallery.astro';
-import { getPublishedPlay, toArticleLinks, getAdjacent, keyOf } from '../../lib/content';
-import { formatMonth } from '../../lib/date';
+import { articleComponents } from '~/components/article/mdx';
+import ArticleLayout from '~/layouts/ArticleLayout.astro';
+import Gallery from '~/components/article/Gallery.astro';
+import { getPublishedPlay, toArticleLinks, getAdjacent, keyOf } from '~/lib/content';
+import { formatMonth } from '~/lib/date';
 import { Image } from 'astro:assets';
 
 export async function getStaticPaths() {

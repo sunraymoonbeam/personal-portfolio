@@ -1,9 +1,8 @@
 ---
-import { Image } from 'astro:assets';
-import SiteLayout from '../../layouts/SiteLayout.astro';
-import WorkList from '../../components/work/WorkList.astro';
-import { getWorkRows, resolveWork } from '../../lib/content';
-import { pages } from '../../copy/pages';
+import SiteLayout from '~/layouts/SiteLayout.astro';
+import WorkList from '~/components/work/WorkList.astro';
+import { getWorkRows, resolveWork } from '~/lib/content';
+import { pages } from '~/copy/pages';
 
 const rows = await Promise.all((await getWorkRows()).map(resolveWork));
 ---

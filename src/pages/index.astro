@@ -1,21 +1,20 @@
 ---
 import { Image } from 'astro:assets';
-import SiteLayout from '../layouts/SiteLayout.astro';
-import SectionHead from '../components/ui/SectionHead.astro';
-import ProjectGrid from '../components/projects/ProjectGrid.astro';
-import WorkList from '../components/work/WorkList.astro';
-import PlayWord from '../components/site/PlayWord.astro';
-import HobbyGrid from '../components/hobbies/HobbyGrid.astro';
-import TechChip from '../components/ui/TechChip.astro';
-import ArrowLink from '../components/ui/ArrowLink.astro';
-import portrait from '../assets/portrait.jpg';
-import { home } from '../copy/home';
-import { pages } from '../copy/pages';
-import { site } from '../config/site';
-import { STACK_GROUPS } from '../data/technologies';
+import SiteLayout from '~/layouts/SiteLayout.astro';
+import SectionHead from '~/components/ui/SectionHead.astro';
+import ProjectGrid from '~/components/projects/ProjectGrid.astro';
+import WorkList from '~/components/work/WorkList.astro';
+import PlayWord from '~/components/site/PlayWord.astro';
+import HobbyGrid from '~/components/hobbies/HobbyGrid.astro';
+import TechChip from '~/components/ui/TechChip.astro';
+import portrait from '~/assets/portrait.jpg';
+import { home } from '~/copy/home';
+import { pages } from '~/copy/pages';
+import { site } from '~/config/site';
+import { STACK_GROUPS } from '~/data/technologies';
 import {
   getPublishedProjects, getWorkRows, selectFeatured, resolveWork, getPlayIndex,
-} from '../lib/content';
+} from '~/lib/content';
 
 const projects = selectFeatured(await getPublishedProjects(), 3);
 const roles = await Promise.all((await getWorkRows()).slice(0, 3).map(resolveWork));

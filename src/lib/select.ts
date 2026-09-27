@@ -23,7 +23,7 @@ export function sortByMonthDesc<T extends { id: string }>(entries: T[], month: (
  * The only home-selection mechanism. Entries without `featuredOrder` are never
  * featured — there is no competing list anywhere in the codebase.
  */
-export function selectFeatured<T extends { data: { featuredOrder?: number } }>(
+export function selectFeatured<T extends { data: { featuredOrder?: number | undefined } }>(
   entries: T[],
   limit: number,
 ): T[] {
@@ -37,7 +37,7 @@ export function selectFeatured<T extends { data: { featuredOrder?: number } }>(
 export function getAdjacent(
   ordered: ArticleLink[],
   current: EntryKey,
-): { prev?: ArticleLink; next?: ArticleLink } {
+): { prev?: ArticleLink | undefined; next?: ArticleLink | undefined } {
   const i = ordered.findIndex((e) => e.key === current);
   if (i === -1) return {};
   return { prev: ordered[i + 1], next: ordered[i - 1] };
@@ -56,7 +56,7 @@ export const ROUTE_SEGMENT: Record<'projects' | 'work' | 'play', string> = {
 
 export const toArticleLinks = (
   collection: 'projects' | 'work' | 'play',
-  entries: Array<{ id: string; data: { title: string; shortTitle?: string } }>,
+  entries: Array<{ id: string; data: { title: string; shortTitle?: string | undefined } }>,
 ): ArticleLink[] =>
   entries.map((e) => ({
     key: keyOf(collection, e.id),

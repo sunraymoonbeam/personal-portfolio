@@ -1,10 +1,10 @@
 ---
 import { render, getEntry } from 'astro:content';
-import { articleComponents } from '../../components/article/mdx';
-import ArticleLayout from '../../layouts/ArticleLayout.astro';
-import Gallery from '../../components/article/Gallery.astro';
-import { getWorkArticles, toArticleLinks, getAdjacent, keyOf } from '../../lib/content';
-import { formatRange, formatDuration } from '../../lib/date';
+import { articleComponents } from '~/components/article/mdx';
+import ArticleLayout from '~/layouts/ArticleLayout.astro';
+import Gallery from '~/components/article/Gallery.astro';
+import { getWorkArticles, toArticleLinks, getAdjacent, keyOf } from '~/lib/content';
+import { formatRange, formatDuration } from '~/lib/date';
 import { Image } from 'astro:assets';
 
 // Only entries with writeup: true get a route. Drafts and no-writeup roles

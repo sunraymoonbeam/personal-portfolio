@@ -1,12 +1,12 @@
 ---
 import SiteLayout from './SiteLayout.astro';
-import ArrowLink from '../components/ui/ArrowLink.astro';
-import type { ArticleLink } from '../lib/content';
+import ArrowLink from '~/components/ui/ArrowLink.astro';
+import type { ArticleLink } from '~/lib/content';
 
 interface Props {
-  title: string; summary?: string; eyebrow?: string;
+  title: string; summary?: string | undefined; eyebrow?: string | undefined;
   backHref: string; backLabel: string;
-  prev?: ArticleLink; next?: ArticleLink;
+  prev?: ArticleLink | undefined; next?: ArticleLink | undefined;
 }
 const { title, summary, eyebrow, backHref, backLabel, prev, next } = Astro.props;
 ---

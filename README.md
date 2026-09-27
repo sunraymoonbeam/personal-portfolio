@@ -32,6 +32,10 @@ src/
   assets/        images used by components rather than by a content entry.
 ```
 
+Imports use the `~/` alias for anything under `src`, so a path says where a
+file is rather than how far away it is. Astro reads it from the `paths` entry
+in `tsconfig.json`.
+
 The rule that keeps this honest: **pages read content, components receive it.**
 A component never calls `getCollection`. Publication policy never leaks into a
 card. If you want to know whether something is published, there is exactly one
@@ -90,6 +94,18 @@ needing a re-think.
 Add a field only when a second surface needs the value. A one-off body layout
 is an MDX component, not a schema field.
 
+## TypeScript
+
+`tsconfig.json` extends `astro/tsconfigs/strictest` and turns on
+`verbatimModuleSyntax`, both of which Astro recommends. The site type-checks
+with zero errors, zero warnings and zero hints, and the check runs in the
+deploy gate.
+
+`strictest` adds `exactOptionalPropertyTypes`, which distinguishes a property
+that is absent from one that is present and undefined. Component props here
+are genuinely both, because a page passes a value that may be undefined, so
+optional props are written `prop?: T | undefined` rather than `prop?: T`.
+
 ## Verify
 
 `npm run verify` is the deploy gate. It runs inside the Docker image, so a
@@ -123,6 +139,25 @@ horizontal overflow.
   they are on screen.
 - Dates are `YYYY-MM` strings and are never parsed into a `Date`, which would
   invent a day and shift the timezone.
+
+## Performance notes
+
+Measured, gzipped, on the built output.
+
+| | |
+| --- | --- |
+| JavaScript, whole site | 7.3 KB |
+| Home page HTML | 20.7 KB |
+| Shared stylesheet, cached after first page | 9.5 KB |
+
+The stylesheet is one shared file rather than inlined per page. Inlining made
+a cold first paint about 400 bytes cheaper and every page after it 9 to 13 KB
+more expensive, which is the wrong trade for a site whose router swaps
+documents on every navigation.
+
+The font packages emit subsets for Cyrillic and Vietnamese that this site will
+never use. They are never downloaded, because each `@font-face` carries a
+`unicode-range`, so this costs build output rather than bandwidth.
 
 ## Deploy
 

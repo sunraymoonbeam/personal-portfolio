@@ -1,6 +1,6 @@
 ---
-import { getPublishedProjects, getWorkRows, getPlayIndex, resolveWork } from '../../lib/content';
-import { site } from '../../config/site';
+import { getPublishedProjects, getWorkRows, getPlayIndex, resolveWork } from '~/lib/content';
+import { site } from '~/config/site';
 
 // The index is built at build time — no runtime search service, no API.
 const [projects, work, hobbies] = await Promise.all([

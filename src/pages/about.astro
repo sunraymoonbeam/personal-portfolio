@@ -1,12 +1,12 @@
 ---
 import { Image } from 'astro:assets';
-import portrait from '../assets/portrait.jpg';
-import SiteLayout from '../layouts/SiteLayout.astro';
-import SectionHead from '../components/ui/SectionHead.astro';
-import PlayWord from '../components/site/PlayWord.astro';
-import HobbyGrid from '../components/hobbies/HobbyGrid.astro';
-import { getPlayIndex } from '../lib/content';
-import { pages } from '../copy/pages';
+import portrait from '~/assets/portrait.jpg';
+import SiteLayout from '~/layouts/SiteLayout.astro';
+import SectionHead from '~/components/ui/SectionHead.astro';
+import PlayWord from '~/components/site/PlayWord.astro';
+import HobbyGrid from '~/components/hobbies/HobbyGrid.astro';
+import { getPlayIndex } from '~/lib/content';
+import { pages } from '~/copy/pages';
 
 const play = (await getPlayIndex()).slice(0, 4);
 const a = pages.about;

@@ -1,8 +1,8 @@
 ---
 import ScreenshotFrame from './ScreenshotFrame.astro';
-import TechChip from '../ui/TechChip.astro';
-import { yearOf } from '../../lib/date';
-import type { Project } from '../../lib/content';
+import TechChip from '~/components/ui/TechChip.astro';
+import { yearOf } from '~/lib/date';
+import type { Project } from '~/lib/content';
 
 interface Props { entry: Project; index: number; }
 const { entry, index } = Astro.props;

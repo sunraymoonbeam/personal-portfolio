@@ -8,8 +8,8 @@ import { Image } from 'astro:assets';
  * is nothing to operate, and it needs no JavaScript. One wide picture gets the
  * full column; two or more share a row and wrap.
  */
-interface Item { src: ImageMetadata; alt: string; caption?: string }
-interface Props { items?: Item[]; title?: string }
+interface Item { src: ImageMetadata; alt: string; caption?: string | undefined }
+interface Props { items?: Item[] | undefined; title?: string | undefined }
 const { items, title = 'More pictures' } = Astro.props;
 ---
 {items && items.length > 0 && (

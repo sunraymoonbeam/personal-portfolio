@@ -1,5 +1,5 @@
 import * as simpleIcons from 'simple-icons';
-import { TECHNOLOGIES } from '../data/technologies';
+import { TECHNOLOGIES } from '~/data/technologies';
 
 /** Resolved at build time. A missing icon degrades to a text label, never an error. */
 export type ResolvedTech = { label: string; path?: string; hex?: string };

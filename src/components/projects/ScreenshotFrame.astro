@@ -1,10 +1,10 @@
 ---
 import { Image } from 'astro:assets';
 interface Props {
-  title?: string; src?: ImageMetadata; alt?: string; dim?: boolean;
-  ratio?: string; eager?: boolean; chrome?: boolean;
+  title?: string | undefined; src?: ImageMetadata | undefined; alt?: string | undefined; dim?: boolean | undefined;
+  ratio?: string | undefined; eager?: boolean | undefined; chrome?: boolean | undefined;
   /** Pairs this frame with the same frame on the page it opens. */
-  morph?: string;
+  morph?: string | undefined;
 }
 const {
   title = '', src, alt = '', dim = false,

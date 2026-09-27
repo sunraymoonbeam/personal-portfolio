@@ -79,9 +79,9 @@ const metric = z
 
 const links = z
   .object({
-    live: z.string().url().optional(),
-    repo: z.string().url().optional(),
-    docs: z.string().url().optional(),
+    live: z.url().optional(),
+    repo: z.url().optional(),
+    docs: z.url().optional(),
   })
   .strict();
 
@@ -156,7 +156,7 @@ const play = defineCollection({
 const employers = defineCollection({
   loader: glob({ pattern: '*.json', base: './src/content/employers' }),
   schema: ({ image }) =>
-    z.object({ name: z.string().min(1), url: z.string().url().optional(), logo: image() }).strict(),
+    z.object({ name: z.string().min(1), url: z.url().optional(), logo: image() }).strict(),
 });
 
 export const collections = { work, projects, play, employers };
