@@ -4,6 +4,7 @@ import { getPublishedWork } from '../lib/content';
 import { getEntry } from 'astro:content';
 import { formatRange, formatDuration } from '../lib/date';
 import { site } from '../config/site';
+import { pages } from '../content/pages';
 
 // Real HTML text, not an image of a PDF: images cannot reflow, cannot be
 // selected or searched, and are hostile to assistive tech. The PDF supplements.
@@ -14,16 +15,26 @@ const withEmployers = await Promise.all(
 ---
 <SiteLayout title="Résumé — Zack Low" description="One page. Updated September 2026.">
   <section class="section wrap head">
-    <p class="eyebrow">Résumé</p>
-    <h1 class="t-48">One page.</h1>
+    <p class="eyebrow">{pages.resume.eyebrow}</p>
+    <h1 class="t-48">{pages.resume.title}</h1>
     <p class="t-17 muted">
-      The full version is below as text so it reads on any device. The PDF is one
-      tap away, named so it shows up right when you forward it.
+      The PDF is embedded below, and written out as text underneath it so it
+      reads on a phone and works with a screen reader.
     </p>
     <div class="actions">
       <a href="/resume.pdf" class="btn" download="Renhwa Low — Software Engineer, AI.pdf">Download PDF</a>
       <a href="/resume.pdf" class="btn btn-ghost" target="_blank" rel="noopener">Open in a new tab</a>
     </div>
+  </section>
+
+  <section class="wrap viewer">
+    <object data="/resume.pdf#view=FitH" type="application/pdf" class="pdf" aria-label="Résumé PDF">
+      <div class="fallback">
+        <p class="t-17">Your browser will not display the PDF inline.</p>
+        <a href="/resume.pdf" class="btn" download>Download it instead</a>
+      </div>
+    </object>
+    <p class="t-14 small">The same content is written out below, so it reads on a phone and works with a screen reader.</p>
   </section>
 
   <section class="wrap body">
@@ -66,6 +77,14 @@ const withEmployers = await Promise.all(
   </section>
 </SiteLayout>
 <style>
+  .viewer { display: flex; flex-direction: column; gap: var(--s-3); padding-bottom: var(--s-9); }
+  .pdf {
+    width: 100%; height: min(1100px, 130vh); border: 1px solid var(--border);
+    border-radius: var(--radius-m); background: var(--surface);
+  }
+  .fallback { display: grid; place-items: center; gap: var(--s-4); height: 100%; padding: var(--s-7); }
+  /* A PDF viewer is unusable at phone widths; the text version below carries it. */
+  @media (max-width: 734px) { .pdf { display: none; } }
   .head { display: flex; flex-direction: column; gap: var(--s-4); max-width: 640px; }
   .actions { display: flex; gap: var(--s-3); flex-wrap: wrap; margin-top: var(--s-2); }
   .body { padding-bottom: var(--s-11); display: flex; flex-direction: column; gap: var(--s-9); }

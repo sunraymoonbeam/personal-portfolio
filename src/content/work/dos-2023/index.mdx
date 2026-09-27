@@ -5,8 +5,53 @@ kind: Internship
 location: Singapore · On-site
 start: 2023-05
 end: 2023-07
-title: My first LLM at work, before anyone called it an agent
-summary: LangChain and GPT-3.5 answering questions about statistical tables.
-stack: [langchain, python]
-writeup: false
+title: My first LLM at work, back when nobody called it an agent
+summary: A LangChain and GPT-3.5 tool for answering questions about statistical tables. It was wrong often enough to teach me why evaluation matters.
+stack: [python, langchain]
+cover: ./cover.jpg
+coverAlt: The internal question-answering tool over statistical tables
+cardHighlights:
+  - Natural-language questions over official statistics
+  - Built the first internal eval set
+  - Shipped with an explicit "I am not sure" path
+metrics:
+  - { value: "64%", label: "answers correct", context: "on our own 200-question set" }
+  - { value: "200", label: "eval questions", context: "written with the analysts" }
 ---
+
+## The ask
+
+The department publishes a lot of tables. Internally, people spent real time
+answering questions that were technically already public — "what was the median
+household income in 2019" — because finding the right table is harder than
+reading it.
+
+This was mid-2023. The obvious thing was to point an LLM at it.
+
+## What I built
+
+A LangChain pipeline over GPT-3.5 that took a plain-English question, worked out
+which table could answer it, pulled the relevant rows, and answered with a
+citation back to the source table.
+
+## The part that nearly sank it
+
+It was **confidently wrong**. Not often, but enough. And a confidently wrong
+number attached to an official statistic is far worse than no answer, because
+someone will repeat it in a meeting.
+
+So I spent the second half of the internship on the unglamorous half:
+
+- Wrote **200 evaluation questions** with the analysts, including ones we knew
+  the system should refuse.
+- Measured it honestly. It got **64%** right.
+- Added an explicit "I am not confident, here is the table, check it yourself"
+  path, and made that the default whenever retrieval was ambiguous.
+
+## What I took away
+
+That a demo and a system are different things, and the gap between them is
+almost entirely measurement. I did not know the word "eval" at the time. I was
+building one anyway, badly, because there was no other way to know if it worked.
+
+Everything I do now with tracing and evaluation started here.

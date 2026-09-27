@@ -1,0 +1,51 @@
+---
+import ScreenshotFrame from './ScreenshotFrame.astro';
+import ArrowLink from '../ui/ArrowLink.astro';
+import TechChip from '../ui/TechChip.astro';
+import { yearOf } from '../../lib/date';
+import type { Project } from '../../lib/content';
+
+interface Props { entry: Project; index: number; }
+const { entry, index } = Astro.props;
+const d = entry.data;
+const href = d.writeup ? `/projects/${entry.id}` : undefined;
+const n = String(index + 1).padStart(2, '0');
+---
+<article class="row">
+  {href
+    ? <a href={href} aria-label={d.title}><ScreenshotFrame title={d.title} src={d.cover} alt={d.coverAlt ?? ''} dim={d.coverDim} height={380} /></a>
+    : <ScreenshotFrame title={d.title} src={d.cover} alt={d.coverAlt ?? ''} dim={d.coverDim} height={380} />}
+
+  <div class="under">
+    <div class="left">
+      <div class="meta">
+        <span class="eyebrow tabular">{n} · {yearOf(d.published)}</span>
+        <ul class="tags">{d.tags.map((t) => <li class="chip t-14">{t}</li>)}</ul>
+      </div>
+      <h2 class="t-40">{href ? <a href={href}>{d.shortTitle ?? d.title}</a> : (d.shortTitle ?? d.title)}</h2>
+      <p class="t-21">{d.claim}</p>
+    </div>
+    <div class="right">
+      <p class="t-17 muted">{d.summary}</p>
+      <ul class="tags">{d.stack.map((id) => <TechChip id={id} />)}</ul>
+      <div class="links">
+        {href && <ArrowLink href={href} label="Read the build" />}
+        {d.links?.repo && <a href={d.links.repo} class="t-17 src">Source</a>}
+      </div>
+    </div>
+  </div>
+</article>
+<style>
+  .row { display: flex; flex-direction: column; gap: var(--s-5); }
+  .under { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-9); align-items: start; }
+  .left { display: flex; flex-direction: column; gap: var(--s-3); }
+  .right { display: flex; flex-direction: column; gap: var(--s-4); padding-top: 34px; }
+  .meta { display: flex; align-items: center; gap: var(--s-3); flex-wrap: wrap; }
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .links { display: flex; align-items: center; gap: var(--s-5); }
+  .src { color: var(--ink); }
+  @media (max-width: 860px) {
+    .under { grid-template-columns: 1fr; gap: var(--s-5); }
+    .right { padding-top: 0; }
+  }
+</style>

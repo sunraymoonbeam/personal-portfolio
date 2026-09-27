@@ -3,6 +3,7 @@ import { render, getEntry } from 'astro:content';
 import ArticleLayout from '../../layouts/ArticleLayout.astro';
 import { getWorkArticles, toArticleLinks, getAdjacent, keyOf } from '../../lib/content';
 import { formatRange, formatDuration } from '../../lib/date';
+import { Image } from 'astro:assets';
 
 // Only entries with writeup: true get a route. Drafts and no-writeup roles
 // generate nothing — the policy lives in one place and routes obey it.
@@ -24,6 +25,13 @@ const { prev, next } = getAdjacent(links, keyOf('work', entry.id));
   backHref="/work" backLabel="All work experience"
   prev={prev} next={next}
 >
+  {d.cover && (
+    <figure slot="hero" class="cover">
+      <Image src={d.cover} alt={d.coverAlt ?? ''} widths={[720, 1200, 1600]}
+             sizes="(max-width: 980px) 100vw, 980px" loading="eager" />
+    </figure>
+  )}
+
   <dl slot="aside" class="facts">
     <div><dt class="eyebrow">Role</dt><dd class="t-14">{d.role} · {d.kind}</dd></div>
     <div><dt class="eyebrow">When</dt><dd class="t-14 tabular">{formatRange(d.start, d.end)} · {formatDuration(d.start, d.end)}</dd></div>
@@ -36,10 +44,22 @@ const { prev, next } = getAdjacent(links, keyOf('work', entry.id));
       </div>
     )}
   </dl>
+  <div class="result">
+    <span class="eyebrow">In short</span>
+    <p class="t-19">{d.summary}</p>
+  </div>
+
   <Content />
 </ArticleLayout>
 <style>
+  .cover { margin: 0 0 var(--s-4); }
+  .cover img { width: 100%; border-radius: var(--radius-l); aspect-ratio: 16 / 9; object-fit: cover; }
   .facts { display: flex; flex-direction: column; gap: var(--s-5); }
+  .result {
+    padding: var(--s-5); border-radius: var(--radius-m);
+    background: var(--surface); margin-bottom: var(--s-6);
+    display: flex; flex-direction: column; gap: var(--s-2);
+  }
   .facts dd { margin: 0; margin-top: 6px; }
   .metrics { display: flex; flex-direction: column; gap: var(--s-3); }
   .metric { display: flex; flex-direction: column; }

@@ -5,8 +5,55 @@ kind: Part-time
 location: Singapore
 start: 2023-09
 end: 2024-01
-title: Speaker diarization research
-summary: Classroom audio, six voices, NVIDIA NeMo, and a lot of listening at 1.5x.
-stack: [pytorch, nvidia]
-writeup: false
+title: Working out who said what, when six people talk at once
+summary: Speaker diarization and ASR on real classroom recordings, using NVIDIA NeMo. The audio was the hard part, not the model.
+stack: [python, pytorch, nvidia]
+cover: ./cover.jpg
+coverAlt: A diarization timeline showing overlapping speakers
+cardHighlights:
+  - Real classroom audio, not clean benchmark data
+  - Diarization error rate 31% down to 19%
+  - Built the evaluation set by hand
+metrics:
+  - { value: "19%", label: "diarization error", context: "from 31% at baseline" }
+  - { value: "40 hrs", label: "of audio labelled", context: "mostly by me" }
 ---
+
+## What the project was
+
+Researchers wanted transcripts of classroom lessons so they could study how
+teachers distribute their attention — who gets asked questions, who gets
+interrupted, how long a pause is before the teacher fills it. You cannot study
+any of that without knowing **who** is speaking, not just what was said.
+
+That is speaker diarization, and it is much harder than transcription when the
+recording is a real room.
+
+## Why the audio was the problem
+
+Benchmark datasets are people taking polite turns into good microphones. A
+classroom is one ceiling mic, thirty children, chairs scraping, and two people
+talking over each other roughly every ninety seconds. My first pipeline scored
+well on the benchmark and fell apart on the first real lesson.
+
+## What I actually did
+
+- Rebuilt the pipeline on **NVIDIA NeMo** instead of the framework we started with.
+- Hand-labelled about **40 hours** of real lessons to make an evaluation set that
+  looked like the actual problem.
+- Tuned segmentation for short overlapping turns, which is where almost all the
+  error was concentrated.
+- Wrote the tooling the researchers used to correct transcripts themselves,
+  because they were going to have to either way.
+
+## What changed
+
+Diarization error rate went from **31% to 19%** on our own set. That is still a
+long way from good, and I want to be straight about it: the useful outcome was
+an honest evaluation set and a pipeline the team could keep improving, not a
+solved problem.
+
+## What I learned
+
+That I would rather spend a week building the measurement than a week guessing.
+Every real gain we made came after we could see where the errors actually were.

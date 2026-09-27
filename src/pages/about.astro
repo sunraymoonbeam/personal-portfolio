@@ -7,6 +7,7 @@ import PlayGrid from '../components/play/PlayGrid.astro';
 import { STACK_GROUPS } from '../data/technologies';
 import { getPlayIndex } from '../lib/content';
 import { site } from '../config/site';
+import { pages } from '../content/pages';
 
 const about = await getEntry('about' as never, 'about' as never).catch(() => undefined);
 const play = (await getPlayIndex()).slice(0, 4);
@@ -14,30 +15,39 @@ const play = (await getPlayIndex()).slice(0, 4);
 <SiteLayout title="About — Zack Low" description="Software engineer in Singapore, specialising in AI.">
   <section class="hero">
     <div class="copy">
-      <p class="eyebrow">About</p>
-      <h1 class="t-64">Hi, I'm Zack.</h1>
-      <p class="t-21 muted">
-        Renhwa Low on paper, Zack to everyone else. Software engineer in Singapore,
-        currently at Carro, specialising in AI.
-      </p>
+      <p class="eyebrow">{pages.about.eyebrow}</p>
+      <h1 class="t-64">{pages.about.title}</h1>
+      <p class="t-21 muted">{pages.about.lede}</p>
       <div class="actions">
         <a href="/resume" class="btn btn-dark">Résumé</a>
         <a href="/contact" class="btn btn-ghost">Get in touch</a>
       </div>
     </div>
-    <div class="portrait" role="img" aria-label="Portrait of Zack Low">
-      <span class="t-12 muted">Portrait</span>
+    <div class="portrait">
+      <img src="/img/portrait.jpg" alt="Zack Low" width="900" height="1125" />
     </div>
   </section>
 
   <section class="section"><div class="wrap prose">
-    <p>I like full-stack, end to end: the database, the API, the screen, the deploy.
-      AI goes in <strong>where it earns its place</strong>, not because it is the year for it.</p>
-    <p>Mostly I like the part before the code. Working out what is actually wrong,
-      who it is wrong for, and what the smallest thing is that would fix it. Then
-      owning that until it works in production, not until the ticket closes.</p>
-    <p>The most useful thing I have built at work is <mark>a tracing dashboard</mark>.
-      The most fun is a film camera app that makes you wait four minutes.</p>
+    <p>I build full-stack systems, end to end: the database, the API, the screen,
+      the deploy, and the bill at the end of the month. AI goes in
+      <strong>where it earns its place</strong> — which, after a year of doing this
+      professionally, is less often than the industry would like you to believe.</p>
+    <p>The part I actually like is before any code gets written. Working out what is
+      genuinely broken, who it is broken for, and what the smallest thing is that
+      would fix it. Then owning that thing until it works in production — not until
+      the ticket closes.</p>
+    <p>The most useful thing I have built at work is
+      <mark>a tracing dashboard</mark>, which is not a sentence anyone wants to hear.
+      But you cannot make an agent cheaper or better until you can see what it is
+      doing, and almost nobody builds that first. The most fun thing I have built is
+      a camera app that deliberately makes you wait four minutes.</p>
+    <p>Before Carro I spent a year at AI Singapore on generative 3D animation, did
+      speech research at NIE, and wrote my first LLM tooling at the Department of
+      Statistics back when nobody was calling it an agent. I studied Computer
+      Science at NTU.</p>
+    <p>Outside work I run a two-server homelab, climb badly, cook constantly, and
+      shoot film. There is more of that on <a href="/play">Play</a>.</p>
   </div></section>
 
   <section class="section band"><div class="wrap">
@@ -64,10 +74,9 @@ const play = (await getPlayIndex()).slice(0, 4);
     padding: clamp(48px, 8vw, 120px) var(--s-9) clamp(48px, 8vw, 120px) var(--gutter);
   }
   .actions { display: flex; gap: var(--s-3); flex-wrap: wrap; margin-top: var(--s-2); }
-  .portrait {
-    min-height: 560px; display: grid; place-items: center;
-    background: var(--border); /* full-bleed, no radius, no shadow */
-  }
+  /* Full-bleed, no radius, no shadow — the pattern every good portrait hero uses. */
+  .portrait { min-height: 560px; background: var(--border); }
+  .portrait img { width: 100%; height: 100%; object-fit: cover; }
   .groups { display: flex; flex-direction: column; }
   .group {
     display: grid; grid-template-columns: 200px 1fr; gap: var(--s-7);

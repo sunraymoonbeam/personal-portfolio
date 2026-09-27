@@ -5,8 +5,53 @@ kind: Internship
 location: Singapore · On-site
 start: 2022-07
 end: 2023-02
-title: 300k rows and the PL/pgSQL that kept them honest
-summary: My first internship. A slow query is a people problem wearing a database costume.
-stack: [postgresql]
-writeup: false
+title: 300,000 rows, a lot of PL/pgSQL, and my first on-call
+summary: My first real job. I learned that a slow query is usually a people problem wearing a database costume.
+stack: [postgresql, python]
+cover: ./cover.jpg
+coverAlt: A database schema diagram
+cardHighlights:
+  - Migrations across 300k+ legal records
+  - One report from 40s to under 2s
+  - Wrote the runbook the next intern used
+metrics:
+  - { value: "300k+", label: "records managed" }
+  - { value: "40s → 2s", label: "slowest report", context: "one composite index" }
 ---
+
+## What the job was
+
+Tessaract builds software for law firms, which means the data is messy,
+regulated, and somebody's actual case. I maintained the Postgres side: schema
+migrations, stored procedures in PL/pgSQL, and the reporting queries that the
+product ran on.
+
+## The thing I still think about
+
+There was a report that took **forty seconds**. Everyone knew. It had been
+forty seconds for over a year, and the accepted wisdom was that it was "a big
+query on a lot of data".
+
+It was a missing composite index. Adding it took an afternoon, most of which
+was spent being nervous about touching production. The report now takes **under
+two seconds**.
+
+Nobody had fixed it because it was nobody's job, and because complaining about
+it had become easier than owning it. That lesson has been more useful to me
+than anything I learned about Postgres.
+
+## What I actually did day to day
+
+- Wrote and reviewed migrations against 300,000-plus records, on a system where
+  losing a row is a legal problem, not a support ticket.
+- Moved reporting logic into PL/pgSQL where it belonged, and out of it where it
+  did not.
+- Took my first on-call rotation, and discovered that most incidents are the
+  same three things.
+- Wrote the runbook, because I had needed one and there wasn't one.
+
+## Why it still matters
+
+It is the reason I care about tracing now. When I joined, I could not see
+anything: no query logs I trusted, no timings, no history. Every debugging
+session started with an hour of building visibility I should have already had.

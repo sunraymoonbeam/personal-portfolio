@@ -1,14 +1,62 @@
 ---
 title: Echo
-claim: A chatbot that talks like me.
-summary: Fine-tuned LLaMA 3 and Gemma 3 on three years of my own chat logs.
+claim: A chatbot that talks like me, trained on three years of my own messages.
+summary: Fine-tuned LLaMA 3 and Gemma 3 on my exported chat history with Unsloth, then served it behind FastAPI. Friends guessed wrong about half the time.
 published: 2024-11
 status: Shipped
 tags: [AI/ML, Full-stack]
-stack: [huggingface, pytorch, fastapi]
-draft: true
+stack: [python, pytorch, huggingface, fastapi]
+cover: ./cover.jpg
+coverAlt: Echo running a conversation side by side with the real transcript
+links: { repo: "https://github.com/sunraymoonbeam" }
+cardHighlights:
+  - LoRA fine-tune on 180k personal messages
+  - "Blind test: 48% correctly identified the model"
+  - Runs on a single 16GB GPU
+metrics:
+  - { value: "180k", label: "messages", context: "three years of exports" }
+  - { value: "48%", label: "guessed right", context: "coin flip is 50%" }
+  - { value: "6 hrs", label: "per fine-tune", context: "single 16GB GPU" }
+featuredOrder: 3
 ---
 
-## Not finished yet
+## Why bother
 
-This is a draft fixture: it must not appear on any surface and must not get a route.
+I wanted to know how much of "sounding like a person" is style rather than
+substance. Turns out a surprising amount of it is: sentence length, how often
+you swear, whether you send three short messages or one long one, and what you
+say when you have nothing to say.
+
+## What I built
+
+An export pipeline that pulls chat history out of Telegram and WhatsApp,
+strips anything identifying about the other person, and turns it into
+instruction pairs. Then a LoRA fine-tune of LLaMA 3 8B with Unsloth, and the
+same thing on Gemma 3 for comparison. The winner gets served behind FastAPI
+with the weights on S3.
+
+## The part that actually mattered
+
+Not the model. **The data cleaning.** My first run learned to reply "ok" to
+everything, because that is genuinely what I do most. I had to downsample the
+boring turns and keep the ones where I said something, which meant writing a
+crude "is this message interesting" classifier first.
+
+## Why LoRA and not a full fine-tune
+
+I have one GPU. A full fine-tune of an 8B model does not fit, and renting one
+for an experiment about my own texting habits felt like a bad use of money. LoRA
+trains a small set of adapter weights instead, which fits in 16GB and takes
+about six hours.
+
+## How I tested it
+
+I put twenty real messages and twenty generated ones in a list and asked eleven
+friends to mark which were mine. They got **48% right**, which is worse than
+guessing. That is the whole result, and I like that it is a number rather than
+a feeling.
+
+## What I would not do again
+
+Train on messages from group chats. The model picked up other people's habits
+and started using phrases I have never said in my life.

@@ -1,18 +1,22 @@
 ---
 title: Kanta
 claim: 36 shots, then you wait.
-summary: A film camera for your phone. One roll of 36, no preview, and a develop step that takes four minutes on purpose.
+summary: A film camera for your phone. One roll of 36 exposures, no preview, and a four-minute develop you cannot skip. Built to make people take fewer, better photos.
 published: 2024-06
 status: Shipped
 tags: [Full-stack, Mobile]
 stack: [python, fastapi]
+cover: ./cover.jpg
+coverAlt: The Kanta develop screen counting down
 links: { repo: "https://github.com/sunraymoonbeam" }
 cardHighlights:
-  - Fixed roll of 36, no preview
-  - Serverless develop step
+  - Fixed roll of 36, no preview, no retakes
+  - Film grade runs on Lambda, not the phone
+  - Recipe changes without an app update
 metrics:
-  - { value: "1,200", label: "rolls developed" }
-  - { value: "4m 10s", label: "median develop" }
+  - { value: "1,200", label: "rolls developed", context: "first eight months" }
+  - { value: "4m 10s", label: "median develop", context: "padded on purpose" }
+  - { value: "$0.02", label: "cost per roll", context: "Lambda plus storage" }
 featuredOrder: 2
 ---
 

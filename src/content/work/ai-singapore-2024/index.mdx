@@ -6,17 +6,46 @@ location: Singapore · On-site
 start: 2024-06
 end: 2025-04
 title: Teaching a diffusion model to animate a character from one sentence
-summary: Text in, a walking 3D character out. Most of the year was data, not models.
+summary: Generative 3D character animation from a text prompt, using PyTorch diffusion models and multimodal video LLMs. Most of the year went into data, not models.
 stack: [pytorch, huggingface]
+cover: ./cover.jpg
+coverAlt: Frames from a generated character animation
+cardHighlights:
+  - Text-to-motion for 3D characters
+  - Built the data pipeline the models trained on
+  - Diffusion over motion sequences, in PyTorch
+metrics:
+  - { value: "1,100 hrs", label: "of motion capture", context: "cleaned and retargeted" }
+  - { value: "9 mos", label: "apprenticeship" }
 featuredOrder: 2
 ---
 
 ## The problem
 
-A sentence like "a tired man walks up a hill" should produce a 3D animation.
-The model was never the hard part.
+Type "a tired man walks up a hill" and get a 3D character actually doing it.
+Animation is expensive and slow to produce by hand, so the prize is obvious.
 
-## Most of the year was data
+The model architecture was the part everyone wanted to work on. It was not the
+part that was blocking us.
 
-Motion capture clips are long, unlabelled and inconsistently rigged. The work
-was building a pipeline that turned them into something trainable.
+## Most of the year went into data
+
+Motion capture archives are long, inconsistently rigged, barely labelled, and
+full of takes where someone walks to their mark and stands still for nine
+seconds. Before any of it can train a model it has to be cleaned, retargeted
+onto one skeleton, segmented into meaningful motions, and described in words.
+
+I built that pipeline, and processed about **1,100 hours** through it. It is not
+a glamorous sentence to write. It was the whole project.
+
+## What I built on top
+
+A diffusion model over motion sequences in PyTorch, conditioned on text, plus
+experiments using multimodal video LLMs to generate captions for clips nobody
+had labelled — bootstrapping the descriptions we were missing.
+
+## What it taught me
+
+Two things. First, that the bottleneck is almost never the model. Second, that
+being the person willing to fix the data is a genuinely useful thing to be,
+even though nobody puts it in the demo.

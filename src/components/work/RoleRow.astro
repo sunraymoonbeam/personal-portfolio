@@ -2,42 +2,49 @@
 import { Image } from 'astro:assets';
 import { getEntry } from 'astro:content';
 import { formatRange, formatDuration, yearOf } from '../../lib/date';
-import ArrowLink from '../ui/ArrowLink.astro';
 import type { Work } from '../../lib/content';
 
-interface Props { entry: Work; showYear?: boolean; }
-const { entry, showYear = true } = Astro.props;
+interface Props { entry: Work; }
+const { entry } = Astro.props;
 const d = entry.data;
 const employer = await getEntry(d.employer);
 const href = d.writeup ? `/work/${entry.id}` : undefined;
 const Wrapper = href ? 'a' : 'div';
 ---
-<Wrapper {...(href ? { href } : {})} class="row">
-  {showYear && <span class="eyebrow tabular year">{yearOf(d.start)}</span>}
+{/* The whole row is the target and it greys on hover — no separate "Read" link
+    needed to tell you it is clickable. */}
+<Wrapper {...(href ? { href } : {})} class:list={['row', { clickable: !!href }]}>
+  <span class="eyebrow tabular year">{yearOf(d.start)}</span>
   <Image src={employer.data.logo} alt="" width={44} height={44} class="logo" loading="lazy" />
-  <span class="stack body">
+  <span class="who">
     <span class="t-17 name">{d.role}</span>
     <span class="t-14">{employer.data.name} · {d.kind}</span>
     <span class="t-14 muted tabular">
       <time datetime={d.start}>{formatRange(d.start, d.end)}</time> · {formatDuration(d.start, d.end)}
     </span>
   </span>
-  {href && <span class="cta"><ArrowLink href={href} label="Read" /></span>}
+  <span class="what t-14 muted">{d.summary}</span>
 </Wrapper>
 <style>
   .row {
-    display: grid; grid-template-columns: 64px 44px 1fr auto;
-    gap: var(--s-5); align-items: start; padding-block: var(--s-5);
+    display: grid; grid-template-columns: 64px 44px minmax(0, 260px) minmax(0, 1fr);
+    gap: var(--s-5); align-items: start;
+    padding: var(--s-5) var(--s-4);
+    margin-inline: calc(var(--s-4) * -1);
+    border-radius: var(--radius-m);
     border-top: 1px solid var(--border);
+    transition: background-color 120ms linear;
   }
+  .clickable:hover { background: var(--chip-bg); color: inherit; }
+  .clickable:hover .name { color: var(--link); }
   .year { padding-top: 2px; }
   .logo { border-radius: 10px; object-fit: contain; background: var(--canvas); border: 1px solid var(--border); }
-  .body { gap: 3px; }
+  .who { display: flex; flex-direction: column; gap: 3px; }
   .name { font-weight: 600; }
-  .cta { padding-top: 2px; }
-  @media (max-width: 700px) {
-    .row { grid-template-columns: 44px 1fr; }
+  .what { padding-top: 2px; line-height: 1.5; }
+  @media (max-width: 860px) {
+    .row { grid-template-columns: 44px 1fr; gap: var(--s-3) var(--s-4); }
     .year { grid-column: 1 / -1; }
-    .cta { grid-column: 2; }
+    .what { grid-column: 2; }
   }
 </style>

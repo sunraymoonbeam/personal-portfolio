@@ -1,12 +1,13 @@
 ---
 import SiteLayout from '../layouts/SiteLayout.astro';
 import { site } from '../config/site';
+import { pages } from '../content/pages';
 ---
 <SiteLayout title="Contact — Zack Low" description="Email is fastest.">
   <section class="section wrap grid">
     <div class="copy">
-      <p class="eyebrow">Contact</p>
-      <h1 class="t-64">Say hi.</h1>
+      <p class="eyebrow">{pages.contact.eyebrow}</p>
+      <h1 class="t-64">{pages.contact.title}</h1>
       <p class="t-21 muted">
         Have something worth building, or just want to talk shop? Email is fastest.
         I reply to everything that is not spam, usually the same day.

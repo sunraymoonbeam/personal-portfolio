@@ -25,19 +25,23 @@ export function initHeroScene(host: HTMLElement) {
 
   const scene = new Scene();
   const camera = new PerspectiveCamera(45, 1, 0.1, 100);
-  camera.position.z = 5;
+  camera.position.z = 4.4;
 
-  const geometry = new IcosahedronGeometry(1.5, 6);
-  const material = new MeshStandardMaterial({ roughness: 0.3, metalness: 0.35 });
+  const geometry = new IcosahedronGeometry(1.45, 5);
+  // Low metalness on purpose: without an environment map a metal surface has
+  // nothing to reflect and renders near-black.
+  const material = new MeshStandardMaterial({ roughness: 0.22, metalness: 0.28, flatShading: true });
   const mesh = new Mesh(geometry, material);
   scene.add(mesh);
 
-  const ambient = new AmbientLight(0xffffff, 0.5);
-  const key = new PointLight(0xc4b5fd, 140);
-  const fill = new PointLight(0x22d3ee, 90);
-  key.position.set(5, 5, 5);
-  fill.position.set(-6, -3, 2);
-  scene.add(ambient, key, fill);
+  const ambient = new AmbientLight(0xffffff, 0.55);
+  const key = new PointLight(0xc4b5fd, 90);
+  const fill = new PointLight(0x22d3ee, 55);
+  const rim = new PointLight(0xffffff, 35);
+  key.position.set(3.5, 3.5, 4);
+  fill.position.set(-4, -2.5, 2.5);
+  rim.position.set(0, 2.5, -3.5);
+  scene.add(ambient, key, fill, rim);
 
   // Theme changes SWAP material/light values in place. Rebuilding the scene per
   // toggle is how people leak WebGL memory — and dropping resources without
@@ -66,8 +70,10 @@ export function initHeroScene(host: HTMLElement) {
   let raf = 0;
   let running = false;
   const frame = () => {
-    mesh.rotation.x += 0.0016;
-    mesh.rotation.y += 0.0022;
+    const t = performance.now() * 0.00016;
+    mesh.rotation.x = t * 0.7;
+    mesh.rotation.y = t;
+    mesh.position.y = Math.sin(t * 2.2) * 0.06;   // slow float
     renderer.render(scene, camera);
     raf = requestAnimationFrame(frame);
   };

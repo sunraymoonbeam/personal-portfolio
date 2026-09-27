@@ -1,21 +1,53 @@
 ---
 title: Homelab & agent fleet
-claim: Two servers, a fleet of agents, no cloud bill.
-summary: Hetzner and Netcup boxes running Dokploy, Traefik and n8n, with Telegram agents that log my spending and read the fuel market every morning.
+claim: Two servers doing the work of a $180/month cloud bill.
+summary: Two small servers replacing most of what I used to rent, running Dokploy, Traefik and n8n, plus eight Telegram agents that each own one job — spending, notes, backups, and the marine fuel market every morning.
 published: 2026-01
 status: Ongoing
 tags: [Automation, Infrastructure]
 stack: [docker, traefikproxy, n8n, telegram]
+cover: ./cover.jpg
+coverAlt: The two-server rack under the desk
+cardHighlights:
+  - Two servers replacing about $180/month of managed services
+  - Eight Telegram agents, each owning one job
+  - Everything deploys from a git push
+metrics:
+  - { value: "2", label: "servers", context: "Hetzner and Netcup" }
+  - { value: "8", label: "agents running" }
+  - { value: "$26", label: "per month", context: "down from about $180" }
 featuredOrder: 1
 showInPlay: true
 ---
 
 ## Why
 
-Renting managed everything got expensive and boring. Two small servers do the
-same work, and I learn more when it breaks.
+I was paying about $180 a month for managed versions of things I could run
+myself, and I was learning nothing from any of it. The bill was annoying. The
+not-learning was worse.
 
 ## What runs on it
 
-Dokploy for deployment, Traefik for routing and certificates, n8n for the
-automations, plus a fleet of Telegram agents that each own one job.
+Two boxes, one at Hetzner and one at Netcup. **Dokploy** handles deploys,
+**Traefik** does routing and certificates, **n8n** runs the automations, and
+everything sits behind Tailscale so nothing but the web ports are public.
+
+On top of that there are eight Telegram agents. Each one owns exactly one job:
+log a expense, sync a note, take a backup, or read the marine fuel assessments
+every morning and tell me what moved.
+
+## The part that took longest
+
+Not the setup — the **failure modes**. A homelab that silently stops working is
+worse than no homelab, because you trust it. Every agent now reports to a
+health channel, and anything that has not checked in for an hour pages me.
+
+## What it costs
+
+About **$26 a month**, down from roughly $180. The honest caveat is that my own
+time is not in that number, and the first month cost me most of a weekend.
+
+## What I would tell someone starting one
+
+Put the monitoring in before the fun parts. I did it the other way round and
+spent a fortnight not noticing a backup job had been failing since day three.
