@@ -1,0 +1,43 @@
+---
+import { site } from "../data/site";
+
+const links = [
+  { href: "#about", label: "About" },
+  { href: "#experience", label: "Experience" },
+  { href: "#tech", label: "Tech" },
+  { href: "#projects", label: "Projects" },
+  { href: "#contact", label: "Contact" },
+];
+---
+
+<header
+  class="fixed inset-x-0 top-0 z-50 border-b border-[--color-border]/60 bg-[--color-bg]/70 backdrop-blur-md"
+>
+  <nav class="mx-auto flex max-w-5xl items-center justify-between px-5 py-4">
+    <a href="#top" class="font-mono text-sm font-medium tracking-tight">
+      <span class="gradient-text">{site.handle.toLowerCase()}</span>.dev
+    </a>
+    <ul class="hidden gap-8 text-sm text-[--color-muted] sm:flex">
+      {
+        links.map((l) => (
+          <li>
+            <a
+              href={l.href}
+              class="transition-colors hover:text-[--color-text]"
+            >
+              {l.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+    <a
+      href={site.socials.github}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="rounded-full border border-[--color-border] px-4 py-1.5 text-sm text-[--color-muted] transition-colors hover:border-[--color-accent] hover:text-[--color-text]"
+    >
+      GitHub
+    </a>
+  </nav>
+</header>

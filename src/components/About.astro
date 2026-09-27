@@ -1,0 +1,29 @@
+---
+import { site } from "../data/site";
+---
+
+<section id="about" class="section reveal">
+  <h2 class="mb-8 text-3xl font-bold">
+    <span class="font-mono text-[--color-accent-2]">01.</span> About
+  </h2>
+  <div class="grid gap-8 md:grid-cols-3">
+    <div class="space-y-4 text-[--color-muted] md:col-span-2">
+      {site.about.map((p) => <p class="leading-relaxed">{p}</p>)}
+    </div>
+    <div>
+      <h3 class="mb-3 text-sm font-semibold uppercase tracking-wider text-[--color-muted]">
+        Off the clock
+      </h3>
+      <ul class="space-y-2">
+        {
+          site.interests.map((i) => (
+            <li class="flex items-center gap-2 text-sm">
+              <span class="text-[--color-accent-2]">▹</span>
+              {i}
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</section>

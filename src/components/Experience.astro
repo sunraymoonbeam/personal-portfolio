@@ -1,0 +1,34 @@
+---
+import { getCollection } from "astro:content";
+
+// Pulled from src/content/experience/*.md and sorted by `order`.
+const entries = (await getCollection("experience")).sort(
+  (a, b) => a.data.order - b.data.order
+);
+---
+
+<section id="experience" class="section reveal">
+  <h2 class="mb-10 text-3xl font-bold">
+    <span class="font-mono text-[--color-accent-2]">02.</span> Experience
+  </h2>
+
+  <ol class="relative border-l border-[--color-border]">
+    {
+      entries.map((entry) => (
+        <li class="mb-10 ml-6">
+          <span class="absolute -left-1.5 mt-1.5 h-3 w-3 rounded-full bg-[--color-accent] ring-4 ring-[--color-bg]" />
+          <div class="flex flex-wrap items-baseline gap-x-2">
+            <h3 class="text-lg font-semibold">{entry.data.role}</h3>
+            <span class="text-[--color-accent-2]">@ {entry.data.company}</span>
+          </div>
+          <p class="mb-2 font-mono text-xs text-[--color-muted]">
+            {entry.data.start} — {entry.data.end}
+          </p>
+          <p class="max-w-2xl text-sm leading-relaxed text-[--color-muted]">
+            {entry.body}
+          </p>
+        </li>
+      ))
+    }
+  </ol>
+</section>
