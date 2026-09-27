@@ -1,68 +1,65 @@
-# Code structure — the short version
+# Code structure
 
-Full rationale in [`../DESIGN.md`](../DESIGN.md). This page is the map you
-actually need open while working.
+Full reasoning in [`../DESIGN.md`](../DESIGN.md). This is the working map.
 
-## The rule
+## The one rule
 
-```
-pages/        compose blocks into a route
-  ↓
-blocks/       domain-aware  (knows what a "role" is)
-  ↓
-ui/           domain-agnostic (knows what a "chip" is)
-  ↓
-tokens.css    values only
-```
-
-Dependencies point **downward only**. A `ui/` component never imports a
-`blocks/` component. **No component ever contains copy.** If you are editing a
-`.astro` file to change a sentence, something is in the wrong place.
-
-## Where things live
+**Pages request content → `lib/` decides what is published → components render
+props.** Nothing else calls `getCollection()`.
 
 ```
-src/config/site.ts     name, motto, nav, socials, flags   ← page copy
-src/config/stack.ts    tech-stack groups (icon slugs)
-src/content/           work/ · projects/ · play/ · about.mdx
-src/content/config.ts  Zod schemas — a bad field fails the build
-src/styles/tokens.css  every colour, size and space, light + dark
+src/
+  content.config.ts    three strict schemas (nested strict too) + employers
+  content/
+    home.ts            home page copy
+    projects/<slug>/index.mdx + images
+    work/<tenure>/index.mdx + images
+    play/<slug>/index.mdx + images
+    employers/<id>.json + logo
+    _template/         copy these to add content
+  config/site.ts       name, motto, nav, socials, feature flags
+  data/technologies.ts stable tech ids -> label -> optional icon slug
+  lib/
+    select.ts          PURE publication policy — unit-tested, no Astro imports
+    content.ts         loads entries, delegates every decision to select.ts
+    date.ts            YYYY-MM formatting; never constructs a Date
+    icons.ts           simple-icons adapter with a text fallback
+  layouts/
+    SiteLayout.astro   head, theme bootstrap, header, footer
+    ArticleLayout.astro 660px reading column, aside slot, prev/next
+  components/
+    site/              Header, Footer, Logo, ThemeToggle, PlayWord, Bulb, HeroScene
+    projects/          ProjectCard, ProjectGrid, ScreenshotFrame
+    work/              RoleRow, YearLedger
+    play/              PlayGrid
+    ui/                SectionHead, ArrowLink, TechChip
+  scripts/             theme.ts, cursor.ts, hero-scene.ts  (plain TS, no framework)
+  styles/              tokens.css, base.css, article.css, cursors.css
+  pages/               routes
+tests/                 content policy + date regressions
 ```
 
-## Adding content
+## Why `select.ts` is separate from `content.ts`
 
-One folder per item. No index to update — a new folder is a new page.
+`content.ts` imports `astro:content`, which cannot resolve outside an Astro
+build — so anything in it is untestable. All the decisions (what is published,
+what is featured, what is adjacent) live in `select.ts`, which is pure and
+covered by `tests/`.
 
-```
-src/content/projects/my-thing/
-  index.mdx     frontmatter (cards, filters, sidebar, SEO) + free body
-  cover.jpg     images live beside the post that uses them
-```
+## Client scripts
 
-**Frontmatter** drives everything structured. **The body is yours** — your
-headings, your order, images anywhere.
-
-## MDX components (six, deliberately)
-
-| Component | Use |
-|---|---|
-| `<Figure src caption size>` | One image. `size="normal \| wide \| full"` |
-| `<Gallery images caption>` | 2–3 up row, one shared caption |
-| `<Quote>` | Pull quote |
-| `<Sidenote>` | Margin note (becomes a footnote on mobile) |
-| `<Stat value label>` | One number |
-| `<Window title>` | macOS window frame around a screenshot |
-
-## Islands
-
-Plain TypeScript, no framework. Each is lazy and optional.
-
-| File | KB (gz) | Loads when |
+| File | Gz | Loads |
 |---|---|---|
-| `hero3d.ts` | ~70 | Hero scrolls into view |
-| `cmdk.ts` | ~8 | First `⌘K` |
-| `theme.ts` | ~2 | Immediately (inline in `<head>`) |
-| `cursor.ts` | ~1 | Immediately, `pointer: fine` only |
-| `lightbox.ts` | ~2 | First image click |
+| `theme.ts` | 0.6 KB | immediately (plus a ~150 B inline head script) |
+| `cursor.ts` | in layout boot | immediately, `pointer: fine` only |
+| `hero-scene.ts` | **130 KB** | only on desktop, only when scrolled to |
 
-A page with no images and no hero ships **0 KB of JavaScript**.
+Measured, not estimated: **initial paint 14.9 KB gz**, **article page 11.2 KB gz**.
+
+## Commands
+
+```bash
+npm run dev      # local
+npm run verify   # types + tests + build — the gate the Docker image runs
+npm test         # just the tests
+```
