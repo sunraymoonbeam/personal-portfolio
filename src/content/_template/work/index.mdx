@@ -12,13 +12,16 @@ summary: One or two sentences. Shown on cards and in search results.
 stack: [langgraph, n8n]
 # bullets: [ "Verbatim from the resume, in resume order" ]
 # metrics: [ { value: "12", label: "agents" } ]
+# gallery:                    # optional. Order here is order on the page.
+#   - src: ./photo-1.jpg      #   Re-arranging = moving one of these blocks.
+#     alt: What the picture shows
+#     caption: Optional line under it
+#   - { src: ./photo-2.jpg, alt: Another one }
 # featuredOrder: 1            # show on the home page
 # writeup: false              # listed in the ledger, no article page
 # showInWork: false           # article exists but is unlisted (still public)
 # draft: true                 # hidden everywhere
 ---
-import detail from './detail.jpg'
-
 
 ## The setup
 
@@ -28,7 +31,14 @@ Where things stood when you arrived.
 
 What you tried first that did not work. This is the hook, so keep it.
 
-<Figure src={detail} alt="Placeholder" caption="A placeholder until the real screenshot exists." />
+{/* A picture that carries the narrative goes here, beside the paragraph it
+    illustrates. Put the file in this folder, import it, then:
+
+      import shot from './shot.jpg'
+      <Figure src={shot} alt="What it shows" caption="Why it matters." />
+
+    Pictures that belong to the entry rather than to a sentence go in the
+    `gallery` list above instead. */}
 
 ## What I actually did
 

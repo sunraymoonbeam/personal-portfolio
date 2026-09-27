@@ -1,91 +1,145 @@
-# Zack Low's portfolio
+# renhwa.com
 
-[renhwa.com](https://renhwa.com) is a static Astro site: MDX articles, strict TypeScript, plain CSS, and small browser scripts. No React runtime, CMS or Tailwind. The current implementation has no 3D hero; the older design documents describe proposals, not shipped features.
-
-## Develop and verify
-
-Use Node 22.12+ and the committed npm lockfile.
+My portfolio. A static [Astro](https://astro.build) site: MDX content, strict
+TypeScript, plain CSS. No UI framework, no CSS framework, no CMS. One JavaScript
+bundle, which is Astro's client router.
 
 ```sh
 npm ci
-npm run dev -- --background
-npm run astro -- dev status
-npm run astro -- dev logs
-npm run verify
-npm run astro -- dev stop
+npm run dev        # http://localhost:4321
+npm run verify     # everything the deploy will run
 ```
 
-Use the local URL printed by Astro (it selects another port if 4321 is occupied). `npm run preview` serves the production output after a build.
+Node 22.12 or newer. Use the committed lockfile.
 
-`verify` runs the Astro/TypeScript checker, policy unit tests, actual route-generation tests in a disposable checkout, cursor-source consistency, and the production build. The route tests cover drafts, listing-only entries, unlisted work articles, colliding IDs across collections, cross-listing, and sitemap exclusions. They never add test stories to the production checkout.
+## Where things live
 
-Build checks are not visual checks. After layout changes, inspect every route at phone and desktop widths in light and dark themes. Check keyboard focus, filtering, theme switching, text enlargement and horizontal overflow. Test nginx responses separately; Astro preview is not nginx.
+Only `src/pages/` is reserved by Astro. Everything else is a convention, and
+this is the one used here.
 
-## Find the right file
+```
+src/
+  pages/         one file per URL. Owns route generation and page composition.
+  layouts/       the document shell and the article shell.
+  components/    presentation. Never reads content directly.
+  content/       the content collections, and nothing else.
+  copy/          page headings and prose that are not a collection entry.
+  config/        identity, navigation, feature switches.
+  data/          lookup tables. Technology names and icons.
+  lib/           pure functions. Publication policy, dates, text.
+  scripts/       browser behaviour. Theme, menu, search, filters, cursor.
+  styles/        tokens, global primitives, article prose.
+  assets/        images used by components rather than by a content entry.
+```
 
-| Change | Location |
-| --- | --- |
-| Identity, motto, contact and navigation | `src/config/site.ts` |
-| Home headings and introduction | `src/content/home.ts` |
-| Index-page headings and introductions | `src/content/pages.ts` |
-| Stories, dates, card summaries and metrics | `src/content/{work,projects,play}/<slug>/index.mdx` |
-| Shared employer identity and logos | `src/content/employers/` |
-| Technology labels/icons and About grouping | `src/data/technologies.ts` |
-| Strict frontmatter schemas | `src/content.config.ts` |
-| Content loading and publication policy | `src/lib/content.ts`, `src/lib/select.ts` |
-| Page composition and route generation | `src/pages/` |
-| Document shell / article shell | `src/layouts/` |
-| Reusable presentation | `src/components/` |
-| Design values / global primitives / prose | `src/styles/{tokens,base,article}.css` |
-| Theme and cursor behaviour | `src/scripts/` |
-| Downloadable résumé | `public/resume.pdf` |
+The rule that keeps this honest: **pages read content, components receive it.**
+A component never calls `getCollection`. Publication policy never leaks into a
+card. If you want to know whether something is published, there is exactly one
+place that decides, and it is `src/lib/select.ts`.
 
-Pages load content and pass it to components. Components do not call the content store. Keep publication policy out of card components. The article shell owns the header, reading column, aside and adjacent links; routes own the meaning of those slots. Do not introduce a universal component with flags for every page variation.
+`src/content/` holds only collection entries, so that everything Astro loads as
+content is content. Page copy is not content in that sense, so it lives in
+`src/copy/`.
 
-## Add a story
+## Adding something
 
-Copy the appropriate folder from `src/content/_template/` into the collection, rename it to the URL slug, then replace all sample text. Keep local images beside the MDX and use the Astro image pipeline. Set descriptive alt text. `Figure` is available in MDX through `components/article/mdx.ts`.
-
-Frontmatter is for values reused outside the story: listing summaries, dates, tags, stack IDs, metrics and links. The body is for the narrative. Add a schema field only when a real second surface needs it; use an MDX component for a one-off body layout.
-
-- `draft: true`: absent from listings and routes.
-- `writeup: false`: can appear in listings, but has no article link or route.
-- `showInWork: false`: hides a work entry from the ledger, not from the public web. Use `draft` for unpublished material.
-- `showInPlay: true`: cross-lists a project using its original project URL.
-- `featuredOrder`: home selection order; omitted means not featured. Keep ranks distinct within a collection.
-- Dates are `YYYY-MM` strings. Work uses `start`/`end`; omit `end` for a current role. Projects and Play use `published` for ordering.
-
-Unknown fields, including nested metric/link typos, fail validation. Technology IDs should come from `src/data/technologies.ts`; unknown IDs render as text rather than breaking the page. A changed slug needs a redirect in `nginx.conf`.
-
-## Layout rules that prevent the old bugs
-
-- `.wrap` owns the centered outer width. Never also narrow that same element with `max-width`. Use `.wrap.measure-start` to constrain its children while preserving the left alignment.
-- Cards stay inside their grid cells. Hover changes colour, not padding or negative margins. There is no global `.hoverable` or `.row` shortcut.
-- Article `Figure` stays inside the reading column, preserves the image's ratio, and has no `wide`/`full` escape hatch. A full-width image belongs in the article's `hero` slot.
-- `ScreenshotFrame` window chrome is opt-in (`chrome={true}`), not a default decoration for diagrams or photos. Missing project covers use `ProjectVisual`, which is explicitly typography, not a pretend screenshot.
-- `[hidden]` must override component display rules so project filters actually hide rows and stay absent without JavaScript.
-
-## Content provenance
-
-`REQUEST.md` governs the rewrite. `docs/source/notes.md` outranks the résumé for narrative facts; `docs/source/resume.pdf` supplies titles and dates. The owner's explicit hobbies are climbing, coffee and cooking. Those entries are deliberately short because no detailed first-person hobby stories were supplied.
-
-Work dates were corrected against the résumé: Carro Aug 2025, NIE Oct 2023–Mar 2024, DOS May–Aug 2023. Kanta and Echo use the last month of their Apr–May 2025 project period. Onboarding uses Apr 2025 for ordering, the end of its AISG period; this is not a claim about an exact release date. Play uses the website rewrite month. Confirm publication dates if actual release chronology matters.
-
-The unsupported homelab story was replaced with the Linux/Git onboarding exercise described in the notes. Invented project metrics, hobby stories, stock covers and the cat labelled as a portrait were removed. Git history preserves them. The downloadable PDF remains the supplied source, unchanged; its hobby line predates the owner's corrected website interests.
-
-## Generated MapleStory cursors
-
-`src/assets/cursors/` contains eight native 32×32 PNG frames and a CSS template with selectors, hotspots and fallbacks. The sprites were recovered losslessly from the previously approved inlined stylesheet; this does not resolve their licensing. They are Nexon artwork from an unlicensed source, retained at the owner's explicit request.
+Copy a template. The folder name becomes the URL.
 
 ```sh
-npm run cursors
-node scripts/generate-cursors.mjs --check
+cp -r src/content/_template/project src/content/projects/my-thing
+# edit src/content/projects/my-thing/index.mdx, drop images beside it
+npm run verify
 ```
 
-Edit the PNGs/template, regenerate `src/styles/cursors.css`, and commit both. Frame order is default, pointer ×2, busy ×4, grab. Animation timing is in `src/scripts/cursor.ts`. No external asset request is made for a cursor. `--extract-legacy` is a one-time recovery mode and refuses to overwrite existing source.
+| Type | Template | Goes in | URL |
+| --- | --- | --- | --- |
+| Project | `_template/project` | `src/content/projects/<slug>/` | `/projects/<slug>` |
+| Role | `_template/work` | `src/content/work/<company>/` | `/work/<company>` |
+| Hobby | `_template/play` | `src/content/play/<slug>/` | `/hobbies/<slug>` |
+
+The hobby collection is called `play` and is served at `/hobbies`. The map
+between the two lives in `src/lib/select.ts`; change it in one place.
+
+**The template is the documentation.** Every field, every flag and every
+default is commented in the frontmatter you are already editing, so it cannot
+drift from the code the way a table in a file like this one can.
+
+### Pictures
+
+Put image files in the entry's own folder. Two ways to use them:
+
+- **In the body**, as a `Figure`, next to the paragraph it illustrates. This is
+  for a picture that carries the narrative.
+- **In the `gallery` list** in the frontmatter, for pictures that belong to the
+  entry rather than to a sentence. The order in the file is the order on the
+  page, so re-arranging means moving a block. Alt text is required.
+
+There is no carousel. Every picture is visible, and the gallery needs no
+JavaScript.
+
+## Why there are schemas
+
+`src/content.config.ts` validates every entry, and every nested object is
+`.strict()` because an outer `.strict()` does not propagate. A typo in a field
+you touch once a year fails the build instead of silently disappearing.
+
+This is also the on-ramp to a CMS rather than a detour from one. Keystatic
+builds its editor from a schema, so the model here translates rather than
+needing a re-think.
+
+Add a field only when a second surface needs the value. A one-off body layout
+is an MDX component, not a schema field.
+
+## Verify
+
+`npm run verify` is the deploy gate. It runs inside the Docker image, so a
+failure cannot ship.
+
+| Step | What it proves |
+| --- | --- |
+| `astro check` | Types and templates across the whole site. |
+| `node --test` | Publication policy, date handling, text emphasis. |
+| `check-routes.mjs` | A real build of a throwaway site: drafts and listing-only entries get no route, unlisted roles still get an article, ids can collide across collections, gallery order survives, the sitemap excludes what it should. |
+| `generate-cursors.mjs --check` | The committed cursor CSS still matches its PNG sources. |
+| `astro build` | The real site compiles. |
+
+A green gate is not a visual check. After a layout change, look at every route
+at phone and desktop width, in both themes, and check keyboard focus and
+horizontal overflow.
+
+## Conventions worth keeping
+
+- `.wrap` owns the centred outer width. Do not also narrow that element with
+  `max-width`; use `.wrap.measure-start` to constrain its children.
+- A component's `<script>` runs **once per document**. With the client router
+  the DOM is swapped on every navigation, so anything binding to elements
+  belongs in `src/scripts/` and is re-bound on `astro:page-load`. Two features
+  have already died this way.
+- Class names in an Astro component are scoped, but a class defined in a global
+  stylesheet is not. `prose` belongs to `src/styles/article.css`; reusing that
+  name on a page pulls those rules in.
+- Scroll animations use a length range, not a percentage. A percentage of
+  `entry` scales with element height and leaves tall blocks invisible after
+  they are on screen.
+- Dates are `YYYY-MM` strings and are never parsed into a `Date`, which would
+  invent a day and shift the timezone.
 
 ## Deploy
 
-Commit and push `main` to `origin`; Dokploy builds the Dockerfile and serves `dist/` through nginx behind Traefik. The image build runs `npm run verify`, so a failed gate stops deployment. No Sites/Cloudflare deployment is involved.
+Push `main`. Dokploy builds the Dockerfile and nginx serves `dist/` behind
+Traefik. The image runs `npm run verify`, so a failing gate stops the deploy.
+A deploy is triggered from Dokploy; pushing alone does not release.
 
-Keep `absolute_redirect off` to avoid HTTP downgrades behind the TLS proxy. Keep `try_files … =404` and `error_page 404 /404.html` so missing pages return a real 404. Retired placeholder slugs have relative redirects. Verify the live homepage, a changed article, an old URL and a deliberately missing path after deployment. To roll back, revert the relevant commit and push a new commit; do not force-push shared history.
+Keep `absolute_redirect off` in the nginx config, or redirects downgrade HTTPS
+behind the proxy. Keep `try_files … =404` so a missing page returns a real 404
+instead of the homepage. A changed slug needs a redirect in `astro.config.mjs`
+and in `nginx.conf`.
+
+## Provenance
+
+`docs/source/notes.md` outranks the résumé for narrative; `docs/source/resume.pdf`
+supplies titles and dates. Work bullets on the site are verbatim from the CV,
+with `**…**` marking emphasis and adding no words, so the two cannot disagree.
+
+The MapleStory cursors are Nexon artwork from an unlicensed source, kept at my
+request. `npm run cursors` regenerates `src/styles/cursors.css` from the PNGs.

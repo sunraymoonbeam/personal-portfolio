@@ -16,13 +16,16 @@ stack: [python, fastapi]      # ids from src/data/technologies.ts
 #   - One thing worth noticing
 # metrics:                    # a number is decoration without context
 #   - { value: "1,200", label: "rolls developed", context: "first six months" }
+# gallery:                    # optional. Order here is order on the page.
+#   - src: ./photo-1.jpg      #   Re-arranging = moving one of these blocks.
+#     alt: What the picture shows
+#     caption: Optional line under it
+#   - { src: ./photo-2.jpg, alt: Another one }
 # featuredOrder: 1            # ONLY mechanism for showing it on the home page
 # draft: true                 # hidden everywhere, no route
 # writeup: false              # listed, but no article page
-# showInPlay: true            # also appears on /play, still one URL
+# showInPlay: true            # also appears on /hobbies, still one URL
 ---
-import detail from './detail.jpg'
-
 
 ## The problem
 
@@ -32,7 +35,14 @@ Who had it, why it hurt, what made it awkward.
 
 The thing, and the shape of it.
 
-<Figure src={detail} alt="Placeholder" caption="A placeholder until the real screenshot exists." />
+{/* A picture that carries the narrative goes here, beside the paragraph it
+    illustrates. Put the file in this folder, import it, then:
+
+      import shot from './shot.jpg'
+      <Figure src={shot} alt="What it shows" caption="Why it matters." />
+
+    Pictures that belong to the entry rather than to a sentence go in the
+    `gallery` list above instead. */}
 
 ## Key decisions
 

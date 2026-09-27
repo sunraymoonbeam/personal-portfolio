@@ -2,6 +2,7 @@
 import { render, getEntry } from 'astro:content';
 import { articleComponents } from '../../components/article/mdx';
 import ArticleLayout from '../../layouts/ArticleLayout.astro';
+import Gallery from '../../components/article/Gallery.astro';
 import { getWorkArticles, toArticleLinks, getAdjacent, keyOf } from '../../lib/content';
 import { formatRange, formatDuration } from '../../lib/date';
 import { Image } from 'astro:assets';
@@ -51,6 +52,7 @@ const { prev, next } = getAdjacent(links, keyOf('work', entry.id));
   </div>
 
   <Content components={articleComponents} />
+  <Gallery items={d.gallery} />
 </ArticleLayout>
 <style>
   .cover { margin: 0 0 var(--s-4); }

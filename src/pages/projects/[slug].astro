@@ -2,6 +2,7 @@
 import { render } from 'astro:content';
 import { articleComponents } from '../../components/article/mdx';
 import ArticleLayout from '../../layouts/ArticleLayout.astro';
+import Gallery from '../../components/article/Gallery.astro';
 import ScreenshotFrame from '../../components/projects/ScreenshotFrame.astro';
 import ProjectVisual from '../../components/projects/ProjectVisual.astro';
 import TechChip from '../../components/ui/TechChip.astro';
@@ -68,6 +69,7 @@ const { prev, next } = getAdjacent(links, keyOf('projects', entry.id));
 
   <p class="t-19 lead">{d.summary}</p>
   <Content components={articleComponents} />
+  <Gallery items={d.gallery} />
 </ArticleLayout>
 <style>
   .head-bits { display: flex; flex-direction: column; gap: var(--s-5); }

@@ -29,9 +29,6 @@ export async function resolveWork(entry: Work): Promise<ResolvedWork> {
   return { entry, employer: await getEntry(entry.data.employer) };
 }
 
-/** Collection-qualified identity: projects/homelab and play/homelab differ. */
-
-
 // ── projects ────────────────────────────────────────────────────────────────
 
 export async function getPublishedProjects(): Promise<Project[]> {

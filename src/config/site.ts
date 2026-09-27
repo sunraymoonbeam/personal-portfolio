@@ -1,4 +1,4 @@
-/** Identity, routing and switches. Page copy lives in src/content/home.ts. */
+/** Identity, routing and switches. Page copy lives in src/copy/. */
 export const site = {
   name: 'Zack Low',
   fullName: 'Renhwa (Zack) Low',

@@ -2,6 +2,7 @@
 import { render } from 'astro:content';
 import { articleComponents } from '../../components/article/mdx';
 import ArticleLayout from '../../layouts/ArticleLayout.astro';
+import Gallery from '../../components/article/Gallery.astro';
 import { getPublishedPlay, toArticleLinks, getAdjacent, keyOf } from '../../lib/content';
 import { formatMonth } from '../../lib/date';
 import { Image } from 'astro:assets';
@@ -29,6 +30,7 @@ const { prev, next } = getAdjacent(toArticleLinks('play', all), keyOf('play', en
   )}
 
   <Content components={articleComponents} />
+  <Gallery items={d.gallery} />
 </ArticleLayout>
 <style>
   .cover { margin: 0 0 var(--s-4); }

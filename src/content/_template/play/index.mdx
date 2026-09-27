@@ -6,11 +6,14 @@ caption: The line under the square on the grid. Keep it short.
 published: 2026-01
 # cover: ./cover.jpg
 # coverAlt: What the picture shows
+# gallery:                    # optional. Order here is order on the page.
+#   - src: ./photo-1.jpg      #   Re-arranging = moving one of these blocks.
+#     alt: What the picture shows
+#     caption: Optional line under it
+#   - { src: ./photo-2.jpg, alt: Another one }
 # featuredOrder: 1            # include it in the home/About preview
 # writeup: false              # appears in the grid, no article page
 ---
-import detail from './detail.jpg'
-
 
 ## Why this is here
 
@@ -20,4 +23,11 @@ A portfolio is allowed to have a person in it. Say why you care.
 
 The bit that makes it more than a hobby photo.
 
-<Figure src={detail} alt="Placeholder" caption="A placeholder until the real screenshot exists." />
+{/* A picture that carries the narrative goes here, beside the paragraph it
+    illustrates. Put the file in this folder, import it, then:
+
+      import shot from './shot.jpg'
+      <Figure src={shot} alt="What it shows" caption="Why it matters." />
+
+    Pictures that belong to the entry rather than to a sentence go in the
+    `gallery` list above instead. */}

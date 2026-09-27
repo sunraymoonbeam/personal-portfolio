@@ -30,6 +30,28 @@ const visibility = {
 
 type ImageFn = SchemaContext['image'];
 
+/**
+ * An ordered set of photographs belonging to the entry rather than to a
+ * sentence. Order in the file is order on the page, so re-arranging is moving
+ * a block, which is the closest a text file gets to dragging.
+ *
+ * Pictures that carry the narrative belong in the body as a `Figure`, next to
+ * the paragraph they illustrate. This is for the ones that do not.
+ */
+const gallery = (image: ImageFn) =>
+  z
+    .array(
+      z
+        .object({
+          src: image(),
+          alt: z.string().min(1),
+          caption: z.string().min(1).max(160).optional(),
+        })
+        .strict(),
+    )
+    .max(12)
+    .optional();
+
 const common = (image: ImageFn) => ({
   title: z.string().min(1),
   /** Card label, only when `title` is too long for a card. */
@@ -39,6 +61,7 @@ const common = (image: ImageFn) => ({
   coverAlt: z.string().min(1).optional(),
   /** Bright UI screenshots want dimming in dark mode; photos do not. */
   coverDim: z.boolean().default(false),
+  gallery: gallery(image),
   ...visibility,
 });
 

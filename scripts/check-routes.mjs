@@ -27,9 +27,16 @@ const fields = {
   work: (id) => `employer: carro\nrole: ${id}\nkind: Full-time\nlocation: Test\nstart: 2099-01`,
   play: () => 'caption: Route policy fixture\npublished: 2099-01',
 };
+// A 1x1 PNG, so a gallery fixture has a real file for the image pipeline.
+const PIXEL = Buffer.from(
+  'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==',
+  'base64',
+);
+
 function fixture(collection, id, flags) {
   const folder = path.join(scratch, 'src/content', collection, id);
   mkdirSync(folder, { recursive: true });
+  writeFileSync(path.join(folder, 'pixel.png'), PIXEL);
   writeFileSync(path.join(folder, 'index.mdx'), `---\ntitle: ${id}\nsummary: Route policy fixture.\n${fields[collection](id)}\n${flags}\n---\n\nTest body.\n`);
 }
 const html = route => readFileSync(path.join(scratch, 'dist', route, 'index.html'), 'utf8');
@@ -46,6 +53,9 @@ try {
     fixture(collection, 'qa-listing', 'writeup: false\nfeaturedOrder: 98');
   }
   fixture('work', 'qa-unlisted', 'showInWork: false');
+  // The gallery is an ordered list, so the assertion below checks the ORDER
+  // survives the build, not just that the pictures appear.
+  fixture('projects', 'qa-gallery', 'gallery:\n  - { src: ./pixel.png, alt: First picture }\n  - { src: ./pixel.png, alt: Second picture, caption: With a caption }');
   fixture('projects', 'qa-shared', 'showInPlay: true');
   fixture('play', 'qa-shared', '');
   execFileSync(process.execPath, [path.join(root, 'node_modules/.bin/astro'), 'build', '--root', scratch], {
@@ -65,9 +75,17 @@ try {
   assert.ok(html('projects/qa-shared').includes('Test body.'));
   assert.ok(html('hobbies/qa-shared').includes('Test body.'));
   assert.ok(html('hobbies').includes('href="/projects/qa-shared"'), 'Cross-listed project lost its canonical route');
+  const article = html('projects/qa-gallery');
+  assert.ok(article.includes('alt="First picture"'), 'Gallery image was not rendered');
+  assert.ok(article.includes('With a caption'), 'Gallery caption was dropped');
+  assert.ok(
+    article.indexOf('alt="First picture"') < article.indexOf('alt="Second picture"'),
+    'Gallery lost its declared order',
+  );
+
   const sitemap = readFileSync(path.join(scratch, 'dist/sitemap-0.xml'), 'utf8');
   assert.ok(!sitemap.includes('qa-draft') && !sitemap.includes('qa-listing'));
-  console.log('Route integration checks passed: drafts, listing-only entries, unlisted roles, cross-collection IDs and sitemap.');
+  console.log('Route integration checks passed: drafts, listing-only entries, unlisted roles, cross-collection IDs, gallery order and sitemap.');
 } catch (error) {
   if (error.stdout) console.error(error.stdout.toString());
   if (error.stderr) console.error(error.stderr.toString());

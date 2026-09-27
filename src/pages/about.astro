@@ -6,7 +6,7 @@ import SectionHead from '../components/ui/SectionHead.astro';
 import PlayWord from '../components/site/PlayWord.astro';
 import HobbyGrid from '../components/hobbies/HobbyGrid.astro';
 import { getPlayIndex } from '../lib/content';
-import { pages } from '../content/pages';
+import { pages } from '../copy/pages';
 
 const play = (await getPlayIndex()).slice(0, 4);
 const a = pages.about;

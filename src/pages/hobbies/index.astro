@@ -3,7 +3,7 @@ import SiteLayout from '../../layouts/SiteLayout.astro';
 import PlayWord from '../../components/site/PlayWord.astro';
 import HobbyGrid from '../../components/hobbies/HobbyGrid.astro';
 import { getPlayIndex } from '../../lib/content';
-import { pages } from '../../content/pages';
+import { pages } from '../../copy/pages';
 const items = await getPlayIndex();
 ---
 <SiteLayout title="Hobbies — Zack Low" description={pages.hobbies.lede}>

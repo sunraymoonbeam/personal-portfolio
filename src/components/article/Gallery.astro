@@ -1,0 +1,46 @@
+---
+import { Image } from 'astro:assets';
+
+/**
+ * The entry's photographs, in the order they appear in the frontmatter.
+ *
+ * Deliberately not a carousel. Every picture is visible and printable, there
+ * is nothing to operate, and it needs no JavaScript. One wide picture gets the
+ * full column; two or more share a row and wrap.
+ */
+interface Item { src: ImageMetadata; alt: string; caption?: string }
+interface Props { items?: Item[]; title?: string }
+const { items, title = 'More pictures' } = Astro.props;
+---
+{items && items.length > 0 && (
+  <section class="gallery rise" aria-label={title}>
+    <h2 class="eyebrow">{title}</h2>
+    <ul class:list={['grid', { single: items.length === 1 }]}>
+      {items.map((item) => (
+        <li>
+          <figure>
+            <Image src={item.src} alt={item.alt} widths={[480, 900, 1400]}
+                   sizes="(max-width: 700px) 100vw, 480px" loading="lazy" />
+            {item.caption && <figcaption class="t-14 muted">{item.caption}</figcaption>}
+          </figure>
+        </li>
+      ))}
+    </ul>
+  </section>
+)}
+<style>
+  .gallery { display: flex; flex-direction: column; gap: var(--s-5); margin-top: var(--s-9); }
+  .grid {
+    display: grid; gap: var(--s-5);
+    grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+  }
+  /* A lone picture should not be stretched across the whole column. */
+  .single { grid-template-columns: minmax(0, 1fr); max-width: 560px; }
+
+  figure { margin: 0; display: flex; flex-direction: column; gap: var(--s-2); }
+  figure img {
+    width: 100%; height: auto; border-radius: var(--radius-m);
+    background: var(--surface);
+  }
+  figcaption { line-height: 1.45; }
+</style>
