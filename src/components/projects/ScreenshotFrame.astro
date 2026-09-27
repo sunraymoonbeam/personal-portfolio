@@ -2,38 +2,53 @@
 import { Image } from 'astro:assets';
 interface Props {
   title?: string; src?: ImageMetadata; alt?: string; dim?: boolean;
-  height?: number; eager?: boolean; chrome?: boolean;
+  ratio?: string; eager?: boolean; chrome?: boolean;
 }
-const { title = '', src, alt = '', dim = false, height = 190, eager = false, chrome = false } = Astro.props;
+const {
+  title = '', src, alt = '', dim = false,
+  ratio = '16 / 10', eager = false, chrome = true,
+} = Astro.props;
 ---
-<div class="frame">
-  {chrome && <div class="bar" aria-hidden="true">
-    <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
-    {title && <span class="t-12 title">{title}</span>}
-  </div>}
-  <div class="shot" style={`--h:${height}px`}>
+<div class:list={['frame', { chrome }]}>
+  {chrome && (
+    <div class="bar" aria-hidden="true">
+      <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+      {title && <span class="t-12 title">{title}</span>}
+    </div>
+  )}
+  <div class="shot" style={`--ratio:${ratio}`}>
     {src
-      ? <Image src={src} alt={alt} class:list={['img', { dim }]} loading={eager ? 'eager' : 'lazy'} />
-      : <span class="t-12 muted ph">Screenshot</span>}
+      ? <Image src={src} alt={alt} widths={[420, 800, 1400]}
+               sizes="(max-width: 900px) 100vw, 620px"
+               class:list={['img', { dim }]} loading={eager ? 'eager' : 'lazy'} />
+      : <span class="t-12 muted">Screenshot</span>}
   </div>
 </div>
 <style>
-  .frame {
-    border: 1px solid var(--border-strong); border-radius: var(--radius-m);
-    overflow: hidden; background: var(--canvas);
-  }
+  .frame { border-radius: var(--radius-m); overflow: hidden; background: var(--surface); }
+  .chrome { border: 1px solid var(--border-strong); }
+
   .bar {
-    height: 38px; display: flex; align-items: center; gap: 8px; padding-inline: 14px;
+    height: 34px; display: flex; align-items: center; gap: 8px; padding-inline: 12px;
     background: var(--subtle); border-bottom: 1px solid var(--border);
   }
-  .dot { width: 12px; height: 12px; border-radius: 50%; }
+  .dot { width: 11px; height: 11px; border-radius: 50%; }
   .r { background: #ff5f57; } .y { background: #febc2e; } .g { background: #28c840; }
-  .title { flex-grow: 1; text-align: center; margin-right: 52px; color: var(--ink-3); font-family: var(--font-mono); }
-  .shot {
-    height: var(--h); display: grid; place-items: center;
-    background: var(--surface); overflow: hidden;
+  .title {
+    flex-grow: 1; text-align: center; margin-right: 47px;
+    color: var(--ink-3); font-family: var(--font-mono);
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
   }
+
+  .shot { aspect-ratio: var(--ratio); display: grid; place-items: center; overflow: hidden; }
   .img { width: 100%; height: 100%; object-fit: cover; }
-  /* Dimming is opt-in per image: a bright UI screenshot wants it, a photo does not. */
+
+  /* Slow zoom on hover, from the reference site: long duration and a soft
+     ease so it reads as depth rather than a jump. */
+  :global(a:hover) .img,
+  :global(.linked:hover) .img { transform: scale(1.04); }
+  .img { transition: transform 800ms cubic-bezier(0.22, 1, 0.36, 1); }
+
   :root[data-theme='dark'] .img.dim { filter: brightness(0.92); }
+  @media (prefers-reduced-motion: reduce) { .img { transition: none; } }
 </style>

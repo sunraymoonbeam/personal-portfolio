@@ -4,7 +4,8 @@ export const site = {
   fullName: 'Renhwa (Zack) Low',
   role: 'Software engineer specialising in data',
   location: 'Singapore',
-  motto: 'I build useful systems around data.',
+  wordmark: 'Zack Low',
+  tagline: 'Software engineer specialising in data, in Singapore.',
   origin: 'https://renhwa.com',
   email: 'zack.low.dev@gmail.com',
   socials: {
@@ -13,7 +14,7 @@ export const site = {
   },
   nav: [
     { href: '/projects', label: 'Projects' },
-    { href: '/work', label: 'Work experience' },
+    { href: '/work', label: 'Work' },
     { href: '/about', label: 'About' },
     { href: '/resume', label: 'Résumé' },
   ],

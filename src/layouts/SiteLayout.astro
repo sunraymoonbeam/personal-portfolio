@@ -12,7 +12,7 @@ import { site } from '../config/site';
 interface Props { title?: string; description?: string; image?: string; }
 const {
   title = `${site.name} — ${site.role}`,
-  description = site.motto,
+  description = site.tagline,
   image,
 } = Astro.props;
 const canonical = new URL(Astro.url.pathname, site.origin).href;

@@ -1,59 +1,71 @@
 ---
 import ScreenshotFrame from './ScreenshotFrame.astro';
-import ProjectVisual from './ProjectVisual.astro';
-import ArrowLink from '../ui/ArrowLink.astro';
 import TechChip from '../ui/TechChip.astro';
 import { yearOf } from '../../lib/date';
 import type { Project } from '../../lib/content';
 
-interface Props { entry: Project; index: number; }
-const { entry, index } = Astro.props;
+interface Props { entry: Project; }
+const { entry } = Astro.props;
 const d = entry.data;
 const href = d.writeup ? `/projects/${entry.id}` : undefined;
-const n = String(index + 1).padStart(2, '0');
 ---
+{/* Image left, text right. The image is the link and zooms on hover; the
+    Write-up and Source links below are separate targets. */}
 <article class="row" data-tags={d.tags.join('|')}>
-  {href
-    ? <a href={href} aria-label={d.title}>{d.cover ? <ScreenshotFrame title={d.title} src={d.cover} alt={d.coverAlt ?? ''} dim={d.coverDim} height={380} /> : <ProjectVisual title={d.shortTitle ?? d.title} wide />}</a>
-    : (d.cover ? <ScreenshotFrame title={d.title} src={d.cover} alt={d.coverAlt ?? ''} dim={d.coverDim} height={380} /> : <ProjectVisual title={d.shortTitle ?? d.title} wide />)}
-
-  {/* Both columns start on the same line — the eyebrow row sets the baseline. */}
-  <div class="under">
-    <div class="col">
-      <div class="meta">
-        <span class="eyebrow tabular">{n} · {yearOf(d.published)}</span>
-        <ul class="tags">{d.tags.map((t) => <li class="chip t-14">{t}</li>)}</ul>
-      </div>
-      <h2 class="t-40">{href ? <a href={href}>{d.shortTitle ?? d.title}</a> : (d.shortTitle ?? d.title)}</h2>
-      <p class="t-21">{d.claim}</p>
-    </div>
-    <div class="col">
-      <div class="meta"><span class="eyebrow">{d.status}</span></div>
-      <p class="t-17 muted">{d.summary}</p>
-      <ul class="tags stack-tags">{d.stack.map((id) => <TechChip id={id} />)}</ul>
-    </div>
+  <div class="visual">
+    {href
+      ? <a href={href} class="shot-link" aria-label={d.title}>
+          <ScreenshotFrame title={d.title} src={d.cover} alt={d.coverAlt ?? ''} dim={d.coverDim} />
+        </a>
+      : <ScreenshotFrame title={d.title} src={d.cover} alt={d.coverAlt ?? ''} dim={d.coverDim} />}
   </div>
 
-  <div class="links">
-    {href && <ArrowLink href={href} label="Read the build" />}
-    {d.links?.repo && (
-      <a href={d.links.repo} class="src t-17" rel="noopener">
-        <svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 .3a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2.2c-3.3.7-4-1.6-4-1.6-.6-1.4-1.4-1.8-1.4-1.8-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.5 1 0-.8.4-1.3.7-1.6-2.7-.3-5.5-1.3-5.5-5.9 0-1.3.5-2.4 1.2-3.2 0-.4-.5-1.6.1-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0c2.3-1.5 3.3-1.2 3.3-1.2.6 1.6.2 2.8.1 3.2.8.8 1.2 1.9 1.2 3.2 0 4.6-2.8 5.6-5.5 5.9.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .3Z"/></svg>
-        Source on GitHub
-      </a>
-    )}
+  <div class="text">
+    <div class="meta">
+      <span class="eyebrow tabular">{yearOf(d.published)}</span>
+      <span class="eyebrow status">{d.status}</span>
+    </div>
+
+    <h2 class="t-32 name">{href ? <a href={href}>{d.shortTitle ?? d.title}</a> : (d.shortTitle ?? d.title)}</h2>
+    <p class="t-19">{d.claim}</p>
+    <p class="t-17 muted">{d.summary}</p>
+
+    <ul class="tags">{d.stack.slice(0, 6).map((id) => <TechChip id={id} />)}</ul>
+
+    <div class="links">
+      {href && (
+        <a href={href} class="act t-17">
+          Write-up
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M9 6l6 6-6 6" />
+          </svg>
+        </a>
+      )}
+      {d.links?.repo && (
+        <a href={d.links.repo} class="act t-17" rel="noopener">
+          <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 .3a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2.2c-3.3.7-4-1.6-4-1.6-.6-1.4-1.4-1.8-1.4-1.8-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.5 1 0-.8.4-1.3.7-1.6-2.7-.3-5.5-1.3-5.5-5.9 0-1.3.5-2.4 1.2-3.2 0-.4-.5-1.6.1-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0c2.3-1.5 3.3-1.2 3.3-1.2.6 1.6.2 2.8.1 3.2.8.8 1.2 1.9 1.2 3.2 0 4.6-2.8 5.6-5.5 5.9.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .3Z"/></svg>
+          Source
+        </a>
+      )}
+    </div>
   </div>
 </article>
 <style>
-  .row { display: flex; flex-direction: column; align-items: stretch; gap: var(--s-5); }
-  .under { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-9); align-items: start; }
-  .col { display: flex; flex-direction: column; gap: var(--s-3); }
-  .meta { display: flex; align-items: center; gap: var(--s-3); flex-wrap: wrap; min-height: 28px; }
-  .tags { display: flex; flex-wrap: wrap; gap: 6px; }
-  .stack-tags { margin-top: var(--s-1); }
-  .links { display: flex; align-items: center; gap: var(--s-6); flex-wrap: wrap; }
-  .src { display: inline-flex; align-items: center; gap: 8px; color: var(--ink); }
-  .src:hover { color: var(--link); }
-  .row:has(a:hover) h2 a { color: var(--link); }
-  @media (max-width: 860px) { .under { grid-template-columns: 1fr; gap: var(--s-5); } }
+  .row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--s-9); align-items: center; }
+  .shot-link { display: block; }
+  .text { display: flex; flex-direction: column; gap: var(--s-3); }
+  .meta { display: flex; align-items: center; gap: var(--s-4); }
+  .status { color: var(--ink-3); }
+  .name { font-weight: 600; }
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: var(--s-1); }
+
+  .links { display: flex; align-items: center; gap: var(--s-6); margin-top: var(--s-3); }
+  .act { display: inline-flex; align-items: center; gap: 8px; color: var(--ink); }
+  .act:hover { color: var(--link); }
+  .act svg { transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1); }
+  .act:hover svg:first-child { transform: none; }
+  .act:hover svg:last-child { transform: translateX(3px); }
+
+  @media (max-width: 860px) { .row { grid-template-columns: 1fr; gap: var(--s-5); } }
 </style>

@@ -1,0 +1,18 @@
+---
+import SiteLayout from '../../layouts/SiteLayout.astro';
+import PlayWord from '../../components/site/PlayWord.astro';
+import HobbyGrid from '../../components/hobbies/HobbyGrid.astro';
+import { getPlayIndex } from '../../lib/content';
+import { pages } from '../../content/pages';
+const items = await getPlayIndex();
+---
+<SiteLayout title="Hobbies — Zack Low" description={pages.hobbies.lede}>
+  <section class="section wrap intro measure-start">
+    
+    <div class="brand"><PlayWord size={40} /></div>
+    <h1 class="t-48">{pages.hobbies.title}</h1>
+    <p class="t-21 muted">{pages.hobbies.lede}</p>
+  </section>
+  <section class="wrap" style="padding-bottom: var(--s-11)"><HobbyGrid items={items} /></section>
+</SiteLayout>
+<style>.intro { display: flex; flex-direction: column; gap: var(--s-4); }</style>

@@ -1,25 +1,39 @@
 /** Home page copy. Edit sentences here, never in a component. */
 export const home = {
-  eyebrow: 'Software engineer specialising in data · Singapore',
-  headline: 'I build systems that make data useful.',
-  lede: 'At Carro I build production AI workflows for customer service and internal teams. Before that I worked on generative animation, classroom audio and text analytics. I like getting from a real problem to a system people can use.',
+  name: 'Ren Hwa (Zack) Low',
+  role: 'Software engineer, specialising in data',
+
+  /* The positioning line: what he is, not what he does. */
+  tagline: 'I solve problems. The code is just how I do it.',
+
+  lede:
+    'I build full-stack software end to end, and I specialise in AI — with real ' +
+    'breadth across computer vision, audio and speech, and large language models. ' +
+    'Most of my useful work happens before any code is written: working out what ' +
+    'is actually broken, and for whom.',
+
   sections: {
     projects: {
       title: 'Projects',
-      sub: 'A shared photo app, a personal language-model experiment and a tool for helping teammates learn.',
+      sub: 'The things I build on my own time, usually instead of sleeping.',
     },
     work: {
-      title: 'Work experience',
-      sub: 'Five roles across software, machine learning, research and databases.',
+      title: 'Work',
+      sub: 'Five roles across AI, research and data. Each one has the long version.',
     },
-    play: {
-      title: 'Play',
-      sub: 'Climbing, coffee and cooking.',
+    stack: {
+      title: 'Tools I reach for',
+      sub: 'Everything here shows up in something above.',
+    },
+    hobbies: {
+      title: 'Hobbies',
+      sub: 'The things I do when nobody is paying me.',
     },
   },
+
   cta: {
-    title: 'Want to work together?',
-    sub: 'I enjoy solving problems with people who know the work up close. Get in touch.',
+    title: 'Have something worth building?',
+    sub: 'Open to roles where I can own a problem end to end. Or just say hello.',
     action: 'Get in touch',
   },
 } as const;

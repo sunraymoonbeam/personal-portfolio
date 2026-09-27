@@ -1,7 +1,5 @@
 ---
 import ScreenshotFrame from './ScreenshotFrame.astro';
-import ProjectVisual from './ProjectVisual.astro';
-import ArrowLink from '../ui/ArrowLink.astro';
 import { yearOf } from '../../lib/date';
 import type { Project } from '../../lib/content';
 
@@ -9,31 +7,31 @@ interface Props { entry: Project; }
 const { entry } = Astro.props;
 const d = entry.data;
 const href = d.writeup ? `/projects/${entry.id}` : undefined;
+const Tag = href ? 'a' : 'div';
 ---
-<article class="card">
-  {href
-    ? <a href={href} aria-label={d.title}>{d.cover ? <ScreenshotFrame title={d.title} src={d.cover} alt={d.coverAlt ?? ''} dim={d.coverDim} /> : <ProjectVisual title={d.shortTitle ?? d.title} />}</a>
-    : (d.cover ? <ScreenshotFrame title={d.title} src={d.cover} alt={d.coverAlt ?? ''} dim={d.coverDim} /> : <ProjectVisual title={d.shortTitle ?? d.title} />)}
-
+{/* Home card: title, year beside it, one line. Nothing else — the detail page
+    is one click away and does the explaining. */}
+<Tag {...(href ? { href } : {})} class:list={['card', { linked: !!href }]}>
+  <ScreenshotFrame title={d.title} src={d.cover} alt={d.coverAlt ?? ''} dim={d.coverDim} />
   <div class="body">
-    <div class="meta">
-      <span class="eyebrow tabular">{yearOf(d.published)}</span>
-      <ul class="tags">{d.tags.map((t) => <li class="chip t-14">{t}</li>)}</ul>
+    <div class="head">
+      <h3 class="t-21 name">{d.shortTitle ?? d.title}</h3>
+      <span class="t-14 small tabular">{yearOf(d.published)}</span>
     </div>
-    <h3 class="t-28">{href ? <a href={href}>{d.shortTitle ?? d.title}</a> : (d.shortTitle ?? d.title)}</h3>
-    <p class="t-17 claim">{d.claim}</p>
-    <p class="t-14 muted">{d.summary}</p>
-    {href && <div class="cta"><ArrowLink href={href} label="Read the build" /></div>}
+    <p class="t-14 muted">{d.claim}</p>
   </div>
-</article>
+</Tag>
 <style>
-  /* Equal-height cards come from the grid stretching + this column layout,
-     not from hard-coded block heights (those leave gaps when cards stack). */
-  .card { display: flex; flex-direction: column; gap: var(--s-4); height: 100%; min-width: 0; }
-  .card:has(a:hover) h3 a { color: var(--link); }
-  .body { display: flex; flex-direction: column; gap: var(--s-3); flex-grow: 1; }
-  .meta { display: flex; align-items: center; gap: var(--s-3); flex-wrap: wrap; }
-  .tags { display: flex; gap: 6px; flex-wrap: wrap; }
-  .claim { color: var(--ink); }
-  .cta { margin-top: auto; padding-top: var(--s-2); }
+  .card {
+    display: flex; flex-direction: column; gap: var(--s-4); height: 100%;
+    padding: var(--s-3); margin: calc(var(--s-3) * -1);
+    border-radius: var(--radius-l);
+    transition: background-color 180ms ease;
+  }
+  .linked:hover { background: var(--chip-bg); color: inherit; }
+  .linked:hover .name { color: var(--link); }
+
+  .body { display: flex; flex-direction: column; gap: var(--s-2); }
+  .head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--s-3); }
+  .name { font-weight: 600; transition: color 180ms ease; }
 </style>

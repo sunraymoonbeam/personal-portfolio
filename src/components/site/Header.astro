@@ -7,33 +7,31 @@ const active = (href: string) => path === href || path.startsWith(href + '/');
 ---
 <header class="header">
   <a href="/" class="brand">
-    <Logo size={36} />
-    <span class="t-17 motto">{site.motto}</span>
+    <Logo size={30} />
+    <span class="t-17 wordmark">{site.wordmark}</span>
   </a>
   <nav aria-label="Main">
     <ul class="links">
       {site.nav.map((l) => (
         <li>
-          <a href={l.href} class:list={['t-14', { on: active(l.href) }]}
+          <a href={l.href} class:list={['t-14', 'nav-link', { on: active(l.href) }]}
              aria-current={active(l.href) ? 'page' : undefined}>{l.label}</a>
         </li>
       ))}
       <li>
-        <a href="/play" class:list={['playlink', { on: active('/play') }]}
-           aria-current={active('/play') ? 'page' : undefined}>
-          <PlayWord size={17} /><span class="visually-hidden">Play</span>
+        <a href="/hobbies" class:list={['nav-link', 'playlink', { on: active('/hobbies') }]}
+           aria-current={active('/hobbies') ? 'page' : undefined}>
+          <PlayWord size={17} /><span class="visually-hidden">Hobbies</span>
         </a>
       </li>
-      <li><a href="/contact" class="btn cta">Get in touch</a></li>
     </ul>
   </nav>
 </header>
 <style>
   .header {
     position: sticky; top: 0; z-index: 9;
-    display: flex; align-items: center; justify-content: space-between;
-    gap: var(--s-8); min-height: 72px;
-    padding: var(--s-3) var(--gutter);
+    display: flex; align-items: center; gap: var(--s-8);
+    min-height: 68px; padding: var(--s-3) var(--gutter);
     background: var(--nav-bg);
     backdrop-filter: saturate(180%) blur(20px);
     border-bottom: 1px solid var(--border);
@@ -41,14 +39,24 @@ const active = (href: string) => path === href || path.startsWith(href + '/');
   @supports not (backdrop-filter: blur(1px)) { .header { background: var(--canvas); } }
 
   .brand { display: flex; align-items: center; gap: var(--s-3); }
-  .motto { color: var(--ink); }
-  .links { display: flex; align-items: center; gap: var(--s-5); flex-wrap: wrap; }
-  .links a.on { font-weight: 600; }
-  .playlink.on { border-bottom: 2px solid #F5A623; padding-bottom: 1px; }
-  .cta { min-height: 36px; padding: 7px 16px; font-size: 14px; }
+  .wordmark { font-weight: 600; letter-spacing: -0.02em; }
 
-  @media (max-width: 860px) {
-    .motto { display: none; }
+  /* Nav sits next to the name rather than pushed to the far edge. */
+  .links { display: flex; align-items: center; gap: var(--s-6); flex-wrap: wrap; }
+
+  /* Underline grows from the left on hover — the one nav flourish. */
+  .nav-link { position: relative; }
+  .nav-link::after {
+    content: ''; position: absolute; left: 0; right: 0; bottom: -4px; height: 1.5px;
+    background: currentColor; transform: scaleX(0); transform-origin: left;
+    transition: transform 260ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .nav-link:hover::after, .nav-link.on::after { transform: scaleX(1); }
+  .nav-link.on { font-weight: 600; }
+  .playlink::after { background: #F5A623; }
+
+  @media (max-width: 720px) {
+    .header { gap: var(--s-5); }
     .links { gap: var(--s-4); }
   }
 </style>

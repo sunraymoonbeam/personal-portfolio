@@ -2,36 +2,42 @@
 export const pages = {
   projects: {
     eyebrow: 'Projects',
-    title: 'Projects',
-    lede: 'Kanta, Echo and a hands-on onboarding tool. Each write-up explains the problem and the part I built.',
+    title: 'Slaving away in my free time.',
+    lede:
+      'The things I build when nobody asked me to. Each one has a write-up ' +
+      'covering the problem, what I decided, and what it actually cost.',
   },
   work: {
-    eyebrow: 'Work experience',
-    title: 'Work experience',
-    lede: 'I have worked on customer-service agents, generative animation, classroom speech, text analytics and production databases.',
-    ledger: {
-      title: 'All roles',
-      sub: 'Newest first, grouped by the year I started.',
-    },
+    eyebrow: 'Work',
+    title: 'Where I have worked, and what I actually did there.',
+    lede:
+      'Customer-service agents, generative animation, classroom speech, text ' +
+      'analytics and production databases. The long versions are one click in.',
   },
-  play: {
-    eyebrow: 'Play',
-    title: 'Play',
-    lede: 'Outside work, I spend time climbing, cooking and enjoying coffee.',
+  hobbies: {
+    eyebrow: 'Hobbies',
+    title: 'Things I do when no one pays me.',
+    lede:
+      'Climbing, coffee and cooking. None of it is work, and all of it has ' +
+      'taught me something that turned out to be useful anyway.',
   },
   about: {
     eyebrow: 'About',
     title: "Hi, I'm Zack.",
-    lede: 'Ren Hwa Low on paper, Zack to most people. I am a software engineer specialising in data, currently at Carro in Singapore.',
+    lede:
+      'Ren Hwa Low on paper, Zack to most people. A software engineer ' +
+      'specialising in data, currently at Carro in Singapore.',
   },
   resume: {
     eyebrow: 'Résumé',
-    title: 'Résumé',
-    lede: 'Read my experience below or download the PDF.',
+    title: 'One page.',
+    lede: 'Read it below, or take the file.',
   },
   contact: {
     eyebrow: 'Contact',
-    title: 'Get in touch',
-    lede: 'Email me about a role, a project or a question about my work.',
+    title: 'Say hi.',
+    lede:
+      'About a role, a project, or a question about something I built. ' +
+      'Email is fastest — I reply to everything that is not spam.',
   },
 } as const;

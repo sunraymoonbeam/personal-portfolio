@@ -102,7 +102,7 @@ export async function getPlayIndex(): Promise<
   const [play, projects] = await Promise.all([getPublishedPlay(), getPublishedProjects()]);
   const fromPlay = play.map((e) => ({
     key: keyOf('play', e.id),
-    href: e.data.writeup ? `/play/${e.id}` : '',
+    href: e.data.writeup ? `/hobbies/${e.id}` : '',
     title: e.data.title,
     caption: e.data.caption,
     cover: e.data.cover,

@@ -1,63 +1,25 @@
 ---
 import { Image } from 'astro:assets';
-import { getEntry } from 'astro:content';
 import SiteLayout from '../../layouts/SiteLayout.astro';
-import SectionHead from '../../components/ui/SectionHead.astro';
-import YearLedger from '../../components/work/YearLedger.astro';
-import { getWorkByYear, getFeaturedRole, resolveWork } from '../../lib/content';
-import { formatRange } from '../../lib/date';
+import WorkList from '../../components/work/WorkList.astro';
+import { getWorkRows, resolveWork } from '../../lib/content';
 import { pages } from '../../content/pages';
 
-const groups = await Promise.all((await getWorkByYear()).map(async group => ({
-  year: group.year, roles: await Promise.all(group.roles.map(resolveWork)),
-})));
-const featured = await getFeaturedRole();
-const employer = featured ? await getEntry(featured.data.employer) : undefined;
-const href = featured?.data.writeup ? `/work/${featured.id}` : undefined;
-const Tag = href ? 'a' : 'div';
+const rows = await Promise.all((await getWorkRows()).map(resolveWork));
 ---
-<SiteLayout title="Work experience — Zack Low" description={pages.work.lede}>
-  <section class="section wrap intro measure-start">
+<SiteLayout title="Work — Zack Low" description={pages.work.lede}>
+  <section class="section wrap intro">
     <p class="eyebrow">{pages.work.eyebrow}</p>
     <h1 class="t-64">{pages.work.title}</h1>
-    <p class="t-21 muted">{pages.work.lede}</p>
+    <p class="t-21 muted lede">{pages.work.lede}</p>
   </section>
 
-  {featured && employer && (
-    <section class="wrap feature">
-      <Tag {...(href ? { href } : {})} class:list={['card', { linked: !!href }]}>
-        {featured.data.cover && (
-          <Image src={featured.data.cover} alt={featured.data.coverAlt ?? ''}
-                 widths={[720, 1200, 1600]} sizes="(max-width: 980px) 100vw, 980px"
-                 class="shot" loading="eager" />
-        )}
-        <div class="meta">
-          <Image src={employer.data.logo} alt="" width={44} height={44} class="logo" />
-          <span class="t-14 muted tabular">
-            Latest · {employer.data.name} · {formatRange(featured.data.start, featured.data.end)}
-          </span>
-        </div>
-        <h2 class="t-40">{featured.data.title}</h2>
-        <p class="t-19 muted">{featured.data.summary}</p>
-        {href && <span class="t-17 read">Read about this role →</span>}
-      </Tag>
-    </section>
-  )}
-
-  <section class="section band">
-    <div class="wrap">
-      <SectionHead title={pages.work.ledger.title} sub={pages.work.ledger.sub} />
-      <YearLedger groups={groups} />
-    </div>
+  <section class="wrap list">
+    <WorkList rows={rows} />
   </section>
 </SiteLayout>
 <style>
   .intro { display: flex; flex-direction: column; gap: var(--s-4); }
-  .feature { padding-bottom: var(--s-10); }
-  .card { display: flex; flex-direction: column; gap: var(--s-4); }
-  .linked:hover h2 { color: var(--link); }
-  .read { color: var(--link); }
-  .shot { width: 100%; aspect-ratio: 21 / 9; object-fit: cover; border-radius: var(--radius-l); }
-  .meta { display: flex; align-items: center; gap: var(--s-3); }
-  .logo { border-radius: 10px; object-fit: contain; border: 1px solid var(--border); background: var(--canvas); }
+  .intro h1, .intro .lede { max-width: 760px; }
+  .list { padding-bottom: var(--s-11); }
 </style>

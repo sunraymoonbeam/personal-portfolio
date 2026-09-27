@@ -1,0 +1,77 @@
+---
+import { Image } from 'astro:assets';
+import { formatRange, formatDuration, yearOf } from '../../lib/date';
+
+interface Row {
+  entry: { id: string; data: Record<string, any> };
+  employer: { data: { name: string; logo: ImageMetadata } };
+}
+interface Props { rows: Row[]; }
+const { rows } = Astro.props;
+---
+{/* Date on the left, role and company on the right, description beneath.
+    The whole row is the target and greys on hover — no "read" link needed. */}
+<ol class="list">
+  {rows.map(({ entry, employer }) => {
+    const d = entry.data;
+    const href = d.writeup ? `/work/${entry.id}` : undefined;
+    const Tag = href ? 'a' : 'div';
+    const current = !d.end;
+    return (
+      <li>
+        <Tag {...(href ? { href } : {})} class:list={['row', { linked: !!href }]}
+             aria-current={current ? 'true' : undefined}>
+          <div class="when">
+            <span class="t-24 tabular year">{yearOf(d.start)}</span>
+            <span class="t-12 small tabular">{formatRange(d.start, d.end)}</span>
+            <span class="t-12 small tabular">{formatDuration(d.start, d.end)}</span>
+          </div>
+
+          <div class="what">
+            <div class="top">
+              <Image src={employer.data.logo} alt="" width={36} height={36} class="logo" loading="lazy" />
+              <div class="titles">
+                <span class="t-21 role">{d.role}</span>
+                <span class="t-14 muted">{employer.data.name} · {d.kind} · {d.location}</span>
+              </div>
+              {current && <span class="t-12 present"><span class="dot" aria-hidden="true"></span>Present</span>}
+            </div>
+            <p class="t-17 muted desc">{d.summary}</p>
+          </div>
+        </Tag>
+      </li>
+    );
+  })}
+</ol>
+<style>
+  .list { display: flex; flex-direction: column; }
+  li + li { border-top: 1px solid var(--border); }
+
+  .row {
+    display: grid; grid-template-columns: 150px minmax(0, 1fr);
+    gap: var(--s-7); align-items: start;
+    padding: var(--s-6) var(--s-4);
+    margin-inline: calc(var(--s-4) * -1);
+    border-radius: var(--radius-m);
+    transition: background-color 180ms ease;
+  }
+  .linked:hover { background: var(--chip-bg); color: inherit; }
+  .linked:hover .role { color: var(--link); }
+
+  .when { display: flex; flex-direction: column; gap: 2px; padding-top: 4px; }
+  .year { font-weight: 500; }
+
+  .what { display: flex; flex-direction: column; gap: var(--s-3); }
+  .top { display: flex; align-items: center; gap: var(--s-3); flex-wrap: wrap; }
+  .logo { border-radius: 8px; object-fit: contain; background: var(--canvas); border: 1px solid var(--border); }
+  .titles { display: flex; flex-direction: column; gap: 2px; }
+  .role { font-weight: 500; transition: color 180ms ease; }
+  .present { display: inline-flex; align-items: center; gap: 6px; color: var(--ink-2); }
+  .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--fill); }
+  .desc { max-width: 62ch; }
+
+  @media (max-width: 760px) {
+    .row { grid-template-columns: 1fr; gap: var(--s-3); }
+    .when { flex-direction: row; align-items: baseline; gap: var(--s-3); padding-top: 0; }
+  }
+</style>

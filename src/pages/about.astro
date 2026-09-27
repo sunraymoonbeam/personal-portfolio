@@ -1,9 +1,9 @@
 ---
+import { Image } from 'astro:assets';
+import portrait from '../assets/portrait.jpg';
 import SiteLayout from '../layouts/SiteLayout.astro';
 import SectionHead from '../components/ui/SectionHead.astro';
-import TechChip from '../components/ui/TechChip.astro';
-import PlayGrid from '../components/play/PlayGrid.astro';
-import { STACK_GROUPS } from '../data/technologies';
+import HobbyGrid from '../components/hobbies/HobbyGrid.astro';
 import { getPlayIndex } from '../lib/content';
 import { pages } from '../content/pages';
 
@@ -26,24 +26,14 @@ const play = (await getPlayIndex()).slice(0, 4);
     <p>I studied Computer Science at NTU. After working on analytics projects, I became interested in data and the systems that make it useful. I chose to explore AI at AI Singapore, but I describe myself as a software engineer specialising in data. Building a model also means understanding the database, the pipeline and the people who use the result.</p>
     <p>At AI Singapore I worked on a generative animation MVP for a gaming company. At NIE I worked on speech and signal processing for classroom discussions. At the Singapore Department of Statistics I prototyped LLM and text analytics tools. I now build agent workflows and their infrastructure at Carro.</p>
     <p>I enjoy finding the cause of a bug. I step back to understand the input, the expected result and the surrounding system, then work through a fix. I also care about explaining technical ideas clearly to teammates and stakeholders. Teaching others has made me check my own understanding.</p>
-    <p>I have learned to keep priorities visible and to avoid polishing a small piece while the real problem waits. Outside work, I spend time climbing, cooking and enjoying coffee. There is more of that on <a href="/play">Play</a>.</p>
+    <p>I have learned to keep priorities visible and to avoid polishing a small piece while the real problem waits. Outside work, I spend time climbing, cooking and enjoying coffee. There is more of that on <a href="/hobbies">Play</a>.</p>
   </div></section>
 
-  <section class="section band"><div class="wrap">
-    <SectionHead title="Tools I use" sub="From the projects and roles described here." />
-    <div class="groups">
-      {STACK_GROUPS.map((g) => (
-        <div class="group">
-          <h3 class="t-21">{g.title}</h3>
-          <ul class="chips">{g.items.map((id) => <TechChip id={id} />)}</ul>
-        </div>
-      ))}
-    </div>
-  </div></section>
+  
 
   <section class="section"><div class="wrap">
-    <SectionHead title="Play" sub="Climbing, coffee and cooking." href="/play" linkLabel="All three" />
-    <PlayGrid items={play} />
+    <SectionHead title="Play" sub="Climbing, coffee and cooking." href="/hobbies" linkLabel="All three" />
+    <HobbyGrid items={play} />
   </div></section>
 </SiteLayout>
 <style>
