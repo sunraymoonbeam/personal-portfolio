@@ -1,0 +1,38 @@
+---
+import { site } from '../../config/site';
+import Logo from './Logo.astro';
+import PlayWord from './PlayWord.astro';
+import ThemeToggle from './ThemeToggle.astro';
+const year = new Date().getFullYear();
+---
+<footer class="footer">
+  <nav aria-label="Footer" class="links">
+    {site.nav.map((l) => <a href={l.href} class="t-14 muted">{l.label}</a>)}
+    <a href="/play" aria-label="Play"><PlayWord size={16} /></a>
+    <span class="sep" aria-hidden="true"></span>
+    <a href={site.socials.github} class="t-14 muted" rel="me">GitHub</a>
+    <a href={site.socials.linkedin} class="t-14 muted" rel="me">LinkedIn</a>
+    <a href={`mailto:${site.email}`} class="t-14 muted">Email</a>
+    <ThemeToggle />
+  </nav>
+
+  <div class="rule" aria-hidden="true"></div>
+
+  <a href="/" aria-label="Home"><Logo size={56} /></a>
+
+  <div class="fine">
+    <span class="t-12 small">© {year} {site.fullName}</span>
+    <span class="t-12 small">Designed and built from scratch.</span>
+  </div>
+</footer>
+<style>
+  .footer {
+    display: flex; flex-direction: column; align-items: center; gap: var(--s-6);
+    padding: var(--s-9) var(--gutter) var(--s-8);
+    background: var(--surface); border-top: 1px solid var(--border);
+  }
+  .links { display: flex; align-items: center; gap: var(--s-5); flex-wrap: wrap; justify-content: center; }
+  .sep { width: 1px; height: 12px; background: var(--border-strong); }
+  .rule { width: 100%; max-width: var(--content); height: 1px; background: var(--border-strong); }
+  .fine { display: flex; flex-direction: column; align-items: center; gap: var(--s-1); text-align: center; }
+</style>

@@ -1,0 +1,85 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import { getPublishedWork } from '../lib/content';
+import { getEntry } from 'astro:content';
+import { formatRange, formatDuration } from '../lib/date';
+import { site } from '../config/site';
+
+// Real HTML text, not an image of a PDF: images cannot reflow, cannot be
+// selected or searched, and are hostile to assistive tech. The PDF supplements.
+const roles = await getPublishedWork();
+const withEmployers = await Promise.all(
+  roles.map(async (r) => ({ r, e: await getEntry(r.data.employer) })),
+);
+---
+<SiteLayout title="Résumé — Zack Low" description="One page. Updated September 2026.">
+  <section class="section wrap head">
+    <p class="eyebrow">Résumé</p>
+    <h1 class="t-48">One page.</h1>
+    <p class="t-17 muted">
+      The full version is below as text so it reads on any device. The PDF is one
+      tap away, named so it shows up right when you forward it.
+    </p>
+    <div class="actions">
+      <a href="/resume.pdf" class="btn" download="Renhwa Low — Software Engineer, AI.pdf">Download PDF</a>
+      <a href="/resume.pdf" class="btn btn-ghost" target="_blank" rel="noopener">Open in a new tab</a>
+    </div>
+  </section>
+
+  <section class="wrap body">
+    <section class="block">
+      <h2 class="t-24">Experience</h2>
+      <ol class="list">
+        {withEmployers.map(({ r, e }) => (
+          <li class="item">
+            <div class="when"><span class="t-14 muted tabular">{formatRange(r.data.start, r.data.end)}</span>
+              <span class="t-12 small tabular">{formatDuration(r.data.start, r.data.end)}</span></div>
+            <div class="what">
+              <h3 class="t-17 role">{r.data.role} · {e.data.name}</h3>
+              <p class="t-14 muted">{r.data.summary}</p>
+              {r.data.cardHighlights && (
+                <ul class="hl">{r.data.cardHighlights.map((h) => <li class="t-14">{h}</li>)}</ul>
+              )}
+            </div>
+          </li>
+        ))}
+      </ol>
+    </section>
+
+    <section class="block">
+      <h2 class="t-24">Education</h2>
+      <div class="item">
+        <div class="when"><span class="t-14 muted tabular">2020 — 2024</span></div>
+        <div class="what"><h3 class="t-17 role">B.E. Computer Science</h3>
+          <p class="t-14 muted">Nanyang Technological University, Singapore</p></div>
+      </div>
+    </section>
+
+    <section class="block">
+      <h2 class="t-24">Contact</h2>
+      <ul class="contact">
+        <li class="t-17"><a href={`mailto:${site.email}`}>{site.email}</a></li>
+        <li class="t-17"><a href={site.socials.github}>GitHub</a></li>
+        <li class="t-17"><a href={site.socials.linkedin}>LinkedIn</a></li>
+      </ul>
+    </section>
+  </section>
+</SiteLayout>
+<style>
+  .head { display: flex; flex-direction: column; gap: var(--s-4); max-width: 640px; }
+  .actions { display: flex; gap: var(--s-3); flex-wrap: wrap; margin-top: var(--s-2); }
+  .body { padding-bottom: var(--s-11); display: flex; flex-direction: column; gap: var(--s-9); }
+  .block { display: flex; flex-direction: column; gap: var(--s-5); }
+  .list { display: flex; flex-direction: column; }
+  .item {
+    display: grid; grid-template-columns: 200px 1fr; gap: var(--s-6);
+    padding-block: var(--s-5); border-top: 1px solid var(--border);
+  }
+  .when { display: flex; flex-direction: column; gap: 2px; }
+  .what { display: flex; flex-direction: column; gap: var(--s-2); }
+  .role { font-weight: 600; }
+  .hl { list-style: disc; padding-left: 18px; display: flex; flex-direction: column; gap: 6px; }
+  .contact { display: flex; gap: var(--s-5); flex-wrap: wrap; }
+  .contact a { color: var(--link); }
+  @media (max-width: 700px) { .item { grid-template-columns: 1fr; gap: var(--s-2); } }
+</style>

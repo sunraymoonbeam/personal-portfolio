@@ -1,0 +1,74 @@
+---
+import { Image } from 'astro:assets';
+import { getEntry } from 'astro:content';
+import { formatRange, formatDuration } from '../../lib/date';
+import ArrowLink from '../ui/ArrowLink.astro';
+import type { Work } from '../../lib/content';
+
+interface Props { groups: Array<{ year: string; roles: Work[] }>; }
+const { groups } = Astro.props;
+
+// Resolve employers up front: components render, they don't query policy.
+const resolved = await Promise.all(
+  groups.map(async (g) => ({
+    year: g.year,
+    roles: await Promise.all(
+      g.roles.map(async (r) => ({ entry: r, employer: await getEntry(r.data.employer) })),
+    ),
+  })),
+);
+---
+<div class="ledger">
+  {resolved.map(({ year, roles }) => (
+    <section class="group">
+      <h2 class="t-28 tabular year">{year}</h2>
+      <ol>
+        {roles.map(({ entry, employer }) => {
+          const d = entry.data;
+          const href = d.writeup ? `/work/${entry.id}` : undefined;
+          const current = !d.end;
+          return (
+            <li class="item" aria-current={current ? 'true' : undefined}>
+              <Image src={employer.data.logo} alt="" width={44} height={44} class="logo" loading="lazy" />
+              <div class="stack body">
+                <div class="row-top">
+                  {href ? <a href={href} class="t-19 role">{d.role}</a> : <span class="t-19 role">{d.role}</span>}
+                  {current && <span class="t-12 present"><span class="dot" aria-hidden="true"></span>Present</span>}
+                </div>
+                <span class="t-14 muted tabular">
+                  {employer.data.name} · {d.kind} ·
+                  <time datetime={d.start}> {formatRange(d.start, d.end)}</time> · {formatDuration(d.start, d.end)}
+                </span>
+                <span class="t-17 title">{d.title}</span>
+                {href && <span class="cta"><ArrowLink href={href} label="Read the write-up" /></span>}
+              </div>
+            </li>
+          );
+        })}
+      </ol>
+    </section>
+  ))}
+</div>
+<style>
+  .group { display: grid; grid-template-columns: 112px 1fr; gap: var(--s-6); align-items: start; }
+  .group + .group { padding-top: var(--s-9); }
+  /* The year parks while you scroll its roles. 72px clears the sticky header. */
+  .year { position: sticky; top: 72px; padding-top: var(--s-6); font-weight: 500; }
+  .item {
+    display: grid; grid-template-columns: 44px 1fr; gap: var(--s-5);
+    padding-block: var(--s-6); border-top: 1px solid var(--border-strong);
+  }
+  .logo { border-radius: 10px; object-fit: contain; background: var(--canvas); border: 1px solid var(--border); }
+  .body { gap: 7px; }
+  .row-top { display: flex; align-items: baseline; gap: var(--s-3); flex-wrap: wrap; }
+  .role { font-weight: 500; }
+  .present { display: inline-flex; align-items: center; gap: 6px; color: var(--ink-2); }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--fill); }
+  .title { max-width: 620px; }
+  .cta { margin-top: var(--s-1); }
+
+  @media (max-width: 700px) {
+    .group { grid-template-columns: 1fr; gap: var(--s-3); }
+    .year { position: static; padding-top: 0; }  /* unstick on narrow screens */
+  }
+</style>

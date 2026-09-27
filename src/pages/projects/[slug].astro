@@ -1,0 +1,54 @@
+---
+import { render } from 'astro:content';
+import ArticleLayout from '../../layouts/ArticleLayout.astro';
+import ScreenshotFrame from '../../components/projects/ScreenshotFrame.astro';
+import { getProjectArticles, toArticleLinks, getAdjacent, keyOf } from '../../lib/content';
+import { formatMonth } from '../../lib/date';
+
+export async function getStaticPaths() {
+  const articles = await getProjectArticles();
+  return articles.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const d = entry.data;
+const { Content } = await render(entry);
+const links = toArticleLinks('projects', await getProjectArticles());
+const { prev, next } = getAdjacent(links, keyOf('projects', entry.id));
+---
+<ArticleLayout
+  title={d.title} summary={d.claim}
+  eyebrow={`${formatMonth(d.published)} · ${d.status}`}
+  backHref="/projects" backLabel="All projects"
+  prev={prev} next={next}
+>
+  {d.cover && (
+    <figure slot="hero" class="hero">
+      <ScreenshotFrame title={d.title} src={d.cover} alt={d.coverAlt ?? ''} dim={d.coverDim} height={520} eager />
+    </figure>
+  )}
+  <div slot="aside" class="facts">
+    <div><span class="eyebrow">Built with</span>
+      <ul class="tags">{d.stack.map((s) => <li class="chip t-14">{s}</li>)}</ul></div>
+    {d.metrics && (
+      <div><span class="eyebrow">Numbers</span>
+        <div class="metrics">{d.metrics.map((m) => (
+          <span class="metric"><span class="t-28 tabular">{m.value}</span><span class="t-14 muted">{m.label}</span></span>
+        ))}</div></div>
+    )}
+    {d.cardHighlights && (
+      <div><span class="eyebrow">Highlights</span>
+        <ul class="hl">{d.cardHighlights.map((h) => <li class="t-14 muted">{h}</li>)}</ul></div>
+    )}
+    {d.links?.repo && <a href={d.links.repo} class="btn btn-dark">Source</a>}
+  </div>
+  <Content />
+</ArticleLayout>
+<style>
+  .hero { margin: 0; padding-bottom: var(--s-4); }
+  .facts { display: flex; flex-direction: column; gap: var(--s-6); }
+  .tags, .hl { display: flex; flex-wrap: wrap; gap: 6px; margin-top: var(--s-3); }
+  .hl { flex-direction: column; gap: var(--s-2); list-style: disc; padding-left: 18px; }
+  .metrics { display: flex; flex-direction: column; gap: var(--s-3); margin-top: var(--s-3); }
+  .metric { display: flex; flex-direction: column; }
+</style>

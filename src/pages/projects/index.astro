@@ -1,0 +1,17 @@
+---
+import SiteLayout from '../../layouts/SiteLayout.astro';
+import ProjectGrid from '../../components/projects/ProjectGrid.astro';
+import { getPublishedProjects } from '../../lib/content';
+const projects = await getPublishedProjects();
+---
+<SiteLayout title="Projects — Zack Low">
+  <section class="section wrap intro">
+    <p class="eyebrow">Projects</p>
+    <h1 class="t-64">Things I built because I wanted them to exist.</h1>
+    <p class="t-21 muted">Newest first. Each one has a write-up of what I decided and why.</p>
+  </section>
+  <section class="wrap" style="padding-bottom: var(--s-11)">
+    <ProjectGrid entries={projects} />
+  </section>
+</SiteLayout>
+<style>.intro { display: flex; flex-direction: column; gap: var(--s-4); max-width: 760px; }</style>

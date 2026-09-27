@@ -1,0 +1,46 @@
+---
+import { render, getEntry } from 'astro:content';
+import ArticleLayout from '../../layouts/ArticleLayout.astro';
+import { getWorkArticles, toArticleLinks, getAdjacent, keyOf } from '../../lib/content';
+import { formatRange, formatDuration } from '../../lib/date';
+
+// Only entries with writeup: true get a route. Drafts and no-writeup roles
+// generate nothing — the policy lives in one place and routes obey it.
+export async function getStaticPaths() {
+  const articles = await getWorkArticles();
+  return articles.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const d = entry.data;
+const employer = await getEntry(d.employer);
+const { Content } = await render(entry);
+const links = toArticleLinks('work', await getWorkArticles());
+const { prev, next } = getAdjacent(links, keyOf('work', entry.id));
+---
+<ArticleLayout
+  title={d.title} summary={d.summary}
+  eyebrow={`${employer.data.name} · ${d.role} · ${formatRange(d.start, d.end)}`}
+  backHref="/work" backLabel="All work experience"
+  prev={prev} next={next}
+>
+  <dl slot="aside" class="facts">
+    <div><dt class="eyebrow">Role</dt><dd class="t-14">{d.role} · {d.kind}</dd></div>
+    <div><dt class="eyebrow">When</dt><dd class="t-14 tabular">{formatRange(d.start, d.end)} · {formatDuration(d.start, d.end)}</dd></div>
+    <div><dt class="eyebrow">Where</dt><dd class="t-14">{d.location}</dd></div>
+    {d.metrics && (
+      <div><dt class="eyebrow">Outcome</dt>
+        <dd class="metrics">{d.metrics.map((m) => (
+          <span class="metric"><span class="t-28 tabular">{m.value}</span><span class="t-14 muted">{m.label}</span></span>
+        ))}</dd>
+      </div>
+    )}
+  </dl>
+  <Content />
+</ArticleLayout>
+<style>
+  .facts { display: flex; flex-direction: column; gap: var(--s-5); }
+  .facts dd { margin: 0; margin-top: 6px; }
+  .metrics { display: flex; flex-direction: column; gap: var(--s-3); }
+  .metric { display: flex; flex-direction: column; }
+</style>

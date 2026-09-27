@@ -1,0 +1,83 @@
+---
+import { getEntry, render } from 'astro:content';
+import SiteLayout from '../layouts/SiteLayout.astro';
+import SectionHead from '../components/ui/SectionHead.astro';
+import TechChip from '../components/ui/TechChip.astro';
+import PlayGrid from '../components/play/PlayGrid.astro';
+import { STACK_GROUPS } from '../data/technologies';
+import { getPlayIndex } from '../lib/content';
+import { site } from '../config/site';
+
+const about = await getEntry('about' as never, 'about' as never).catch(() => undefined);
+const play = (await getPlayIndex()).slice(0, 4);
+---
+<SiteLayout title="About — Zack Low" description="Software engineer in Singapore, specialising in AI.">
+  <section class="hero">
+    <div class="copy">
+      <p class="eyebrow">About</p>
+      <h1 class="t-64">Hi, I'm Zack.</h1>
+      <p class="t-21 muted">
+        Renhwa Low on paper, Zack to everyone else. Software engineer in Singapore,
+        currently at Carro, specialising in AI.
+      </p>
+      <div class="actions">
+        <a href="/resume" class="btn btn-dark">Résumé</a>
+        <a href="/contact" class="btn btn-ghost">Get in touch</a>
+      </div>
+    </div>
+    <div class="portrait" role="img" aria-label="Portrait of Zack Low">
+      <span class="t-12 muted">Portrait</span>
+    </div>
+  </section>
+
+  <section class="section"><div class="wrap prose">
+    <p>I like full-stack, end to end: the database, the API, the screen, the deploy.
+      AI goes in <strong>where it earns its place</strong>, not because it is the year for it.</p>
+    <p>Mostly I like the part before the code. Working out what is actually wrong,
+      who it is wrong for, and what the smallest thing is that would fix it. Then
+      owning that until it works in production, not until the ticket closes.</p>
+    <p>The most useful thing I have built at work is <mark>a tracing dashboard</mark>.
+      The most fun is a film camera app that makes you wait four minutes.</p>
+  </div></section>
+
+  <section class="section band"><div class="wrap">
+    <SectionHead title="Tech stack" sub="The stuff I use every week." />
+    <div class="groups">
+      {STACK_GROUPS.map((g) => (
+        <div class="group">
+          <h3 class="t-21">{g.title}</h3>
+          <ul class="chips">{g.items.map((id) => <TechChip id={id} />)}</ul>
+        </div>
+      ))}
+    </div>
+  </div></section>
+
+  <section class="section"><div class="wrap">
+    <SectionHead title="Play" sub="The other half." href="/play" linkLabel="All of it" />
+    <PlayGrid items={play} />
+  </div></section>
+</SiteLayout>
+<style>
+  .hero { display: grid; grid-template-columns: 1fr 1fr; align-items: stretch; background: var(--surface); }
+  .copy {
+    display: flex; flex-direction: column; gap: var(--s-4); justify-content: center;
+    padding: clamp(48px, 8vw, 120px) var(--s-9) clamp(48px, 8vw, 120px) var(--gutter);
+  }
+  .actions { display: flex; gap: var(--s-3); flex-wrap: wrap; margin-top: var(--s-2); }
+  .portrait {
+    min-height: 560px; display: grid; place-items: center;
+    background: var(--border); /* full-bleed, no radius, no shadow */
+  }
+  .groups { display: flex; flex-direction: column; }
+  .group {
+    display: grid; grid-template-columns: 200px 1fr; gap: var(--s-7);
+    align-items: start; padding-block: var(--s-6); border-top: 1px solid var(--border);
+  }
+  .chips { display: flex; flex-wrap: wrap; gap: var(--s-2); }
+  @media (max-width: 860px) {
+    .hero { grid-template-columns: 1fr; }
+    .copy { padding-inline: var(--gutter); }
+    .portrait { min-height: 360px; order: -1; }
+    .group { grid-template-columns: 1fr; gap: var(--s-3); }
+  }
+</style>

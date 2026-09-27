@@ -1,0 +1,228 @@
+# Portfolio plan review — 1
+
+## Three changes before implementation, ranked
+
+1. **Specify the content-to-route contract before polishing the component hierarchy.** Use the current collection configuration, stable IDs, explicit publication states, and one shared place for selecting/sorting content. Resolve how a role can exist without a write-up. Otherwise the fourth project and first unpublished role will produce special cases across home, lists, detail routes and SEO.
+2. **Replace the absolute architecture rules with smaller, enforceable boundaries.** Keep domain components separate from primitives, but allow route-specific composition and local interface labels. Define one theme owner. Remove the promise of exactly six MDX components and the fiction that every interaction is independently lazy and optional. These rules currently conceal complexity rather than reduce it.
+3. **Put proof immediately after the positioning line, and reduce launch interactions.** Home should lead into selected projects, then relevant work. Move the decorative 3D out of that path; defer the command palette and animated cursor. Keep a small Play preview. Replace résumé screenshots as the primary reading experience with accessible text and a PDF download.
+
+Scope: reviewed `DESIGN.md`, `docs/STRUCTURE.md`, the review prompt supplied in the request, and relevant package/configuration details. Checked technical claims against primary documentation and recalculated the stated colour pairs. The Claude artifact could not be fetched, and no browser was available; this is a review of the written design, not a claim to have inspected its artboards, mobile wrapping or interactions. Placeholder stories, metrics and the motto are deliberately excluded.
+
+## Priority 1 — Code structure
+
+### 1. Four layers: useful direction, incomplete architecture
+
+The separation of domain components from UI primitives is about right. The universal four-layer rule is over-specified for this site and under-specified where it matters.
+
+Its first leak is `Post.astro`: it needs the layout shell, article presentation, domain-aware facts, navigation and MDX output, but layouts do not appear in the dependency diagram. The next leak is `ProjectCard`: does it query content, format dates, resolve technology icons and choose a URL, or receive those values? Downward component imports do not answer that.
+
+Use these boundaries:
+
+- Pages select content and compose layouts/components. They can use primitives directly; do not create a block just to satisfy an arrow.
+- Layouts own document/article framing and slots. A page can supply `KeyFacts` into a sidebar slot without teaching the generic article layout every collection's schema.
+- Domain components receive typed data. They do not independently query collections or decide publication policy.
+- Primitives know neither collections nor routes. Tokens provide shared values.
+- Small build-time helpers own genuinely shared selection, sorting, date formatting and URL rules. Add `src/lib/content.ts` and a date helper when those operations have multiple callers, not a generic repository/service layer.
+
+When the fourth project arrives, home, `/projects` and previous/next should use the same eligibility and ordering rules. That is a more valuable invariant than making every page pass through a block.
+
+### 2. Frontmatter versus body: keep the split; tighten the contract
+
+**`highlights` is the field most likely to land in the wrong place.** A short preview bullet belongs in frontmatter if a card renders it. A paragraph explaining a decision belongs in the body. A general `highlights` array will gradually become a second article stored in YAML. Name its actual consumer, such as `cardHighlights`, and constrain its intended size.
+
+`metrics` needs similar restraint. A number and label can power a card, but baseline, period and scope often determine its meaning. Permit a short context string where the metric is displayed; keep methodology in the body. Do not require quantified outcomes for every hobby or project. The narrative title in the example is also not necessarily the best card label: introduce `shortTitle` only when a real title needs it, with `title` as fallback.
+
+For a requirement the schema lacks: put one-off narrative material in MDX; add a typed optional field when another surface needs to consume it. A fourth project needing a video demonstration should first get an article component, not `customFields: Record<string, any>` or a growing `layoutVariant` enumeration.
+
+Make these decisions now:
+
+- Separate schemas for work, projects and Play, sharing only common metadata. Add `draft` and an explicit home selection/rank so adding item 30 does not put it on every page automatically.
+- Represent “listed role without article” explicitly. A small `hasWriteup` field can gate links and generated routes; validate that enabled write-ups have a body. Do not make every folder generate a detail page while also promising roles without pages. If metadata-only roles become common, a separate roles data file with optional article references may be clearer.
+- Store month dates as validated `YYYY-MM` strings and format their parts deliberately. Avoid silently inventing a day or introducing timezone shifts. Check that `end >= start` when an end exists.
+- Require useful cover-image alternative text where the image conveys information, with an explicit decorative alternative. Decide whether the cover is optional; do not require a stock picture just to satisfy a card.
+
+**Factual correction:** Zod validation does not guarantee that every typo fails. Ordinary object schemas strip unknown keys by default; a typo in an optional field can disappear without an error. Use strict object validation appropriate to the installed version, accounting for loader-owned fields, and verify it with a misspelled optional key. [Zod object schemas](https://zod.dev/api#objects).
+
+**Astro correction:** the documented current configuration is `src/content.config.ts`, with loaders. `src/content/config.ts` in both plans is the legacy location; the installed package even distinguishes `searchConfig` from `searchLegacyConfig`. Use the current convention for a new implementation. Define the singleton About import separately instead of assuming a fourth collection appears from `about.mdx`. [Astro collections](https://docs.astro.build/en/guides/content-collections/).
+
+### 3. Six MDX components: a starting vocabulary, not a permanent ceiling
+
+The number is not the useful constraint. Keeping article markup readable is. `Quote` may be redundant with a styled Markdown blockquote, while an AI systems portfolio will probably need **`Video`** before it needs `Stat`: a short product demonstration needs a poster, controls, captions where applicable, and no autoplay. An architecture diagram can initially be a `Figure`; it does not require its own rendering system.
+
+Support ordinary fenced code, tables and headings through article CSS. Add `Callout` only if repeated caveats or decision summaries need it. Occasional semantic HTML such as `<details>` is acceptable; repeated styled wrappers are the signal to extract a component.
+
+`Sidenote` is the most expensive of the six. Moving it below a paragraph on mobile is straightforward; becoming a genuine footnote requires a reference, stable unique IDs, an ordered destination and backlinks. Specify which behavior is intended. Start with an inline aside on narrow screens unless footnote navigation is actually needed.
+
+Define a small author-facing MDX component map and one complete sample article. The current example uses `architecture` without showing its import. The sample should demonstrate image imports, alt text, caption, code and a note end to end. This is more helpful six months later than “six, and no more.”
+
+### 4. Folder-per-item wins at 30 items
+
+Keep it. Moving, archiving or reviewing an article together with its images is easier than tracing `public/images/kanta-final-2.png`. Flat Markdown remains workable, but a separate global image folder transfers ownership bookkeeping to filenames.
+
+Use `public/` for files that need stable unprocessed URLs, such as the PDF. Imported local images can be transformed by Astro; public assets are copied as supplied. Colocation alone does not optimize anything: connect frontmatter images through the schema's image helper and body images through the intended image components. [Astro images](https://docs.astro.build/en/guides/images/).
+
+Document the exact ID mapping: `projects/kanta/index.mdx` must produce the intended `/projects/kanta` URL. Use a stable slug or loader ID convention; detect duplicates; decide whether nested slugs are allowed, since `[slug]` is not a catch-all route. A folder does not create a page without the loader and static-route generation wiring. [Astro route generation from collections](https://docs.astro.build/en/guides/content-collections/#generating-routes-from-content).
+
+Share assets only when ownership is genuinely shared, such as one company logo. Do not extract every image into a global registry.
+
+### 5. Configuration: TS is fine; `site.ts` is carrying too much
+
+Typed TS is a reasonable format for short structured copy edited by this owner. JSON loses comments and convenient type checking without providing a useful editor workflow; MDX is unnecessary for navigation labels. About and other sustained prose belong in Markdown/MDX.
+
+Separate the concepts with only a few files:
+
+- `config/site.ts`: identity, canonical origin, navigation, socials and a small number of real feature switches.
+- `content/home.ts`: hero, section introductions and closing CTA, grouped by section rather than unrelated string constants.
+- `data/technologies.ts`: stable technology IDs, display names and optional icon mappings; home groups can reference those IDs.
+- `styles/tokens.css`: design values, including state-specific colours, not copy or content choices.
+
+The genuinely unclear boundary is **home curation**. A project's summary describes it; choosing it as the first home project is editorial selection. Choose one mechanism—such as `featuredOrder`—and do not also maintain a competing list in `site.ts`.
+
+Do not make a vendor icon slug the identity of a technology. On the next icon removal or rename, content should still render a readable label. “Add a tool and the logo comes for free” needs a missing-icon fallback and validation. Move `icons.ts` near the rendering adapter, not among editorial configuration.
+
+### 6. Tailwind: the stated argument against it does not hold
+
+The strongest case for retaining it is ordinary iteration: spacing, breakpoints, hover/focus states and layout are visible beside markup, and the owner does not need to invent and remember a class vocabulary. It also makes one-off responsive adjustments cheap. Removing it trades those benefits for a smaller dependency surface and direct CSS practice.
+
+**The per-size tracking argument is factually wrong.** Tailwind v4 supports font-size tokens with associated line height, letter spacing and weight. A named heading token can encode the whole recipe; eleven arbitrary tracking classes are unnecessary. Its output is CSS, so removing Tailwind does not itself remove a browser JavaScript runtime. [Tailwind font-size customization](https://tailwindcss.com/docs/font-size#customizing-your-theme).
+
+Likewise, tokens can remain the source of truth in either approach. Both systems allow developers to bypass them; neither guarantees consistency. The “400 lines” estimate is not evidence before responsive articles, focus states, dialogs, notes and themes exist.
+
+I would still choose plain CSS here **because learning CSS is part of the project**, provided it gets a documented structure: tokens, reset/base, article typography, and scoped component styles. Use a few named type recipes and shared layout utilities. Avoid global selectors that accidentally style every nested heading, button or paragraph. Do not centralize every component-specific measurement merely to claim all design changes happen in one file.
+
+That is a deliberate learning/maintenance tradeoff, not a proven bundle saving. If fast layout iteration is the overriding priority, keeping the already-installed Tailwind is equally defensible.
+
+### 7. Vanilla TypeScript is sufficient; define ownership and lifecycle
+
+The premise needs updating: the map lists **five** modules, while the bulb, filters, TOC and copy interactions add more behavior. These are browser enhancements, not automatically managed framework islands. Intersection observation, teardown and event binding are your responsibility.
+
+Theme synchronization is still small enough for vanilla code. Also, the actual plan says **footer + bulb**, with no nav toggle, and the 3D is a subscriber rather than a control. Use one controller with resolved `light | dark` state and optional persisted override:
+
+1. A tiny head bootstrap reads the override safely, otherwise uses the OS preference, and sets the root theme before paint.
+2. A shared controller owns updates, storage and subscribers. Every toggle calls it; every subscriber gets the current value immediately on subscribing, including the lazily loaded scene.
+3. OS changes affect the site only without an override. Cross-tab storage changes update the controller. Buttons derive their accessible state from it.
+
+Protect storage reads/writes against exceptions. Keep the head script valid browser JavaScript; do not assume an inline script receives TypeScript transformation. Supply an OS-based CSS fallback when JavaScript is disabled.
+
+**Theme bug:** `color-scheme: light dark` advertises supported schemes; it does not force native controls to follow a manually selected `data-theme`. Apply `color-scheme: light` or `dark` under the corresponding explicit theme selector. [MDN color-scheme](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/color-scheme).
+
+Import a small focused library when interaction complexity demands it. A searchable command palette with keyboard navigation, focus management, async results and nested actions reaches that point much earlier than two theme buttons. For this site, defer the palette entirely. If enhancements start manually reconciling substantial DOM trees or coordinating multiple async states, use a framework for that widget rather than writing a miniature framework.
+
+Lazy activation also needs failure behavior: the first image click must still work while the lightbox module loads; rejected imports should leave a normal image link. Prevent duplicate initialization and drag-release double toggles. Cross-document transitions should stay separate from an Astro client-side router, which would introduce another lifecycle to maintain.
+
+### 8. Naming and the no-copy rule
+
+“No component ever contains copy” will create prop plumbing for `Close`, `Copy link`, empty states and accessibility labels. A developer-owned English site without an i18n goal does not benefit from centralizing every such string.
+
+Replace it with: **editorial content stays outside reusable presentation; stable interface labels can live beside their behavior.** It should be obvious where to change a project summary, but editing a lightbox's close label in the lightbox is reasonable. A route-local sentence in `.astro` is not automatically an architectural failure either.
+
+Rename for what a returning reader will search for:
+
+- `Base.astro` → `SiteLayout.astro`; `Post.astro` → `ArticleLayout.astro`.
+- `cmdk.ts` → `command-palette.ts`; `hero3d.ts` → `hero-scene.ts`.
+- `Window` → `ScreenshotFrame`; `Filter` → `ProjectFilters`; `KeyFacts` → `ProjectFacts` if it is project-specific.
+- Put browser code in `scripts/`, or colocate it with its component; `components/islands` currently contains no components.
+
+Do not build a `Chip` and a `Tag` until their behavior differs. If one is a link and another a filter button, name and type that distinction. A styled span must not silently become a pretend button.
+
+Keep `STRUCTURE.md`, but include “where do I change the home selection?”, “how do I add a role without an article?” and “where is theme state owned?” Those are the likely rediscovery tasks.
+
+### 9. Missing contracts and quality gates
+
+A 404 and quality gates are **already in the plan**. The omissions are their behavior and enforcement, not their existence.
+
+Define a single pre-deploy check command that runs Astro diagnostics, a production build, content/link validation and the agreed smoke checks. `astro check` is an explicit diagnostic command; do not treat TypeScript settings, schema validation and rendered-link validation as interchangeable. The current package build script only names `astro build`. The current Astro docs contain conflicting wording about automatic strict-mode build checking, so make the explicit check step authoritative rather than relying on that ambiguity. [Astro CLI](https://docs.astro.build/en/reference/cli-reference/#astro-check), [TypeScript guide](https://docs.astro.build/en/guides/typescript/#type-checking), [build guide](https://docs.astro.build/en/develop-and-build/).
+
+Prioritize these checks:
+
+- Content: unknown keys, duplicate IDs, invalid dates, missing local assets, unresolved internal links, draft exclusion, and write-up links whose target was not generated. External link checking can run periodically rather than make every deployment depend on third-party availability.
+- Browser smoke tests: home → project → contact; toggles agree after reload; OS fallback and unavailable storage; keyboard opening/closing a lightbox; all articles remain reachable with JS disabled. Test a narrow viewport, both themes and reduced motion. Exercise these contracts, not snapshots of every primitive.
+- Manual accessibility pass: keyboard, VoiceOver, zoom/reflow and long titles/code/tables. Automated accessibility checks are useful additions, not substitutes.
+- Delivery: nginx returns an actual 404 status, nested static routes resolve, and `www` redirects permanently to the apex with path/query preserved. Retain DNS and a certificate for `www`; “retiring” it should not break old links.
+- Deployment: ensure Dokploy cannot deploy a failed revision merely because a push webhook fired. Run checks inside its build or deploy only the CI-approved artifact. Record a rollback method and verify cache/compression headers on that artifact.
+- Maintenance: committed lockfile, reproducible install, grouped scheduled dependency PRs, and a documented Node/container version. Update framework integrations together.
+
+Several promised workflows have no owner in the tree: sitemap/canonical/social metadata generation; résumé PDF rendering; and the optional contact form's submission service. Defer the form and use mailto/copy for launch. Prefer accessible HTML résumé content plus a PDF link; if previews remain, specify the build tool and failure behavior rather than saying they “regenerate” automatically.
+
+Finally, inline theme bootstrapping and any eventual Content Security Policy must be designed together. An otherwise sensible strict CSP must not unexpectedly block the pre-paint script.
+
+## Priority 2 — Design
+
+### 10. Apple-derived decisions: useful restraint, borrowed certainty
+
+The reading column, restrained palette and separation of text from wide media are useful. “Apple uses it” is not sufficient justification for 980px, fixed breakpoints or three sizes per viewport. A viewport changes with device size, zoom and browser chrome; it is not an enforceable typographic unit.
+
+Keep 980px as an initial maximum, not a universal Apple fact. Use fluid gutters and let actual cards, navigation and titles determine breakpoints. Three cards in that width may work; a long technical heading may not. Likewise, 660px does not guarantee 65 characters across fonts and sizes. Test real prose and a `ch`-based measure. Fixed 64px chrome gutters would consume too much of a phone if carried down unchanged.
+
+One **interaction accent** is a good convention. “Exactly one accent” contradicts the four-colour Play word, and screenshots/diagrams should not be forced into monochrome. State the exceptions: content imagery and meaningful status colours can differ. Underline prose links; blue alone is not a complete interaction vocabulary.
+
+Geist deserves optical testing rather than copied SF settings. However, the exact tracking table is not established as an intrinsic property of the font by this document. Cite its derivation/version or label it a proposed local recipe. The published Geist system uses role-specific styles, not just one style per size; it even recommends a smaller mono label beside a larger sans label in one pairing. That undermines the claim that matching metrics eliminate all optical compensation. [Geist typography](https://vercel.com/geist/typography).
+
+At 80px, −0.047em removes 3.76px between letters. It may work for a particular headline, but test mixed case, punctuation, long words and font fallback before making it universal. X-height alone does not establish “closest open metric match,” and equal x-height/cap-height does not prove identical line-box or baseline behavior.
+
+### 11. Direct answers to all seven open questions
+
+1. **Tailwind:** plain CSS is reasonable for the learning goal; the tracking and automatic bundle-saving arguments are not. See point 6.
+2. **70KB 3D:** it does not earn a full section before professional proof. Personal enjoyment is a valid reason to include it somewhere, but it should be a deferred enhancement below proof or a Play experiment. Keep the poster first. Measure the actual scene before accepting 70KB as a budget fact.
+3. **Bulb:** potentially charming as the one playful control; clutter when combined with animated 3D, cursors and a colourful nav treatment. Being outside the column does not remove visual competition. On mobile that margin disappears. Keep a simple tappable bulb only if it has a clear label and does not obstruct scrolling; defer spring physics. Without the mockup I cannot judge its actual balance.
+4. **Play on home:** keep a compact preview after professional evidence, with one or two items and a “more” link. Personality is useful. Four full tiles add too much scroll before the closing contact prompt.
+5. **Motto:** acknowledged placeholder; excluded as requested.
+6. **Invented content:** excluded as requested. This review evaluates whether the model supports real evidence, not whether layout placeholders are true.
+7. **Cursors:** drop the borrowed sprites for launch. An original optional cursor could later belong on Play. The current feature adds timers, pointer-state QA and asset provenance work without helping the phone-first audience. The plan's “fine in practice” is an unsupported assurance; no legal conclusion is needed to choose the simpler design.
+
+### 12. Home order contradicts the stated job
+
+“Proof before prose” currently becomes positioning → decoration → proof. Lazy loading saves some work; it does not refund the reader's scroll distance.
+
+Use **positioning with résumé/contact links → two or three selected projects → concise work summary → small Play preview → closing contact CTA**. Project cards should expose the problem, contribution and outcome without requiring a click. Each long-form page should open with a similarly scannable summary.
+
+Remove the separate home tech-stack section. It repeats card metadata and risks becoming the logo wall the philosophy rejects. If Python/AI positioning is not clear, state it in the introduction and demonstrate it in projects. Place the 3D later or on Play, not as a toll before the first project.
+
+Keep a contact route or link available from article pages. Restricting the large CTA block to home is fine; making readers return home after finishing a case study is not.
+
+### 13. Pages need appropriate structure, not compulsory visual difference
+
+The Work ledger's justification is weak. A flat chronological list can show two roles in 2023 and omit links for entries without articles. Those are not unique capabilities of a sticky gutter.
+
+Grouping by start year also produces an ambiguity: an ongoing role started in 2025 sits under “2025” in later years. Show the full range prominently, or prefer a compact reverse-chronological list with current employment first. The reader wants employer, role, duration and contribution before a visual device.
+
+Keep the sticky year only if enough entries make it useful for orientation. Collapse it into ordinary headings on narrow screens. Reserve sticky space for navigation only where it demonstrably helps; do not let dates, facts and a TOC compete with the text at zoomed widths.
+
+Shared article layouts across work, projects and hobbies are a strength. Remove the mandatory macOS frame around every project; it suits a UI screenshot, but a CLI tool, diagram or backend result may need a different figure treatment. Variety should follow the evidence.
+
+### 14. Accessibility and performance: promises that will break
+
+**The JS arithmetic already fails.** The documented 70KB scene + 2KB theme + 5KB bulb is 77KB before the cursor, palette, TOC, lightbox or copy code. STRUCTURE lists 83KB across its five modules alone. Exact gzip totals may differ with shared chunks, but the estimates do not support “total ≈75KB.” Define separate budgets for initial load, scrolled home and all activated features. Global theme/cursor scripts also contradict “0KB on a text page”; inline JS still counts. “Works without JS” is the achievable requirement.
+
+The 1.11MB-before/75KB-after comparison does not state consistent compression or loading conditions. The plan itself attributes 897KB to a three-related chunk, then says removing React and wrappers removes about 1MB: that conclusion needs a bundle breakdown. `node_modules` size is not user transfer cost, and a 250KB total `dist` forecast is not credible without accounting for article images, responsive variants and the PDF.
+
+**“Never blocks LCP” is too strong.** An observer can trigger on a tall viewport or restored scroll position, and loading/compiling WebGL can compete for network and main-thread work. Reserve poster dimensions and measure a cold-load waterfall on a specified device/network profile. `hardwareConcurrency` reports available logical processors, sometimes limited by the browser; it is not a GPU or low-power detector. [MDN hardwareConcurrency](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/hardwareConcurrency).
+
+**Rebuilding a scene is not inherently a memory leak.** Failing to dispose resources is. Swapping objects without disposing abandoned resources can leak too. Reuse materials when practical; define disposal and context-loss/error fallback. [Three.js resource disposal](https://threejs.org/manual/pages/how-to-dispose-of-objects.html).
+
+**The résumé images are the clearest accessibility design failure if used alone.** They cannot reflow like text and make selecting, searching and reading on assistive technology harder. A download button does not fix the HTML page's reading experience. Provide structured text; previews can supplement it.
+
+**Contrast: the two numerical fixes are substantially correct, but the claims around them need precision.** Recalculated from the specified sRGB hex values using WCAG relative luminance:
+
+| Pair | Ratio | Implication |
+|---|---:|---|
+| `#86868B` on white | 3.623:1 | Fails normal-size text, including ordinary small captions/legal text |
+| `#57575B` on white | 7.193:1 | Passes AAA normal text |
+| `#0071E3` on `#F5F5F7` | 4.313:1 | Fails AA normal text |
+| White on `#0077ED` | 4.320:1 | Fails AA normal text |
+| `#0066CC` on `#F5F5F7` | 5.112:1 | Passes AA, but this grey-band pair is not 5.6:1 |
+| Dark border `#424245` on `#1D1D1F` | 1.680:1 | Insufficient if the boundary is necessary to identify a control |
+
+Small captions/legal copy receive no blanket exception from text contrast requirements. Decorative dividers need not meet the control-boundary threshold, so do not call all faint borders failures. Test actual foreground/background/state combinations rather than assign one contrast ratio to a token across both themes. [WCAG text contrast](https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html), [non-text contrast](https://www.w3.org/WAI/WCAG22/Understanding/non-text-contrast.html).
+
+The soft-black canvas is a reasonable visual choice. The causal claim that exceeding the AA threshold by 4.7× causes OLED halation is not established by contrast arithmetic; remove that medical-sounding certainty unless supported separately. The light palette also makes `ink-3` darker than `ink-2`, reversing the numbered hierarchy. Prefer semantic names such as `text-muted` and `text-caption` if that is intentional.
+
+Keyboard and motion need concrete behavior. A click listener on an arbitrary SVG is not enough: the bulb must be a real keyboard-operable button, and tapping must work without dragging. A drag must not trigger a second toggle through the subsequent click. [WCAG dragging alternatives](https://www.w3.org/WAI/WCAG22/Understanding/dragging-movements.html).
+
+Reduced-motion support does not by itself provide pause/stop/hide for everyone when automatic movement runs longer than five seconds alongside content. Prefer a static scene until interaction, stop idle motion, or provide a suitable pause mechanism. A lightbox also needs accessible naming, a close control, Escape behavior and focus return despite using native `<dialog>`. [WCAG pause, stop, hide](https://www.w3.org/WAI/WCAG22/Understanding/pause-stop-hide.html).
+
+Use Lighthouse as a regression signal, not a promise of accessibility or universal sub-second loading. Specify device, throttling, cache state and representative pages. Test missing WebGL, missing optional APIs and failed module downloads; the poster and content should survive. `font-display: swap` can still shift text, and lazy images still need appropriate `sizes`; neither choice proves the CLS/LCP target.
+
+Two final factual corrections: Simple Icons is published under **CC0**, not SIL OFL; the package licence also does not grant trademark rights. And AVIF plus WebP fallback is a configured picture/image output, not an automatic consequence of importing `astro:assets`. [Simple Icons licence](https://github.com/simple-icons/simple-icons/blob/develop/LICENSE.md), [Astro image formats](https://docs.astro.build/en/guides/images/).
+
+The first implementation milestone should be one complete project article and its card, one listed role without an article, both themes, a narrow-screen layout and the real static deployment path. That slice will expose the content and styling seams before decorative features multiply them.

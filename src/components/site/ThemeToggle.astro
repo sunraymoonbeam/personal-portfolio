@@ -1,0 +1,19 @@
+---
+// The accessible path to dark mode. The hero bulb is a second control, never
+// the only one — it scrolls away and does not exist on inner pages.
+---
+<button type="button" data-theme-toggle aria-pressed="false" aria-label="Switch to dark mode" class="toggle">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+       stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+  </svg>
+</button>
+<style>
+  .toggle {
+    width: 44px; height: 44px; display: inline-flex; align-items: center; justify-content: center;
+    border: 1px solid var(--border-strong); border-radius: var(--radius-pill);
+    background: transparent; color: var(--ink); cursor: pointer;
+    transition: background-color 100ms linear;
+  }
+  .toggle:hover { background: var(--chip-bg); }
+</style>

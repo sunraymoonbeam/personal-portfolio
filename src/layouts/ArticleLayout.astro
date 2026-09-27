@@ -1,0 +1,56 @@
+---
+import SiteLayout from './SiteLayout.astro';
+import ArrowLink from '../components/ui/ArrowLink.astro';
+import type { ArticleLink } from '../lib/content';
+
+interface Props {
+  title: string; summary?: string; eyebrow?: string;
+  backHref: string; backLabel: string;
+  prev?: ArticleLink; next?: ArticleLink;
+}
+const { title, summary, eyebrow, backHref, backLabel, prev, next } = Astro.props;
+---
+<SiteLayout title={`${title} — Zack Low`} description={summary}>
+  <article>
+    <header class="head wrap">
+      <ArrowLink href={backHref} label={backLabel} />
+      {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+      <h1 class="t-64">{title}</h1>
+      {summary && <p class="t-21 muted">{summary}</p>}
+    </header>
+
+    <div class="hero-slot wrap"><slot name="hero" /></div>
+
+    <div class="body wrap">
+      <div class="prose"><slot /></div>
+      <aside class="side"><slot name="aside" /></aside>
+    </div>
+
+    {(prev || next) && (
+      <nav class="wrap adjacent" aria-label="More">
+        <span>{next && <a href={next.href} class="stack"><span class="eyebrow">Next</span><span class="t-21">{next.title}</span></a>}</span>
+        <span class="right">{prev && <a href={prev.href} class="stack"><span class="eyebrow">Previous</span><span class="t-21">{prev.title}</span></a>}</span>
+      </nav>
+    )}
+  </article>
+</SiteLayout>
+<style>
+  .head { display: flex; flex-direction: column; gap: var(--s-4); padding-block: var(--s-10) var(--s-6); max-width: 760px; }
+  .hero-slot:empty { display: none; }
+  .body {
+    display: grid; grid-template-columns: minmax(0, var(--reading)) 1fr;
+    gap: var(--s-10); align-items: start; padding-block: var(--s-8) var(--s-11);
+  }
+  .side { position: sticky; top: 96px; display: flex; flex-direction: column; gap: var(--s-6); }
+  .side:empty { display: none; }
+  .adjacent {
+    display: flex; justify-content: space-between; gap: var(--s-5);
+    padding-block: var(--s-6); border-top: 1px solid var(--border);
+  }
+  .adjacent .right { text-align: right; }
+  .adjacent .stack { gap: var(--s-1); }
+  @media (max-width: 900px) {
+    .body { grid-template-columns: 1fr; gap: var(--s-7); }
+    .side { position: static; }
+  }
+</style>

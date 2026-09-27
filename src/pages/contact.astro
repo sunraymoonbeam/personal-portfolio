@@ -1,0 +1,52 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import { site } from '../config/site';
+---
+<SiteLayout title="Contact — Zack Low" description="Email is fastest.">
+  <section class="section wrap grid">
+    <div class="copy">
+      <p class="eyebrow">Contact</p>
+      <h1 class="t-64">Say hi.</h1>
+      <p class="t-21 muted">
+        Have something worth building, or just want to talk shop? Email is fastest.
+        I reply to everything that is not spam, usually the same day.
+      </p>
+      <div class="email">
+        <a href={`mailto:${site.email}`} class="t-24">{site.email}</a>
+        <button type="button" class="btn btn-ghost copy-btn" data-copy={site.email}>Copy</button>
+      </div>
+      <div class="links">
+        <a href={site.socials.linkedin} class="tile t-17">LinkedIn ↗</a>
+        <a href={site.socials.github} class="tile t-17">GitHub ↗</a>
+      </div>
+      <p class="t-14 small">Based in Singapore, GMT+8. If it is 3am here I will reply in the morning.</p>
+    </div>
+  </section>
+</SiteLayout>
+<script>
+  // Progressive enhancement: the mailto link works without this.
+  for (const btn of document.querySelectorAll<HTMLButtonElement>('.copy-btn')) {
+    btn.hidden = !navigator.clipboard;
+    btn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(btn.dataset.copy ?? '');
+        const before = btn.textContent;
+        btn.textContent = 'Copied';
+        setTimeout(() => { btn.textContent = before; }, 1500);
+      } catch { /* leave the address visible to select manually */ }
+    });
+  }
+</script>
+<style>
+  .grid { max-width: 720px; }
+  .copy { display: flex; flex-direction: column; gap: var(--s-4); }
+  .email {
+    display: flex; align-items: center; justify-content: space-between; gap: var(--s-5);
+    padding: var(--s-5); border-radius: var(--radius-m); background: var(--surface); margin-top: var(--s-3);
+  }
+  .email a { color: var(--ink); }
+  .copy-btn { min-height: 36px; padding: 8px 16px; font-size: 14px; }
+  .links { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-3); }
+  .tile { padding: var(--s-4) var(--s-5); border-radius: var(--radius-m); background: var(--surface); }
+  @media (max-width: 600px) { .links { grid-template-columns: 1fr; } }
+</style>

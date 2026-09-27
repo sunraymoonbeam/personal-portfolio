@@ -1,22 +1,63 @@
 ---
-import Base from "../layouts/Base.astro";
-import Nav from "../components/Nav.astro";
-import Hero from "../components/Hero.astro";
-import About from "../components/About.astro";
-import Experience from "../components/Experience.astro";
-import Tech from "../components/Tech.astro";
-import Projects from "../components/Projects.astro";
-import Contact from "../components/Contact.astro";
----
+import SiteLayout from '../layouts/SiteLayout.astro';
+import SectionHead from '../components/ui/SectionHead.astro';
+import ProjectGrid from '../components/projects/ProjectGrid.astro';
+import RoleRow from '../components/work/RoleRow.astro';
+import HeroScene from '../components/site/HeroScene.astro';
+import Bulb from '../components/site/Bulb.astro';
+import { home } from '../content/home';
+import { site } from '../config/site';
+import { getPublishedProjects, getWorkRows, selectFeatured } from '../lib/content';
 
-<Base>
-  <Nav />
-  <main>
-    <Hero />
-    <About />
-    <Experience />
-    <Tech />
-    <Projects />
-    <Contact />
-  </main>
-</Base>
+// Pages request content; lib applies policy; components render.
+const projects = selectFeatured(await getPublishedProjects(), 3);
+const roles = (await getWorkRows()).slice(0, 3);
+---
+<SiteLayout>
+  <section class="hero wrap">
+    <Bulb />
+    <p class="eyebrow">{home.eyebrow}</p>
+    <h1 class="t-80">{home.headline}</h1>
+    <p class="t-21 muted lede">{home.lede}</p>
+    <div class="actions">
+      <a href="/projects" class="btn btn-dark">Projects</a>
+      <a href="/work" class="btn btn-ghost">Work experience</a>
+      <a href="/resume" class="btn btn-ghost">Résumé</a>
+    </div>
+  </section>
+
+  {/* Proof immediately after the positioning line. */}
+  <section class="section band">
+    <div class="wrap">
+      <SectionHead {...home.sections.projects} href="/projects" linkLabel="All projects" />
+      <ProjectGrid entries={projects} />
+    </div>
+  </section>
+
+  {/* Below the professional evidence: decoration must not be a toll before proof. */}
+  <section class="section">
+    <div class="wrap"><HeroScene /></div>
+  </section>
+
+  <section class="section band">
+    <div class="wrap">
+      <SectionHead {...home.sections.work} href="/work" linkLabel="All roles" />
+      <div>{roles.map((entry) => <RoleRow entry={entry} />)}</div>
+    </div>
+  </section>
+
+  <section class="section band cta">
+    <div class="wrap stack center">
+      <h2 class="t-48">{home.cta.title}</h2>
+      <p class="t-21 muted">{home.cta.sub}</p>
+      <a href="/contact" class="btn">{home.cta.action}</a>
+      <a href={`mailto:${site.email}`} class="t-14 small">{site.email}</a>
+    </div>
+  </section>
+</SiteLayout>
+<style>
+  .hero { position: relative; display: flex; flex-direction: column; gap: var(--s-5); padding-block: clamp(56px, 10vw, 110px); }
+  .lede { max-width: 720px; }
+  .actions { display: flex; gap: var(--s-3); flex-wrap: wrap; margin-top: var(--s-2); }
+  .cta .center { align-items: center; text-align: center; gap: var(--s-4); }
+</style>

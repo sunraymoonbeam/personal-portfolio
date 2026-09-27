@@ -1,0 +1,23 @@
+---
+import { render } from 'astro:content';
+import ArticleLayout from '../../layouts/ArticleLayout.astro';
+import { getPublishedPlay, toArticleLinks, getAdjacent, keyOf } from '../../lib/content';
+import { formatMonth } from '../../lib/date';
+
+export async function getStaticPaths() {
+  const entries = (await getPublishedPlay()).filter((e) => e.data.writeup);
+  return entries.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const d = entry.data;
+const { Content } = await render(entry);
+const all = (await getPublishedPlay()).filter((e) => e.data.writeup);
+const { prev, next } = getAdjacent(toArticleLinks('play', all), keyOf('play', entry.id));
+---
+<ArticleLayout
+  title={d.title} summary={d.summary} eyebrow={`Play · ${formatMonth(d.published)}`}
+  backHref="/play" backLabel="All of Play" prev={prev} next={next}
+>
+  <Content />
+</ArticleLayout>

@@ -1,0 +1,55 @@
+---
+import SiteLayout from '../../layouts/SiteLayout.astro';
+import SectionHead from '../../components/ui/SectionHead.astro';
+import YearLedger from '../../components/work/YearLedger.astro';
+import ArrowLink from '../../components/ui/ArrowLink.astro';
+import { getWorkByYear, getFeaturedRole } from '../../lib/content';
+import { getEntry } from 'astro:content';
+import { Image } from 'astro:assets';
+import { formatRange } from '../../lib/date';
+
+const groups = await getWorkByYear();
+const featured = await getFeaturedRole();
+const employer = featured ? await getEntry(featured.data.employer) : undefined;
+const featuredHref = featured?.data.writeup ? `/work/${featured.id}` : undefined;
+---
+<SiteLayout title="Work experience — Zack Low">
+  <section class="section wrap intro">
+    <p class="eyebrow">Work experience</p>
+    <h1 class="t-64">Five roles, written like posts.</h1>
+    <p class="t-21 muted">What I owned, what broke, and what changed. The résumé version is one page. This is the rest.</p>
+  </section>
+
+  {featured && employer && (
+    <section class="wrap feature">
+      <div class="stack">
+        <div class="row gap">
+          <Image src={employer.data.logo} alt="" width={48} height={48} class="logo" />
+          <span class="stack">
+            <span class="t-17 name">{employer.data.name}</span>
+            <span class="t-14 muted tabular">Latest · {formatRange(featured.data.start, featured.data.end)}</span>
+          </span>
+        </div>
+        <h2 class="t-40">{featured.data.title}</h2>
+        <p class="t-19 muted">{featured.data.summary}</p>
+        {/* Feature stays valid with no article: the link simply isn't rendered. */}
+        {featuredHref && <ArrowLink href={featuredHref} label="Read the post" />}
+      </div>
+    </section>
+  )}
+
+  <section class="section band">
+    <div class="wrap">
+      <SectionHead title="All roles" sub="Newest first. Some have a write-up, some are just the facts." />
+      <YearLedger groups={groups} />
+    </div>
+  </section>
+</SiteLayout>
+<style>
+  .intro { display: flex; flex-direction: column; gap: var(--s-4); max-width: 760px; }
+  .feature { padding-bottom: var(--s-10); }
+  .feature .stack { gap: var(--s-4); }
+  .gap { gap: var(--s-3); }
+  .logo { border-radius: 11px; object-fit: contain; border: 1px solid var(--border); background: var(--canvas); }
+  .name { font-weight: 500; }
+</style>

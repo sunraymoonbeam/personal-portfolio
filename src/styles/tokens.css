@@ -1,0 +1,97 @@
+/**
+ * Design tokens. Every colour, size and space lives here.
+ * Components reference var(--…) and never a raw hex.
+ *
+ * Contrast: Apple's HIG asks for 4.5:1 minimum and "strive for 7:1, especially
+ * in small text" for custom colours. Every value below is computed, not eyeballed.
+ */
+:root {
+  color-scheme: light;
+
+  /* ── surfaces ── */
+  --canvas: #ffffff;
+  --surface: #f5f5f7;
+  --subtle: #fafafb;
+  --border: #e8e8ed;
+  --border-strong: #d2d2d7;
+  --control: #87878d;
+
+  /* ── text ── */
+  --ink: #1d1d1f;        /* 16.83:1 on canvas — AAA */
+  --ink-2: #6e6e73;      /* 5.07:1 — AA, body secondary */
+  --ink-3: #515155;      /* 7.90:1 — small text, meets Apple's 7:1 */
+
+  /* ── one interaction accent ── */
+  --link: #0066cc;       /* 5.57 on white, 5.11 on surface */
+  --fill: #0071e3;       /* filled buttons on white only */
+  --on-fill: #ffffff;
+  --focus: #0071e3;
+
+  /* ── brand mark (not a UI accent) ── */
+  --mark: #b3261e;
+
+  /* ── emphasis inside prose ── */
+  --chip-bg: rgba(29, 29, 31, 0.055);
+  --mark-bg: rgba(0, 113, 227, 0.12);
+
+  /* ── nav ── */
+  --nav-bg: rgba(250, 250, 252, 0.8);
+
+  /* ── type ── */
+  --font-sans: 'Geist Variable', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: 'Geist Mono Variable', ui-monospace, SFMono-Regular, monospace;
+  --font-hand: 'Shantell Sans Variable', 'Comic Sans MS', cursive;
+
+  /* ── space ── */
+  --s-1: 4px;   --s-2: 8px;   --s-3: 12px;  --s-4: 16px;
+  --s-5: 24px;  --s-6: 32px;  --s-7: 40px;  --s-8: 48px;
+  --s-9: 64px;  --s-10: 80px; --s-11: 120px;
+
+  /* ── layout ── */
+  --content: 980px;    /* a starting maximum, not a law */
+  --reading: 660px;
+  --gutter: clamp(20px, 5vw, 40px);
+  --radius-s: 6px; --radius-m: 12px; --radius-l: 18px; --radius-pill: 980px;
+}
+
+/* Dark is tuned separately — Apple: "these colors aren't necessarily
+   inversions of their light counterparts". Canvas is never #000: from pure
+   black the elevation ladder collapses (#000→#0A0A0A is 1.06:1). */
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  --canvas: #161618;
+  --surface: #1d1d1f;
+  --subtle: #212124;
+  --border: #2c2c2e;
+  --border-strong: #424245;
+  --control: #707075;
+
+  --ink: #f5f5f7;        /* 16.60:1 */
+  --ink-2: #a1a1a6;      /* 7.03:1 */
+  --ink-3: #ababb1;      /* 7.91:1 — meets 7:1 in dark too */
+
+  --link: #2997ff;
+  --fill: #0071e3;
+  --on-fill: #ffffff;
+  --focus: #2997ff;
+
+  --mark: #e0533d;
+  --chip-bg: rgba(245, 245, 247, 0.1);
+  --mark-bg: rgba(41, 151, 255, 0.2);
+  --nav-bg: rgba(22, 22, 23, 0.8);
+}
+
+/* No stored override: follow the OS, including with JS disabled. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    color-scheme: dark;
+    --canvas: #161618; --surface: #1d1d1f; --subtle: #212124;
+    --border: #2c2c2e; --border-strong: #424245; --control: #707075;
+    --ink: #f5f5f7; --ink-2: #a1a1a6; --ink-3: #ababb1;
+    --link: #2997ff; --focus: #2997ff; --mark: #e0533d;
+    --chip-bg: rgba(245, 245, 247, 0.1);
+    --mark-bg: rgba(41, 151, 255, 0.2);
+    --nav-bg: rgba(22, 22, 23, 0.8);
+  }
+}

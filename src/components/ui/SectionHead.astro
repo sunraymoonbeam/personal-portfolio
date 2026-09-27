@@ -1,0 +1,27 @@
+---
+interface Props { title: string; sub?: string; href?: string; linkLabel?: string; }
+const { title, sub, href, linkLabel } = Astro.props;
+---
+<div class="head">
+  <div class="stack">
+    <h2 class="t-48">{title}</h2>
+    {sub && <p class="t-21 muted sub">{sub}</p>}
+  </div>
+  {href && (
+    <a href={href} class="link-arrow">
+      {linkLabel}
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+           stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M9 6l6 6-6 6" />
+      </svg>
+    </a>
+  )}
+</div>
+<style>
+  .head {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    gap: var(--s-8); padding-bottom: var(--s-9); flex-wrap: wrap;
+  }
+  .stack { gap: var(--s-3); }
+  .sub { max-width: 560px; }
+</style>

@@ -1,0 +1,75 @@
+---
+// A real <button>, so it works by keyboard and on touch. The drag is pure
+// enhancement — tapping is always enough, and releasing a drag must not fire
+// a second toggle through the click that follows.
+---
+<div class="bulb-wrap">
+  <button type="button" data-bulb data-theme-toggle aria-pressed="false"
+          aria-label="Switch to dark mode" class="bulb">
+    <span class="cord" aria-hidden="true"></span>
+    <span class="glass" aria-hidden="true"></span>
+    <span class="cap" aria-hidden="true"></span>
+    <span class="t-12 hint">pull</span>
+  </button>
+</div>
+
+<script>
+  const btn = document.querySelector<HTMLButtonElement>('[data-bulb]');
+  if (btn && window.matchMedia('(pointer: fine)').matches) {
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let dragging = false, startY = 0, pulled = 0, swallowClick = false;
+
+    btn.addEventListener('pointerdown', (e) => {
+      dragging = true; startY = e.clientY; pulled = 0;
+      btn.setPointerCapture(e.pointerId);
+    });
+    btn.addEventListener('pointermove', (e) => {
+      if (!dragging || reduced) return;
+      pulled = Math.max(0, Math.min(28, e.clientY - startY));
+      btn.style.setProperty('--pull', `${pulled}px`);
+    });
+    const release = () => {
+      if (!dragging) return;
+      dragging = false;
+      btn.style.setProperty('--pull', '0px');
+      if (pulled > 12) {
+        swallowClick = true;          // the drag already counted as the action
+        btn.click();
+      }
+      pulled = 0;
+    };
+    btn.addEventListener('pointerup', release);
+    btn.addEventListener('pointercancel', release);
+    // Stop a drag-release from toggling twice.
+    btn.addEventListener('click', (e) => {
+      if (swallowClick) { swallowClick = false; e.stopImmediatePropagation(); }
+    }, true);
+  }
+</script>
+
+<style>
+  .bulb-wrap { position: absolute; top: 0; right: clamp(16px, 6vw, 96px); z-index: 2; }
+  .bulb {
+    --pull: 0px;
+    display: flex; flex-direction: column; align-items: center; gap: 0;
+    background: none; border: 0; padding: 0 12px 12px; cursor: pointer;
+    translate: 0 var(--pull);
+    transition: translate 320ms cubic-bezier(.34,1.56,.64,1);  /* spring-ish */
+    touch-action: none; user-select: none;
+  }
+  .cord { width: 1px; height: clamp(56px, 9vw, 104px); background: var(--border-strong); }
+  .glass {
+    width: 26px; height: 26px; border-radius: 50%;
+    border: 1px solid var(--border-strong); background: var(--surface);
+    transition: background-color 200ms, box-shadow 200ms, border-color 200ms;
+  }
+  .cap { width: 8px; height: 5px; border-radius: 0 0 3px 3px; background: var(--border-strong); margin-top: -1px; }
+  .hint { margin-top: 10px; color: var(--ink-3); }
+
+  :root[data-theme='dark'] .glass {
+    background: #f5c563; border-color: #e8b44a;
+    box-shadow: 0 0 28px 6px rgba(245, 197, 99, 0.45);
+  }
+  @media (prefers-reduced-motion: reduce) { .bulb { transition: none; } }
+  @media (max-width: 734px) { .bulb-wrap { display: none; } } /* footer toggle covers it */
+</style>

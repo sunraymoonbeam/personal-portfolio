@@ -1,0 +1,18 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+---
+<SiteLayout title="Not found — Zack Low">
+  <section class="section wrap box">
+    <p class="eyebrow">404</p>
+    <h1 class="t-48">That page does not exist.</h1>
+    <p class="t-21 muted">It may have moved, or it was never here.</p>
+    <div class="actions">
+      <a href="/" class="btn btn-dark">Home</a>
+      <a href="/projects" class="btn btn-ghost">Projects</a>
+    </div>
+  </section>
+</SiteLayout>
+<style>
+  .box { display: flex; flex-direction: column; gap: var(--s-4); align-items: flex-start; min-height: 46vh; }
+  .actions { display: flex; gap: var(--s-3); margin-top: var(--s-2); }
+</style>

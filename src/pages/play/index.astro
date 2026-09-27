@@ -1,0 +1,17 @@
+---
+import SiteLayout from '../../layouts/SiteLayout.astro';
+import PlayGrid from '../../components/play/PlayGrid.astro';
+import { getPlayIndex } from '../../lib/content';
+const items = await getPlayIndex();
+---
+<SiteLayout title="Play — Zack Low" description="Cooking, climbing, guitar, film.">
+  <section class="section wrap intro">
+    <h1 class="t-64">Play</h1>
+    <p class="t-21 muted">
+      Cooking, climbing, guitar, film, and whatever else has my attention. Some of
+      these have a write-up, the rest are just here because I like them.
+    </p>
+  </section>
+  <section class="wrap" style="padding-bottom: var(--s-11)"><PlayGrid items={items} /></section>
+</SiteLayout>
+<style>.intro { display: flex; flex-direction: column; gap: var(--s-4); max-width: 760px; }</style>

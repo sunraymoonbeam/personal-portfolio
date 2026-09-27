@@ -1,0 +1,42 @@
+---
+title: Kanta
+claim: 36 shots, then you wait.
+summary: A film camera for your phone. One roll of 36, no preview, and a develop step that takes four minutes on purpose.
+published: 2024-06
+status: Shipped
+tags: [Full-stack, Mobile]
+stack: [python, fastapi]
+links: { repo: "https://github.com/sunraymoonbeam" }
+cardHighlights:
+  - Fixed roll of 36, no preview
+  - Serverless develop step
+metrics:
+  - { value: "1,200", label: "rolls developed" }
+  - { value: "4m 10s", label: "median develop" }
+featuredOrder: 2
+---
+
+## The problem
+
+Phone cameras make it free to take 40 photos of the same plate of noodles, and
+nobody looks at them again. I wanted the disposable-camera feeling back: a
+limited roll, no preview, a wait before you see anything. Not because it is
+better, because it makes you care.
+
+## What I built
+
+A small app and a FastAPI backend. Each roll is 36 exposures. When you finish,
+the roll goes to a Lambda that applies the film look and a slow develop, then
+lands in blob storage. The app only ever shows a roll after it is developed.
+
+## Why Lambda instead of the phone
+
+The first version processed film on-device. It killed the battery and the look
+drifted between Android and iOS. Moving it server-side made every roll
+identical and let me change the recipe without shipping an app update. The trade
+is latency, which here was free, because waiting is the product.
+
+## How I know it works
+
+Every roll writes a timing record. Median develop is 4 minutes 10 seconds.
+Failed rolls retry three times.

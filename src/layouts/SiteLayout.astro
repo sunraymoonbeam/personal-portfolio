@@ -1,0 +1,77 @@
+---
+import '@fontsource-variable/geist';
+import '@fontsource-variable/geist-mono';
+import '@fontsource-variable/shantell-sans';
+import '../styles/base.css';
+import '../styles/article.css';
+import '../styles/cursors.css';
+import Header from '../components/site/Header.astro';
+import Footer from '../components/site/Footer.astro';
+import { site } from '../config/site';
+
+interface Props { title?: string; description?: string; image?: string; }
+const {
+  title = `${site.name} — ${site.role}`,
+  description = site.motto,
+  image = '/og.png',
+} = Astro.props;
+const canonical = new URL(Astro.url.pathname, site.origin).href;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#161618" media="(prefers-color-scheme: dark)" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={new URL(image, site.origin).href} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    {/* Must run before any stylesheet, or the wrong theme flashes on every load.
+        is:inline keeps Astro from bundling and deferring it. Plain JS only. */}
+    <script is:inline>
+      (function () {
+        try {
+          var v = localStorage.getItem('theme');
+          var dark = v === 'dark' || (v !== 'light' &&
+            window.matchMedia('(prefers-color-scheme: dark)').matches);
+          document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+        } catch (e) { /* private mode: CSS @media fallback covers it */ }
+      })();
+    </script>
+  </head>
+  <body>
+    <a href="#main" class="skip">Skip to content</a>
+    <Header />
+    <main id="main"><slot /></main>
+    <Footer />
+
+    <script>
+      import { initTheme } from '../scripts/theme';
+      import { initCursor } from '../scripts/cursor';
+      initTheme();
+      initCursor();
+    </script>
+
+    <style>
+      .skip {
+        position: absolute; left: 50%; translate: -50% -150%;
+        z-index: 20; padding: 12px 20px; border-radius: 0 0 12px 12px;
+        background: var(--ink); color: var(--canvas);
+        transition: translate 150ms ease;
+      }
+      .skip:focus { translate: -50% 0; color: var(--canvas); }
+    </style>
+  </body>
+</html>

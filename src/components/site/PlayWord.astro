@@ -1,0 +1,14 @@
+---
+interface Props { size?: number; }
+const { size = 16 } = Astro.props;
+const letters = [
+  { c: 'P', color: '#E0533D' }, { c: 'l', color: '#F5A623' },
+  { c: 'a', color: '#2FA36B' }, { c: 'y', color: '#0071E3' },
+];
+---
+<span class="play" style={`font-size:${size}px`}>
+  {letters.map(({ c, color }) => <span style={`color:${color}`}>{c}</span>)}
+</span>
+<style>
+  .play { font-family: var(--font-hand); font-weight: 600; white-space: nowrap; }
+</style>

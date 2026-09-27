@@ -1,0 +1,13 @@
+---
+import ProjectCard from './ProjectCard.astro';
+import type { Project } from '../../lib/content';
+interface Props { entries: Project[]; }
+const { entries } = Astro.props;
+---
+<div class="grid">{entries.map((entry) => <ProjectCard entry={entry} />)}</div>
+<style>
+  .grid {
+    display: grid; gap: var(--s-7); align-items: stretch;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+</style>

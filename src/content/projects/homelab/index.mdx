@@ -1,0 +1,21 @@
+---
+title: Homelab & agent fleet
+claim: Two servers, a fleet of agents, no cloud bill.
+summary: Hetzner and Netcup boxes running Dokploy, Traefik and n8n, with Telegram agents that log my spending and read the fuel market every morning.
+published: 2026-01
+status: Ongoing
+tags: [Automation, Infrastructure]
+stack: [docker, traefikproxy, n8n, telegram]
+featuredOrder: 1
+showInPlay: true
+---
+
+## Why
+
+Renting managed everything got expensive and boring. Two small servers do the
+same work, and I learn more when it breaks.
+
+## What runs on it
+
+Dokploy for deployment, Traefik for routing and certificates, n8n for the
+automations, plus a fleet of Telegram agents that each own one job.

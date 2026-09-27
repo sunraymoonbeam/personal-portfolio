@@ -1,0 +1,54 @@
+---
+import { site } from '../../config/site';
+import Logo from './Logo.astro';
+import PlayWord from './PlayWord.astro';
+const path = Astro.url.pathname;
+const active = (href: string) => path === href || path.startsWith(href + '/');
+---
+<header class="header">
+  <a href="/" class="brand">
+    <Logo size={36} />
+    <span class="t-17 motto">{site.motto}</span>
+  </a>
+  <nav aria-label="Main">
+    <ul class="links">
+      {site.nav.map((l) => (
+        <li>
+          <a href={l.href} class:list={['t-14', { on: active(l.href) }]}
+             aria-current={active(l.href) ? 'page' : undefined}>{l.label}</a>
+        </li>
+      ))}
+      <li>
+        <a href="/play" class:list={['playlink', { on: active('/play') }]}
+           aria-current={active('/play') ? 'page' : undefined}>
+          <PlayWord size={17} /><span class="visually-hidden">Play</span>
+        </a>
+      </li>
+      <li><a href="/contact" class="btn cta">Get in touch</a></li>
+    </ul>
+  </nav>
+</header>
+<style>
+  .header {
+    position: sticky; top: 0; z-index: 9;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: var(--s-8); min-height: 72px;
+    padding: var(--s-3) var(--gutter);
+    background: var(--nav-bg);
+    backdrop-filter: saturate(180%) blur(20px);
+    border-bottom: 1px solid var(--border);
+  }
+  @supports not (backdrop-filter: blur(1px)) { .header { background: var(--canvas); } }
+
+  .brand { display: flex; align-items: center; gap: var(--s-3); }
+  .motto { color: var(--ink); }
+  .links { display: flex; align-items: center; gap: var(--s-5); flex-wrap: wrap; }
+  .links a.on { font-weight: 600; }
+  .playlink.on { border-bottom: 2px solid #F5A623; padding-bottom: 1px; }
+  .cta { min-height: 36px; padding: 7px 16px; font-size: 14px; }
+
+  @media (max-width: 860px) {
+    .motto { display: none; }
+    .links { gap: var(--s-4); }
+  }
+</style>
