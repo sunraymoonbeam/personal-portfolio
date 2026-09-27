@@ -7,6 +7,10 @@ Rough order of value. Nothing here is started.
 Every article is currently a sketch written from the CV and a set of notes,
 and it reads like it. The voice is not yours and the detail is thin.
 
+**Every line of copy on the site is extracted into
+[`docs/content-review.md`](docs/content-review.md)**, with a review prompt at
+the top. Send that file to a reviewer, or work through it yourself.
+
 - 6 roles in `src/content/work/`, 3 projects, 3 hobbies.
 - The frontmatter is fine. It is the **bodies** that need rewriting, plus the
   `summary` and `claim` lines that listings show.
