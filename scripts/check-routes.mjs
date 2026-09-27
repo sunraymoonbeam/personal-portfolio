@@ -19,13 +19,13 @@ const root = fileURLToPath(new URL('../', import.meta.url));
 // node_modules by walking up, with no symlink and no second path.
 const scratch = realpathSync(mkdtempSync(path.join(root, '.route-fixture-')));
 // The id has to reach the rendered page, or "did this entry get listed?" is
-// unanswerable. Project and play rows print the title, but a work row prints
+// unanswerable. Project and hobby rows print the title, but a work row prints
 // the ROLE, so the work fixture carries its id there. This assertion was
 // failing silently before, because the fixture's role was a fixed string.
 const fields = {
   projects: () => 'claim: Route policy fixture\npublished: 2099-01\ntags: [Test]',
   work: (id) => `employer: carro\nrole: ${id}\nkind: Full-time\nlocation: Test\nstart: 2099-01`,
-  play: () => 'caption: Route policy fixture\npublished: 2099-01',
+  hobbies: () => 'caption: Route policy fixture\npublished: 2099-01',
 };
 // A 1x1 PNG, so a gallery fixture has a real file for the image pipeline.
 const PIXEL = Buffer.from(
@@ -41,9 +41,6 @@ function fixture(collection, id, flags) {
 }
 const html = route => readFileSync(path.join(scratch, 'dist', route, 'index.html'), 'utf8');
 
-// The collection name is not the URL segment: `play` is served at /hobbies.
-// Keep this in step with ROUTE_SEGMENT in src/lib/select.ts.
-const segment = { projects: 'projects', work: 'work', play: 'hobbies' };
 try {
   for (const file of ['src', 'astro.config.mjs', 'package.json', 'tsconfig.json']) {
     cpSync(path.join(root, file), path.join(scratch, file), { recursive: true });
@@ -56,19 +53,19 @@ try {
   // The gallery is an ordered list, so the assertion below checks the ORDER
   // survives the build, not just that the pictures appear.
   fixture('projects', 'qa-gallery', 'gallery:\n  - { src: ./pixel.png, alt: First picture }\n  - { src: ./pixel.png, alt: Second picture, caption: With a caption }');
-  fixture('projects', 'qa-shared', 'showInPlay: true');
-  fixture('play', 'qa-shared', '');
+  fixture('projects', 'qa-shared', 'showInHobbies: true');
+  fixture('hobbies', 'qa-shared', '');
   execFileSync(process.execPath, [path.join(root, 'node_modules/.bin/astro'), 'build', '--root', scratch], {
     cwd: scratch, stdio: 'pipe', env: { ...process.env, ASTRO_TELEMETRY_DISABLED: '1' },
   });
   for (const collection of Object.keys(fields)) {
     for (const id of ['qa-draft', 'qa-listing']) {
-      assert.equal(existsSync(path.join(scratch, 'dist', segment[collection], id, 'index.html')), false, `${collection}/${id} generated a route`);
+      assert.equal(existsSync(path.join(scratch, 'dist', collection, id, 'index.html')), false, `${collection}/${id} generated a route`);
     }
-    const index = html(segment[collection]);
+    const index = html(collection);
     assert.ok(!index.includes('qa-draft'), `${collection} index exposed a draft`);
     assert.ok(index.includes('qa-listing'), `${collection} omitted its listing-only entry`);
-    assert.ok(!index.includes(`href="/${segment[collection]}/qa-listing`), `${collection} linked to a missing article`);
+    assert.ok(!index.includes(`href="/${collection}/qa-listing`), `${collection} linked to a missing article`);
   }
   assert.ok(!html('work').includes('qa-unlisted'), 'Unlisted role appeared in ledger');
   assert.ok(html('work/qa-unlisted').includes('Test body.'), 'Unlisted article was not generated');

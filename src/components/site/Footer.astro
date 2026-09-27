@@ -1,7 +1,7 @@
 ---
 import { site } from '~/config/site';
 import Logo from './Logo.astro';
-import PlayWord from './PlayWord.astro';
+import CrayonWord from './CrayonWord.astro';
 import ThemeToggle from './ThemeToggle.astro';
 const year = new Date().getFullYear();
 ---
@@ -11,7 +11,7 @@ const year = new Date().getFullYear();
     {site.nav.map((l) => (
       <a href={l.href} class:list={['t-14', { muted: l.href !== '/hobbies' }]}
          aria-label={l.href === '/hobbies' ? 'Hobbies' : undefined}>
-        {l.href === '/hobbies' ? <PlayWord size={16} /> : l.label}
+        {l.href === '/hobbies' ? <CrayonWord size={16} /> : l.label}
       </a>
     ))}
     <span class="sep" aria-hidden="true"></span>

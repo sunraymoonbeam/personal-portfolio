@@ -134,14 +134,14 @@ const projects = defineCollection({
         links: links.optional(),
         cardHighlights,
         metrics: z.array(metric).max(4).optional(),
-        /** Cross-list under /play without duplicating the entry or its URL. */
-        showInPlay: z.boolean().default(false),
+        /** Cross-list under /hobbies without duplicating the entry or its URL. */
+        showInHobbies: z.boolean().default(false),
       })
       .strict(),
 });
 
-const play = defineCollection({
-  loader: glob({ pattern: '*/index.mdx', base: './src/content/play' }),
+const hobbies = defineCollection({
+  loader: glob({ pattern: '*/index.mdx', base: './src/content/hobbies' }),
   schema: ({ image }) =>
     z
       .object({
@@ -159,4 +159,4 @@ const employers = defineCollection({
     z.object({ name: z.string().min(1), url: z.url().optional(), logo: image() }).strict(),
 });
 
-export const collections = { work, projects, play, employers };
+export const collections = { work, projects, hobbies, employers };

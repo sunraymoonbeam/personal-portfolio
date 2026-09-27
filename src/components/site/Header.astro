@@ -1,7 +1,7 @@
 ---
 import { site } from '~/config/site';
 import Logo from './Logo.astro';
-import PlayWord from './PlayWord.astro';
+import CrayonWord from './CrayonWord.astro';
 import Search from './Search.astro';
 
 const path = Astro.url.pathname;
@@ -25,7 +25,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
              aria-current={active(l.href) ? 'page' : undefined}>
             <span class="idx tabular">{pad(i + 1)}</span>
             {l.href === '/hobbies'
-              ? <><PlayWord size={16} /><span class="visually-hidden">Hobbies</span></>
+              ? <><CrayonWord size={16} /><span class="visually-hidden">Hobbies</span></>
               : l.label}
           </a>
         </li>

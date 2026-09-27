@@ -3,12 +3,12 @@ import { Image } from 'astro:assets';
 import portrait from '~/assets/portrait.jpg';
 import SiteLayout from '~/layouts/SiteLayout.astro';
 import SectionHead from '~/components/ui/SectionHead.astro';
-import PlayWord from '~/components/site/PlayWord.astro';
+import CrayonWord from '~/components/site/CrayonWord.astro';
 import HobbyGrid from '~/components/hobbies/HobbyGrid.astro';
-import { getPlayIndex } from '~/lib/content';
+import { getHobbiesIndex } from '~/lib/content';
 import { pages } from '~/copy/pages';
 
-const play = (await getPlayIndex()).slice(0, 4);
+const hobbies = (await getHobbiesIndex()).slice(0, 4);
 const a = pages.about;
 ---
 {/* Reference shape: portrait and a facts table in a narrow left column, the
@@ -55,9 +55,9 @@ const a = pages.about;
 
   <section class="section"><div class="wrap">
     <SectionHead href="/hobbies" linkLabel="View all hobbies">
-      <PlayWord slot="title" />
+      <CrayonWord slot="title" />
     </SectionHead>
-    <HobbyGrid items={play} />
+    <HobbyGrid items={hobbies} />
   </div></section>
 </SiteLayout>
 <style>

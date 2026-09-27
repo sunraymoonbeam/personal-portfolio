@@ -3,20 +3,20 @@ import { render } from 'astro:content';
 import { articleComponents } from '~/components/article/mdx';
 import ArticleLayout from '~/layouts/ArticleLayout.astro';
 import Gallery from '~/components/article/Gallery.astro';
-import { getPublishedPlay, toArticleLinks, getAdjacent, keyOf } from '~/lib/content';
+import { getPublishedHobbies, toArticleLinks, getAdjacent, keyOf } from '~/lib/content';
 import { formatMonth } from '~/lib/date';
 import { Image } from 'astro:assets';
 
 export async function getStaticPaths() {
-  const entries = (await getPublishedPlay()).filter((e) => e.data.writeup);
+  const entries = (await getPublishedHobbies()).filter((e) => e.data.writeup);
   return entries.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
 }
 
 const { entry } = Astro.props;
 const d = entry.data;
 const { Content } = await render(entry);
-const all = (await getPublishedPlay()).filter((e) => e.data.writeup);
-const { prev, next } = getAdjacent(toArticleLinks('play', all), keyOf('play', entry.id));
+const all = (await getPublishedHobbies()).filter((e) => e.data.writeup);
+const { prev, next } = getAdjacent(toArticleLinks('hobbies', all), keyOf('hobbies', entry.id));
 ---
 <ArticleLayout
   title={d.title} summary={d.summary} eyebrow={`Hobbies · ${formatMonth(d.published)}`}

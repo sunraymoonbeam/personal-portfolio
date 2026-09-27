@@ -32,6 +32,19 @@ src/
   assets/        images used by components rather than by a content entry.
 ```
 
+The three that are easy to confuse:
+
+- **`content/`** is for an entry that has its own URL, or that a schema
+  validates. Its pictures live in its own folder, beside its MDX file.
+- **`assets/`** is for an image a component reaches for directly, with no
+  entry behind it. The portrait and the cursor frames. Astro processes these,
+  which is why they are not in `public/`.
+- **`data/`** is a lookup table, not prose and not an entry. One shape,
+  repeated. The technology list is the only one.
+
+`public/` is the fourth: files served byte for byte with no processing, like
+the CV and the favicon.
+
 Imports use the `~/` alias for anything under `src`, so a path says where a
 file is rather than how far away it is. Astro reads it from the `paths` entry
 in `tsconfig.json`.
@@ -59,10 +72,10 @@ npm run verify
 | --- | --- | --- | --- |
 | Project | `_template/project` | `src/content/projects/<slug>/` | `/projects/<slug>` |
 | Role | `_template/work` | `src/content/work/<company>/` | `/work/<company>` |
-| Hobby | `_template/play` | `src/content/play/<slug>/` | `/hobbies/<slug>` |
+| Hobby | `_template/hobby` | `src/content/hobbies/<slug>/` | `/hobbies/<slug>` |
 
-The hobby collection is called `play` and is served at `/hobbies`. The map
-between the two lives in `src/lib/select.ts`; change it in one place.
+A collection is named after the URL it serves, so there is no mapping to keep
+in step. The folder name is the slug.
 
 **The template is the documentation.** Every field, every flag and every
 default is commented in the frontmatter you are already editing, so it cannot
@@ -172,9 +185,12 @@ and in `nginx.conf`.
 
 ## Provenance
 
-`docs/source/notes.md` outranks the résumé for narrative; `docs/source/resume.pdf`
-supplies titles and dates. Work bullets on the site are verbatim from the CV,
-with `**…**` marking emphasis and adding no words, so the two cannot disagree.
+Work bullets on the site are verbatim from the CV, with `**…**` marking
+emphasis and adding no words, so the two cannot disagree. The CV itself is
+`public/cv.pdf`, which is both the downloadable file and the source of record.
+
+`docs/design/apple.md` records the design rules the site follows, what is
+Apple's and what is a judgement made here.
 
 The MapleStory cursors are Nexon artwork from an unlicensed source, kept at my
 request. `npm run cursors` regenerates `src/styles/cursors.css` from the PNGs.

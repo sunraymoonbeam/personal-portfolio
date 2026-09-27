@@ -59,7 +59,7 @@ test('getAdjacent walks newest-first order and stops at the ends', () => {
 });
 
 test('keys are collection-qualified so ids cannot collide across collections', () => {
-  assert.notEqual(keyOf('projects', 'homelab'), keyOf('play', 'homelab'));
+  assert.notEqual(keyOf('projects', 'homelab'), keyOf('hobbies', 'homelab'));
 });
 
 // ── dates: never constructed as a Date ──────────────────────────────────────

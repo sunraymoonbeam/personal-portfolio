@@ -22,7 +22,7 @@ export {
 
 export type Work = CollectionEntry<'work'>;
 export type Project = CollectionEntry<'projects'>;
-export type Play = CollectionEntry<'play'>;
+export type Hobby = CollectionEntry<'hobbies'>;
 export type ResolvedWork = { entry: Work; employer: CollectionEntry<'employers'> };
 
 export async function resolveWork(entry: Work): Promise<ResolvedWork> {
@@ -81,24 +81,24 @@ export async function getWorkByYear(): Promise<Array<{ year: string; roles: Work
     .map(([year, roles]) => ({ year, roles }));
 }
 
-// ── play ────────────────────────────────────────────────────────────────────
+// ── hobbies ─────────────────────────────────────────────────────────────────
 
-export async function getPublishedPlay(): Promise<Play[]> {
-  const all = await getCollection('play', isPublished);
+export async function getPublishedHobbies(): Promise<Hobby[]> {
+  const all = await getCollection('hobbies', isPublished);
   return sortByMonthDesc(all, (e) => e.data.published);
 }
 
 /**
- * The Play index: real play entries, plus any project that opted in via
- * `showInPlay`. Cross-listed projects keep their canonical /projects URL — the
+ * The hobbies index: real hobby entries, plus any project that opted in via
+ * `showInHobbies`. A cross-listed project keeps its canonical /projects URL, so
  * body is never duplicated.
  */
-export async function getPlayIndex(): Promise<
+export async function getHobbiesIndex(): Promise<
   Array<{ key: EntryKey; href: string; title: string; caption: string; cover?: ImageMetadata | undefined; coverAlt?: string | undefined }>
 > {
-  const [play, projects] = await Promise.all([getPublishedPlay(), getPublishedProjects()]);
-  const fromPlay = play.map((e) => ({
-    key: keyOf('play', e.id),
+  const [hobbies, projects] = await Promise.all([getPublishedHobbies(), getPublishedProjects()]);
+  const own = hobbies.map((e) => ({
+    key: keyOf('hobbies', e.id),
     href: e.data.writeup ? `/hobbies/${e.id}` : '',
     title: e.data.title,
     caption: e.data.caption,
@@ -106,7 +106,7 @@ export async function getPlayIndex(): Promise<
     coverAlt: e.data.coverAlt,
   }));
   const crossListed = projects
-    .filter((e) => e.data.showInPlay)
+    .filter((e) => e.data.showInHobbies)
     .map((e) => ({
       key: keyOf('projects', e.id),
       href: e.data.writeup ? `/projects/${e.id}` : '',
@@ -115,5 +115,5 @@ export async function getPlayIndex(): Promise<
       cover: e.data.cover,
       coverAlt: e.data.coverAlt,
     }));
-  return [...fromPlay, ...crossListed];
+  return [...own, ...crossListed];
 }

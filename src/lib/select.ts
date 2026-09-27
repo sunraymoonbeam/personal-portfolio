@@ -5,8 +5,8 @@
  * lib/content.ts loads entries and delegates every decision here.
  */
 
-export type EntryKey = `${'projects' | 'work' | 'play'}:${string}`;
-export const keyOf = (collection: 'projects' | 'work' | 'play', id: string): EntryKey =>
+export type EntryKey = `${'projects' | 'work' | 'hobbies'}:${string}`;
+export const keyOf = (collection: 'projects' | 'work' | 'hobbies', id: string): EntryKey =>
   `${collection}:${id}`;
 
 export type ArticleLink = { key: EntryKey; href: string; title: string };
@@ -43,23 +43,12 @@ export function getAdjacent(
   return { prev: ordered[i + 1], next: ordered[i - 1] };
 }
 
-/**
- * The collection name is not always the URL segment: the `play` collection is
- * served at /hobbies. Building hrefs from the collection name directly produced
- * /play/<slug> links that 404'd.
- */
-export const ROUTE_SEGMENT: Record<'projects' | 'work' | 'play', string> = {
-  projects: 'projects',
-  work: 'work',
-  play: 'hobbies',
-};
-
 export const toArticleLinks = (
-  collection: 'projects' | 'work' | 'play',
+  collection: 'projects' | 'work' | 'hobbies',
   entries: Array<{ id: string; data: { title: string; shortTitle?: string | undefined } }>,
 ): ArticleLink[] =>
   entries.map((e) => ({
     key: keyOf(collection, e.id),
-    href: `/${ROUTE_SEGMENT[collection]}/${e.id}`,
+    href: `/${collection}/${e.id}`,
     title: e.data.shortTitle ?? e.data.title,
   }));

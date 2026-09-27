@@ -1,16 +1,16 @@
 ---
 import SiteLayout from '~/layouts/SiteLayout.astro';
-import PlayWord from '~/components/site/PlayWord.astro';
+import CrayonWord from '~/components/site/CrayonWord.astro';
 import HobbyGrid from '~/components/hobbies/HobbyGrid.astro';
-import { getPlayIndex } from '~/lib/content';
+import { getHobbiesIndex } from '~/lib/content';
 import { pages } from '~/copy/pages';
-const items = await getPlayIndex();
+const items = await getHobbiesIndex();
 ---
 <SiteLayout title="Hobbies — Zack Low" description={pages.hobbies.lede}>
   <section class="section wrap intro measure-start">
     <p class="eyebrow">{pages.hobbies.eyebrow}</p>
     <h1 class="t-64">
-      {pages.hobbies.titleBefore}<PlayWord word={pages.hobbies.titleWord} />{pages.hobbies.titleAfter}
+      {pages.hobbies.titleBefore}<CrayonWord word={pages.hobbies.titleWord} />{pages.hobbies.titleAfter}
     </h1>
     <p class="t-21 muted">{pages.hobbies.lede}</p>
   </section>
