@@ -15,7 +15,7 @@ const href = featured?.data.writeup ? `/work/${featured.id}` : undefined;
 const Tag = href ? 'a' : 'div';
 ---
 <SiteLayout title="Work experience — Zack Low" description={pages.work.lede}>
-  <section class="section wrap intro">
+  <section class="section wrap intro measure-start">
     <p class="eyebrow">{pages.work.eyebrow}</p>
     <h1 class="t-64">{pages.work.title}</h1>
     <p class="t-21 muted">{pages.work.lede}</p>
@@ -23,7 +23,7 @@ const Tag = href ? 'a' : 'div';
 
   {featured && employer && (
     <section class="wrap feature">
-      <Tag {...(href ? { href } : {})} class:list={['card', { hoverable: !!href }]}>
+      <Tag {...(href ? { href } : {})} class:list={['card', { linked: !!href }]}>
         {featured.data.cover && (
           <Image src={featured.data.cover} alt={featured.data.coverAlt ?? ''}
                  widths={[720, 1200, 1600]} sizes="(max-width: 980px) 100vw, 980px"
@@ -35,7 +35,7 @@ const Tag = href ? 'a' : 'div';
             Latest · {employer.data.name} · {formatRange(featured.data.start, featured.data.end)}
           </span>
         </div>
-        <h2 class="t-40 hoverable-title">{featured.data.title}</h2>
+        <h2 class="t-40">{featured.data.title}</h2>
         <p class="t-19 muted">{featured.data.summary}</p>
       </Tag>
     </section>
@@ -49,9 +49,10 @@ const Tag = href ? 'a' : 'div';
   </section>
 </SiteLayout>
 <style>
-  .intro { display: flex; flex-direction: column; gap: var(--s-4); max-width: 760px; }
+  .intro { display: flex; flex-direction: column; gap: var(--s-4); }
   .feature { padding-bottom: var(--s-10); }
   .card { display: flex; flex-direction: column; gap: var(--s-4); }
+  .linked:hover h2 { color: var(--link); }
   .shot { width: 100%; aspect-ratio: 21 / 9; object-fit: cover; border-radius: var(--radius-l); }
   .meta { display: flex; align-items: center; gap: var(--s-3); }
   .logo { border-radius: 10px; object-fit: contain; border: 1px solid var(--border); background: var(--canvas); }

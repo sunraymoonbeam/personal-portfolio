@@ -8,6 +8,6 @@ const { entries } = Astro.props;
 <style>
   .grid {
     display: grid; gap: var(--s-7); align-items: stretch;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
   }
 </style>

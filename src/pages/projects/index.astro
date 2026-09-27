@@ -8,7 +8,7 @@ const projects = await getPublishedProjects();
 const tags = [...new Set(projects.flatMap((p) => p.data.tags))].sort();
 ---
 <SiteLayout title="Projects — Zack Low" description="Side projects, shipped end to end.">
-  <section class="section wrap intro">
+  <section class="section wrap intro measure-start">
     <p class="eyebrow">{pages.projects.eyebrow}</p>
     <h1 class="t-64">{pages.projects.title}</h1>
     <p class="t-21 muted">{pages.projects.lede}</p>
@@ -19,7 +19,7 @@ const tags = [...new Set(projects.flatMap((p) => p.data.tags))].sort();
   </section>
 </SiteLayout>
 <style>
-  .intro { display: flex; flex-direction: column; gap: var(--s-4); max-width: 760px; }
+  .intro { display: flex; flex-direction: column; gap: var(--s-4); }
   .filterbar { margin-top: var(--s-4); }
   .list { display: flex; flex-direction: column; gap: var(--s-11); padding-bottom: var(--s-11); }
 </style>

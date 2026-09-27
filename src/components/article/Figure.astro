@@ -2,23 +2,20 @@
 import { Image } from 'astro:assets';
 interface Props {
   src: ImageMetadata; alt: string; caption?: string;
-  size?: 'normal' | 'wide' | 'full'; dim?: boolean;
+  dim?: boolean;
 }
-const { src, alt, caption, size = 'normal', dim = false } = Astro.props;
+const { src, alt, caption, dim = false } = Astro.props;
 ---
-<figure class:list={['fig', size]}>
+<figure class="fig">
   <Image src={src} alt={alt} widths={[600, 900, 1400]}
-         sizes={size === 'normal' ? '660px' : '(max-width: 1100px) 100vw, 1100px'}
+         sizes="(max-width: 734px) 100vw, 660px"
          class:list={['img', { dim }]} loading="lazy" />
   {caption && <figcaption class="t-14 small">{caption}</figcaption>}
 </figure>
 <style>
   .fig { margin: 0; display: flex; flex-direction: column; gap: var(--s-3); }
   .img { width: 100%; border-radius: var(--radius-m); aspect-ratio: 16 / 10; object-fit: cover; }
-  /* Text never leaves the reading column; images may. */
-  .wide { width: min(1100px, 92vw); margin-inline: calc((min(1100px, 92vw) - 100%) / -2); }
-  .full { width: 100vw; margin-inline: calc((100vw - 100%) / -2); }
-  .full .img { border-radius: 0; }
+  /* The sidebar shares this grid row; figures stay in the reading column. */
+  .fig { max-width: 100%; min-width: 0; }
   :root[data-theme='dark'] .img.dim { filter: brightness(0.92); }
-  @media (max-width: 900px) { .wide, .full { width: 100%; margin-inline: 0; } }
 </style>

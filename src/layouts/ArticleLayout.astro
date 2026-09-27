@@ -12,7 +12,7 @@ const { title, summary, eyebrow, backHref, backLabel, prev, next } = Astro.props
 ---
 <SiteLayout title={`${title} — Zack Low`} description={summary}>
   <article>
-    <header class="head wrap">
+    <header class="head wrap measure-start">
       <ArrowLink href={backHref} label={backLabel} />
       {eyebrow && <p class="eyebrow">{eyebrow}</p>}
       <h1 class="t-64">{title}</h1>
@@ -35,10 +35,10 @@ const { title, summary, eyebrow, backHref, backLabel, prev, next } = Astro.props
   </article>
 </SiteLayout>
 <style>
-  .head { display: flex; flex-direction: column; gap: var(--s-4); padding-block: var(--s-10) var(--s-6); max-width: 760px; }
+  .head { display: flex; flex-direction: column; gap: var(--s-4); padding-block: var(--s-10) var(--s-6); }
   .hero-slot:empty { display: none; }
   .body {
-    display: grid; grid-template-columns: minmax(0, var(--reading)) 1fr;
+    display: grid; grid-template-columns: minmax(0, var(--reading)) minmax(0, 1fr);
     gap: var(--s-10); align-items: start; padding-block: var(--s-8) var(--s-11);
   }
   .side { position: sticky; top: 96px; display: flex; flex-direction: column; gap: var(--s-6); }

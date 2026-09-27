@@ -9,7 +9,7 @@ const { entry } = Astro.props;
 const d = entry.data;
 const href = d.writeup ? `/projects/${entry.id}` : undefined;
 ---
-<article class:list={["card", { hoverable: !!href }]}>
+<article class="card">
   {href
     ? <a href={href} aria-label={d.title}><ScreenshotFrame title={d.title} src={d.cover} alt={d.coverAlt ?? ''} dim={d.coverDim} /></a>
     : <ScreenshotFrame title={d.title} src={d.cover} alt={d.coverAlt ?? ''} dim={d.coverDim} />}
@@ -19,7 +19,7 @@ const href = d.writeup ? `/projects/${entry.id}` : undefined;
       <span class="eyebrow tabular">{yearOf(d.published)}</span>
       <ul class="tags">{d.tags.map((t) => <li class="chip t-14">{t}</li>)}</ul>
     </div>
-    <h3 class="t-28 hoverable-title">{href ? <a href={href}>{d.shortTitle ?? d.title}</a> : (d.shortTitle ?? d.title)}</h3>
+    <h3 class="t-28">{href ? <a href={href}>{d.shortTitle ?? d.title}</a> : (d.shortTitle ?? d.title)}</h3>
     <p class="t-17 claim">{d.claim}</p>
     <p class="t-14 muted">{d.summary}</p>
     {href && <div class="cta"><ArrowLink href={href} label="Read the build" /></div>}
@@ -28,7 +28,8 @@ const href = d.writeup ? `/projects/${entry.id}` : undefined;
 <style>
   /* Equal-height cards come from the grid stretching + this column layout,
      not from hard-coded block heights (those leave gaps when cards stack). */
-  .card { display: flex; flex-direction: column; gap: var(--s-4); height: 100%; }
+  .card { display: flex; flex-direction: column; gap: var(--s-4); height: 100%; min-width: 0; }
+  .card:has(a:hover) h3 a { color: var(--link); }
   .body { display: flex; flex-direction: column; gap: var(--s-3); flex-grow: 1; }
   .meta { display: flex; align-items: center; gap: var(--s-3); flex-wrap: wrap; }
   .tags { display: flex; gap: 6px; flex-wrap: wrap; }

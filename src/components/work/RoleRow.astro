@@ -13,11 +13,11 @@ const Wrapper = href ? 'a' : 'div';
 ---
 {/* The whole row is the target and it greys on hover — no separate "Read" link
     needed to tell you it is clickable. */}
-<Wrapper {...(href ? { href } : {})} class:list={['row', { hoverable: !!href }]}>
+<Wrapper {...(href ? { href } : {})} class:list={['row', { linked: !!href }]}>
   <span class="eyebrow tabular year">{yearOf(d.start)}</span>
   <Image src={employer.data.logo} alt="" width={44} height={44} class="logo" loading="lazy" />
   <span class="who">
-    <span class="t-17 name hoverable-title">{d.role}</span>
+    <span class="t-17 name">{d.role}</span>
     <span class="t-14">{employer.data.name} · {d.kind}</span>
     <span class="t-14 muted tabular">
       <time datetime={d.start}>{formatRange(d.start, d.end)}</time> · {formatDuration(d.start, d.end)}
@@ -36,6 +36,7 @@ const Wrapper = href ? 'a' : 'div';
   .logo { border-radius: 10px; object-fit: contain; background: var(--canvas); border: 1px solid var(--border); }
   .who { display: flex; flex-direction: column; gap: 3px; }
   .name { font-weight: 600; }
+  .linked:hover .name { color: var(--link); }
   .what { padding-top: 2px; line-height: 1.5; }
   @media (max-width: 860px) {
     .row { grid-template-columns: 44px 1fr; gap: var(--s-3) var(--s-4); }

@@ -65,6 +65,7 @@ a:hover { color: var(--link); }
 /* ── layout ── */
 .wrap { width: min(var(--content), 100% - var(--gutter) * 2); margin-inline: auto; }
 .wrap-wide { width: min(1320px, 100% - var(--gutter) * 2); margin-inline: auto; }
+.measure-start > * { max-width: 760px; }
 .section { padding-block: clamp(56px, 8vw, 120px); }
 .band { background: var(--surface); }
 .stack { display: flex; flex-direction: column; }
@@ -107,14 +108,3 @@ mark {
   position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
   overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
 }
-
-/* One affordance for every clickable block: the whole thing greys on hover, so
-   nothing needs a separate "Read more" link to look interactive. */
-.hoverable {
-  border-radius: var(--radius-m);
-  padding: var(--s-4);
-  margin: calc(var(--s-4) * -1);
-  transition: background-color 120ms linear;
-}
-.hoverable:hover { background: var(--chip-bg); color: inherit; }
-.hoverable:hover .hoverable-title { color: var(--link); }
