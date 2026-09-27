@@ -67,6 +67,8 @@ const canonical = new URL(Astro.url.pathname, site.origin).href;
       import { initTheme, syncDocument } from '../scripts/theme';
       import { initCursor } from '../scripts/cursor';
       import { initMenu } from '../scripts/menu';
+      import { initSearch } from '../scripts/search';
+      import { initFilters } from '../scripts/filters';
 
       // Before the swapped page paints: the new document has no data-theme, so
       // without this every navigation flashes light.
@@ -74,7 +76,7 @@ const canonical = new URL(Astro.url.pathname, site.origin).href;
 
       // Fires on first load and after every navigation. Both inits are
       // idempotent, so re-running them only re-binds the new DOM.
-      const start = () => { initTheme(); initCursor(); initMenu(); };
+      const start = () => { initTheme(); initCursor(); initMenu(); initSearch(); initFilters(); };
       document.addEventListener('astro:page-load', start);
     </script>
 

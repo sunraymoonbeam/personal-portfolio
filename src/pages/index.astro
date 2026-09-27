@@ -93,7 +93,7 @@ const hobbies = (await getPlayIndex()).slice(0, 3);
   <section class="section band closing">
     <div class="wrap inner">
       <h2 class="t-48">{pages.contact.title}</h2>
-      <blockquote class="lede">
+      <blockquote class="pitch">
         {pages.contact.lede.map((line) => <p class="t-19">{line}</p>)}
       </blockquote>
       <a href="/contact" class="btn">{home.cta.action}</a>
@@ -141,7 +141,19 @@ const hobbies = (await getPlayIndex()).slice(0, 3);
   }
   .chips { display: flex; flex-wrap: wrap; gap: var(--s-2); }
 
-  .closing .inner { display: flex; flex-direction: column; align-items: flex-start; gap: var(--s-5); }
+  /* The heading is centred; the quote under it keeps its own left edge, so
+     the rule down its side still reads as a rule. */
+  .closing .inner {
+    display: flex; flex-direction: column; align-items: center;
+    gap: var(--s-6); text-align: center;
+  }
+  /* The heading is centred, the quote under it keeps its own left edge so the
+     rule down its side still reads as a rule. */
+  .pitch {
+    display: flex; flex-direction: column; gap: var(--s-4);
+    max-width: 56ch; margin: 0; text-align: left;
+    padding-left: var(--s-5); border-left: 2px solid var(--link);
+  }
 
   @media (max-width: 900px) {
     .hero { grid-template-columns: 1fr; gap: var(--s-7); }

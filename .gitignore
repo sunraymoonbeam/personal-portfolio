@@ -25,3 +25,6 @@ pnpm-debug.log*
 
 # local
 .DS_Store
+
+# Disposable fixture checkout from scripts/check-routes.mjs
+.route-fixture-*/
