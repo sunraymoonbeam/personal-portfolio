@@ -19,8 +19,10 @@ export const home = {
     ],
     [
       { text: 'I try to ' },
-      { text: 'work from first principles', hi: true },
-      { text: ': understand what is actually wrong, decide what matters, then own the solution end to end.' },
+      { text: 'work from first principles', em: true },
+      { text: ': understand what is actually wrong, decide what matters, then own the solution end to end. ' },
+      { text: 'Solving problems is my forte', hi: true },
+      { text: '. Writing code is only one of the ways I do it.' },
     ],
   ],
 

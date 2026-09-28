@@ -71,8 +71,9 @@ Put image files in the entry's own folder. Two ways to use them:
 
 - **In the body**, as a `Figure`, next to the paragraph it illustrates. This is
   for a picture that carries the narrative. A set that belongs together goes in
-  a `Photos` row of `Shot` elements. The crop shape belongs to the row, not to
-  each picture, so a row never comes out ragged.
+  a `Photos` grid of `Shot` elements: tight gap, one shared crop, click to
+  enlarge. The crop belongs to the grid, not to each picture, so the block
+  stays square. Captions are optional and most pictures do not need one.
 - **In the `gallery` list** in the frontmatter, for pictures that belong to the
   entry rather than to a sentence. The order in the file is the order on the
   page, so re-arranging means moving a block. Alt text is required.

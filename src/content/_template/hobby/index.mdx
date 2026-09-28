@@ -28,13 +28,17 @@ The bit that makes it more than a hobby photo.
       import shot from './shot.jpg'
       <Figure src={shot} alt="What it shows" caption="Why it matters." />
 
-    A set that belongs together. `ratio` is per ROW, so every picture in it
-    crops to the same shape:
+    A set that belongs together, as a tight grid. `ratio` is per GRID, so
+    every picture in it crops to the same shape and the block stays square.
+    Clicking one opens it large; with no JavaScript it opens the file.
 
-      <Photos cols={3} ratio="portrait" label="Optional heading">
+      <Photos cols={3} ratio="square">
         <Shot src={a} alt="..." caption="Hampi, India" />
-        <Shot src={b} alt="..." caption="A caption can be a joke." />
+        <Shot src={b} alt="..." />
       </Photos>
+
+    Captions are optional and most pictures do not need one. Use one when it
+    says something the picture does not: a place, a date, a joke.
 
     Pictures that belong to the entry rather than to a sentence go in the
     `gallery` list above instead. */}
