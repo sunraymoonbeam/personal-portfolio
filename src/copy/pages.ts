@@ -7,30 +7,26 @@ export const pages = {
   },
   work: {
     eyebrow: 'Work',
-    title: 'A look at my professional journey so far.',
+    title: "Where I've worked, and what I did there.",
     /** The first paragraph doubles as the meta description. */
     body: [
-      'I have done all sorts of work, from flipping patties behind a burger ' +
-        'counter to data analytics, stakeholder management, infrastructure ' +
-        'and discovery.',
-      'I am a strong believer in learning how to do something by doing it. In ' +
-        'that kind of environment you learn to wear several hats quickly, and ' +
-        'to look at the same problem from more than one side.',
+      "I've gone from flipping patties behind a burger counter to working on " +
+        'databases, AI systems and production infrastructure.',
+      'I learn best by doing the work. Moving between different roles taught ' +
+        'me to pick up unfamiliar things quickly, and to look at the same ' +
+        'problem from different perspectives.',
       'The job I enjoy most is the one where I get to touch both the code and ' +
         'the people.',
     ],
   },
   skills: {
     eyebrow: 'Skills',
-    title: 'What I bring, technical and otherwise.',
+    title: 'Things I know how to do.',
     lede: 'Learned some in theory. Learned most the hard way.',
   },
   hobbies: {
     eyebrow: 'Hobbies',
-    /** "play" is set in the crayon face, so the title is assembled in the page. */
-    titleBefore: 'Work hard, ',
-    titleWord: 'play',
-    titleAfter: ' hard.',
+    title: 'Life away from the terminal.',
     lede:
       'Outside of work I tend to rotate between hobbies that involve making, ' +
       'learning, or obsessing over tiny improvements no one else would ' +
@@ -43,8 +39,8 @@ export const pages = {
     title: "Hi, I'm Zack.",
     /** One line under the name. The long version is the quote below it. */
     summary:
-      'A curious software engineer who would rather understand a problem ' +
-      'properly than guess at it, and who likes owning it to the end.',
+      "I'm a software engineer who likes understanding a problem properly, " +
+      'then owning the solution to the end.',
     lede:
       'Ren Hwa Low on paper, Zack to most people. A software engineer ' +
       'specialising in AI, currently at Carro in Singapore.',
@@ -61,17 +57,17 @@ export const pages = {
   cv: {
     eyebrow: 'CV',
     title: 'One page.',
-    lede: 'Read it below, or take the file.',
+    lede: 'Read it here, or take a copy.',
   },
   contact: {
     eyebrow: 'Contact',
-    title: 'Got a problem to be solved?',
+    title: 'Got a problem worth solving?',
     /** One string per line, set as a quote. */
     lede: [
-      'That is kind of my thing. I like messy problems, ambiguous ideas, and ' +
-        'figuring out how to turn them into something useful.',
-      'I am open to roles where I can own problems end to end, build things ' +
-        'that matter, and make life a little easier for the people around me.',
+      "That's kind of my thing. I like messy problems and ambiguous ideas, " +
+        'especially when I can turn them into something useful.',
+      "I'm interested in roles where I can own a problem end to end and build " +
+        'something people actually find useful.',
       'Or just ask me out for coffee.',
     ],
   },

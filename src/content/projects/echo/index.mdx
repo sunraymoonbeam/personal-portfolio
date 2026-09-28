@@ -2,7 +2,7 @@
 title: Echo
 claim: A personal language-model experiment trained on my Telegram history.
 summary: >-
-  A digital clone of myself, built from five years of my own Telegram history. The model was never the hard part. Five years of messages is not a dataset, and most of the work went into turning it into one. I fine-tuned open-source models, LLaMA 3 and Gemma 3, with Unsloth for fast memory-efficient training, then wrapped the result in a modular microservice architecture behind a FastAPI backend, with the Telegram data itself on AWS S3.
+  A digital clone of myself, built from five years of my own Telegram history. The model was never the hard part. Five years of messages is not a dataset, and most of the work went into turning it into one. I fine-tuned LLaMA 3 and Gemma 3 with Unsloth, then served the result through a small set of FastAPI services. The Telegram data lives on AWS S3.
 published: 2025-05
 status: Shipped
 tags: [AI/ML, Backend]
@@ -24,10 +24,10 @@ Echo is a personal project: I wanted to see what a model trained on my own messa
 
 ## How I built it
 
-I fine-tuned open-source LLaMA 3 and Gemma 3 models with Unsloth. Its memory-efficient training path made the experiments practical on the hardware available to me. I built a modular set of services with a FastAPI backend and used AWS S3 for the stored Telegram data.
+I fine-tuned open-source LLaMA 3 and Gemma 3 models with Unsloth. Its memory-efficient training path made the experiments practical on the hardware available to me. I split the application into small services behind a FastAPI backend and used AWS S3 for the stored Telegram data.
 
 The data has its own limits. A chat export reflects who I was speaking to and what conversations I kept, so the model can only learn from that sample.
 
 ## What I learned
 
-This project let me work across data preparation, model training and serving. It also made me think more carefully about what it means to build a personal system from private conversation data.
+Most of the work turned out to be outside the model itself: cleaning the data, shaping the training set and deciding how to serve the result. It also made me think more carefully about what it means to build a personal system from private conversation data.

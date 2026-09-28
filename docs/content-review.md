@@ -1,5 +1,9 @@
 # Copy review
 
+> **Round 1 is applied.** Everything a reviewer changed on 2026-09-28 is now
+> live in the site and reflected below, so this file is current rather than
+> historical. The hobby entries were deliberately left for a later round.
+
 ## Prompt for the reviewer
 
 Review every line of copy below. Rephrase where it helps, leave it alone where
@@ -51,16 +55,13 @@ what he did about it, and what he wants a reader to remember.
 > Software engineer (AI)
 
 **Opening, paragraph one** (bold phrases are emphasised on the page)
-> I love building **full-stack software**, real working applications that
-> people actually use. I also specialise in **AI**, and I have worked across a
-> large number of domains, including computer vision and audio / speech
-> processing.
+> I love building **full-stack software**: real applications that people
+> actually use. I specialise in **AI**, and my work has taken me through many
+> different domains, such as data systems, computer vision, motion and speech.
 
 **Opening, paragraph two**
-> I take pride in my programming fundamentals, and I try to **work the problem
-> from first principles**: understand the cause deeply, come up with the best
-> solution, and then own it end to end. **Problem solving is my forte**.
-> Writing code is only one of the ways I do it.
+> I try to **work from first principles**: understand what is actually wrong,
+> decide what matters, then own the solution end to end.
 
 **Link under the portrait**
 > More about me
@@ -71,7 +72,7 @@ what he did about it, and what he wants a reader to remember.
 > Things I build when I should probably be sleeping.
 
 **02 Work**
-> The roles, teams and experiences that shaped me.
+> Where I've worked, and what I learned there.
 
 **03 Skills**
 > (no subtitle)
@@ -113,21 +114,21 @@ Heading and the three lines below it are the same copy as the contact page.
 > Work
 
 **Title**
-> A look at my professional journey so far.
+> Where I've worked, and what I did there.
 
 **Body, three paragraphs**
-> I have done all sorts of work, from flipping patties behind a burger counter
-> to data analytics, stakeholder management, infrastructure and discovery.
+> I've gone from flipping patties behind a burger counter to working on
+> databases, AI systems and production infrastructure.
 
-> I am a strong believer in learning how to do something by doing it. In that
-> kind of environment you learn to wear several hats quickly, and to look at
-> the same problem from more than one side.
+> I learn best by doing the work. Moving between different roles taught me to
+> pick up unfamiliar things quickly, and to look at the same problem from
+> different perspectives.
 
 > The job I enjoy most is the one where I get to touch both the code and the
 > people.
 
 **Link label on each role**
-> Learnings
+> What I learned
 
 ---
 
@@ -137,7 +138,7 @@ Heading and the three lines below it are the same copy as the contact page.
 > Skills
 
 **Title**
-> What I bring, technical and otherwise.
+> Things I know how to do.
 
 **Lede**
 > Learned some in theory. Learned most the hard way.
@@ -152,8 +153,8 @@ Heading and the three lines below it are the same copy as the contact page.
 **Eyebrow**
 > Hobbies
 
-**Title** (the word "play" is drawn in the crayon font)
-> Work hard, play hard.
+**Title**
+> Life away from the terminal.
 
 **Lede**
 > Outside of work I tend to rotate between hobbies that involve making,
@@ -173,8 +174,8 @@ Heading and the three lines below it are the same copy as the contact page.
 > Hi, I'm Zack.
 
 **Summary, one line under the name**
-> A curious software engineer who would rather understand a problem properly
-> than guess at it, and who likes owning it to the end.
+> I'm a software engineer who likes understanding a problem properly, then
+> owning the solution to the end.
 
 **Facts table beside the portrait**
 > Based in: Singapore
@@ -187,9 +188,9 @@ Heading and the three lines below it are the same copy as the contact page.
 
 **The quote, five paragraphs**
 > I studied Computer Science at NTU. After working on analytics projects, I
-> became interested in the systems that make data useful. I went to AI
-> Singapore to explore AI, and that is where I specialise now, though I
-> describe myself as a software engineer first.
+> became interested in the systems that make data useful. That eventually took
+> me to AI Singapore. AI is where I specialise now, but I still think of myself
+> as a software engineer first.
 
 > Building a model also means understanding the database, the pipeline, and
 > the people who use the result.
@@ -222,7 +223,7 @@ Heading and the three lines below it are the same copy as the contact page.
 > One page.
 
 **Lede**
-> Read it below, or take the file.
+> Read it here, or take a copy.
 
 **Buttons**
 > Download PDF · Open in new tab
@@ -238,14 +239,14 @@ Heading and the three lines below it are the same copy as the contact page.
 > Contact
 
 **Title**
-> Got a problem to be solved?
+> Got a problem worth solving?
 
 **The quote, three lines**
-> That is kind of my thing. I like messy problems, ambiguous ideas, and
-> figuring out how to turn them into something useful.
+> That's kind of my thing. I like messy problems and ambiguous ideas,
+> especially when I can turn them into something useful.
 
-> I am open to roles where I can own problems end to end, build things that
-> matter, and make life a little easier for the people around me.
+> I'm interested in roles where I can own a problem end to end and build
+> something people actually find useful.
 
 > Or just ask me out for coffee.
 
@@ -255,7 +256,7 @@ Heading and the three lines below it are the same copy as the contact page.
 **Form placeholders**
 > Jane Doe
 > jane@company.com
-> Hey Zack, we're hiring and your range stood out.
+> Hey Zack, I came across your site and wanted to talk.
 
 **Button**
 > Send message
@@ -279,13 +280,13 @@ Heading and the three lines below it are the same copy as the contact page.
 > A shared camera app for events, with face detection and photo organisation.
 
 **Summary, shown on the projects page**
-> Basically Google Drive, but for sharing pictures at an event. Everyone shoots
-> on their own phone, every photo lands in one place, and face detection sorts
-> them so each guest can find the shots they are actually in. The backend is
-> FastAPI, with Azure Blob Storage holding the images and Azure PostgreSQL
-> keeping them fast to retrieve and query, deployed on Azure Container Apps.
-> The unsupervised clustering job that groups faces runs separately on AWS
-> Lambda, so a burst of uploads never blocks the app.
+> Basically Google Drive for photos at an event. Everyone shoots on their own
+> phone, the photos land in one place, and face detection helps each guest find
+> the shots they are in.
+>
+> I built the backend with FastAPI, Azure Blob Storage and Azure PostgreSQL,
+> deployed on Azure Container Apps. Face clustering runs separately on AWS
+> Lambda so a burst of uploads does not block the app.
 
 **Highlights**
 > Shared photo collection for events
@@ -304,8 +305,8 @@ separate chats and albums.
 ### The backend
 
 I built the backend with FastAPI. Images live in Azure Blob Storage, and Azure
-PostgreSQL stores the data we need to query them. The application runs on Azure
-Container Apps. I used an AWS Lambda job for unsupervised clustering to help
+PostgreSQL stores the metadata we use to find and query them. The application
+runs on Azure Container Apps. I used an AWS Lambda job for unsupervised clustering to help
 organise the photo collection.
 
 *(A diagram sits here. Its caption:)* The storage split in Kanta's backend. An
@@ -328,10 +329,9 @@ The storage and query model had to support the experience together.
 **Summary**
 > A digital clone of myself, built from five years of my own Telegram history.
 > The model was never the hard part. Five years of messages is not a dataset,
-> and most of the work went into turning it into one. I fine-tuned open-source
-> models, LLaMA 3 and Gemma 3, with Unsloth for fast memory-efficient training,
-> then wrapped the result in a modular microservice architecture behind a
-> FastAPI backend, with the Telegram data itself on AWS S3.
+> and most of the work went into turning it into one. I fine-tuned LLaMA 3 and
+> Gemma 3 with Unsloth, then served the result through a small set of FastAPI
+> services. The Telegram data lives on AWS S3.
 
 **Highlights**
 > Training data from five years of my Telegram history
@@ -351,16 +351,17 @@ a claim that a model can stand in for a person.
 
 I fine-tuned open-source LLaMA 3 and Gemma 3 models with Unsloth. Its
 memory-efficient training path made the experiments practical on the hardware
-available to me. I built a modular set of services with a FastAPI backend and
-used AWS S3 for the stored Telegram data.
+available to me. I split the application into small services behind a FastAPI
+backend and used AWS S3 for the stored Telegram data.
 
 The data has its own limits. A chat export reflects who I was speaking to and
 what conversations I kept, so the model can only learn from that sample.
 
 ### What I learned
 
-This project let me work across data preparation, model training and serving.
-It also made me think more carefully about what it means to build a personal
+Most of the work turned out to be outside the model itself: cleaning the data,
+shaping the training set and deciding how to serve the result. It also made me
+think more carefully about what it means to build a personal
 system from private conversation data.
 
 ## A hands-on Linux and Git onboarding exercise
@@ -413,7 +414,7 @@ describe here is the tool I built and the way it supported new teammates.
 # Work experience, in detail
 
 Each role shows: the role and company, a one-line summary, the CV bullets, and
-then a longer article behind a "Learnings" link.
+then a longer article behind a "What I learned" link.
 
 **Reminder: do not rewrite the bullets.** They are verbatim from the CV.
 
@@ -423,8 +424,9 @@ then a longer article behind a "Learnings" link.
 > Building customer service agents at Carro
 
 **Summary**
-> I work with stakeholders to turn customer service and internal operations
-> needs into production agent workflows.
+> Led development of Carro's customer service agent fleet, delivering
+> production automations across Singapore, Malaysia and Hong Kong for customer
+> support and internal operations.
 
 **Bullets (verbatim from CV, do not edit)**
 > Led development of Carro's customer service agent fleet, partnering with
@@ -477,8 +479,8 @@ that system.
 > Generating 3D animation from a text prompt
 
 **Summary**
-> At AI Singapore I helped build a GenAI MVP for a gaming company, from motion
-> data preparation to model training and deployment.
+> Built an end-to-end GenAI pipeline for generating 3D character animations
+> from text prompts for a gaming industry project.
 
 **Bullets (verbatim from CV, do not edit)**
 > Delivered a GenAI MVP for a gaming industry project, **generating 3D
@@ -529,8 +531,8 @@ cannot compensate for inconsistent motion files and missing descriptions.
 > Finding who spoke when in classroom recordings
 
 **Summary**
-> I worked with researchers on speech recognition and speaker diarization to
-> study participation in classroom discussions.
+> Developed an ASR and speaker diarisation pipeline for analysing student
+> participation across classroom recordings.
 
 **Bullets (verbatim from CV, do not edit)**
 > Developed a **speaker diarization system** with professors to measure student
@@ -574,8 +576,8 @@ enough if the speaker assignments are wrong.
 > Prototyping text tools for public-sector analysts
 
 **Summary**
-> At the Department of Statistics I explored LLMs and text analytics for
-> classification, Q&A and report generation.
+> Built early LLM prototypes for government teams, covering text
+> classification, question answering and automated report generation.
 
 **Bullet (verbatim from CV, do not edit)**
 > Partnered with various departments to **prototype NLP solutions** for text
@@ -613,8 +615,8 @@ to answer. A fluent response alone does not establish that the answer is sound.
 > Database migrations for legal and insurance clients
 
 **Summary**
-> I maintained production databases and wrote Python and PostgreSQL scripts for
-> client migrations and reporting.
+> Managed production databases and migrated more than 300,000 records for law
+> firms using Python and PostgreSQL.
 
 **Bullet (verbatim from CV, do not edit)**
 > Maintained production databases with PL/pgSQL and Python scripts, **migrating

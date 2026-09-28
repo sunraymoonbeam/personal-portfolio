@@ -51,7 +51,7 @@ const { rows, compact = false } = Astro.props;
             )}
             {href && !compact && (
               <a href={href} class="learnings t-17">
-                Learnings
+                What I learned
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                      stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                   <path d="M9 6l6 6-6 6" />
@@ -61,7 +61,7 @@ const { rows, compact = false } = Astro.props;
             {/* No visible label on the home page, so the link IS the row. An
                 empty anchor needs its own name, hence aria-label. */}
             {href && compact && (
-              <a href={href} class="cover" aria-label={`Learnings from ${d.role} at ${employer.data.name}`}></a>
+              <a href={href} class="cover" aria-label={`What I learned as ${d.role} at ${employer.data.name}`}></a>
             )}
           </div>
         </article>

@@ -13,16 +13,14 @@ export const home = {
     [
       { text: 'I love building ' },
       { text: 'full-stack software', em: true },
-      { text: ', real working applications that people actually use. I also specialise in ' },
+      { text: ': real applications that people actually use. I specialise in ' },
       { text: 'AI', em: true },
-      { text: ', and I have worked across a large number of domains, including computer vision and audio / speech processing.' },
+      { text: ', and my work has taken me through many different domains, such as data systems, computer vision, motion and speech.' },
     ],
     [
-      { text: 'I take pride in my programming fundamentals, and I try to ' },
-      { text: 'work the problem from first principles', em: true },
-      { text: ': understand the cause deeply, come up with the best solution, and then own it end to end. ' },
-      { text: 'Problem solving is my forte', hi: true },
-      { text: '. Writing code is only one of the ways I do it.' },
+      { text: 'I try to ' },
+      { text: 'work from first principles', hi: true },
+      { text: ': understand what is actually wrong, decide what matters, then own the solution end to end.' },
     ],
   ],
 
@@ -35,7 +33,7 @@ export const home = {
     work: {
       index: '02',
       title: 'Work',
-      sub: 'The roles, teams and experiences that shaped me.',
+      sub: "Where I've worked, and what I learned there.",
     },
     skills: { index: '03', title: 'Skills' },
     /** The subtitle carries an inline <code>, so it is passed as a slot. */

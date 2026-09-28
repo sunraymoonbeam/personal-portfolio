@@ -67,7 +67,7 @@ const { prev, next } = getAdjacent(links, keyOf('projects', entry.id));
     )}
   </div>
 
-  <p class="t-19 lead">{d.summary}</p>
+  {d.summary.split(/\n\s*\n/).map((para) => <p class="t-19 lead">{para}</p>)}
   <Content components={articleComponents} />
   <Gallery items={d.gallery} />
 </ArticleLayout>

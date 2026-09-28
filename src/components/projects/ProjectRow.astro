@@ -46,7 +46,9 @@ const number = String(index + 1).padStart(2, '0');
 
     <h2 class="t-32 name">{href ? <a href={href}>{d.shortTitle ?? d.title}</a> : (d.shortTitle ?? d.title)}</h2>
     <p class="t-19 claim">{d.claim}</p>
-    <p class="t-17 muted body">{d.summary}</p>
+    {/* A blank line in the summary is a paragraph break. One wall of text
+        scans badly once a summary is more than a few sentences. */}
+    {d.summary.split(/\n\s*\n/).map((para) => <p class="t-17 muted body">{para}</p>)}
 
     <ul class="tags">{d.stack.slice(0, 6).map((id) => <TechChip id={id} />)}</ul>
 
