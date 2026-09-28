@@ -2,6 +2,11 @@
 
 Rough order of value. Nothing here is started.
 
+## 0. Hobbies: done
+
+Four essays with real photographs, written 2026-09-28. Nothing left here
+except a chicken rice recipe box, if you still want one.
+
 ## 1. Rewrite the content
 
 Every article is currently a sketch written from the CV and a set of notes,
@@ -20,8 +25,8 @@ the top. Send that file to a reviewer, or work through it yourself.
 
 ## 2. Real pictures
 
-Every cover except the portrait and the three hobby photographs is a
-placeholder, and some are cats.
+Hobbies are done. Every project and work cover is still a placeholder, and
+some are cats.
 
 - One `cover.jpg` per entry, in the entry's own folder.
 - Gallery support is already built and tested. Four pictures give two columns

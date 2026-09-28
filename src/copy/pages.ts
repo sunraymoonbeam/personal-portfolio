@@ -28,11 +28,9 @@ export const pages = {
     eyebrow: 'Hobbies',
     title: 'Life away from the terminal.',
     lede:
-      'Outside of work I tend to rotate between hobbies that involve making, ' +
-      'learning, or obsessing over tiny improvements no one else would ' +
-      'notice. They are mostly just for fun, but they have taught me a ' +
-      'surprising amount about patience, experimentation, and sticking with ' +
-      'things longer than I probably should.',
+      'Four things I do when nobody is paying me. They mostly involve making ' +
+      'something, learning something, or obsessing over an improvement nobody ' +
+      'else would notice.',
   },
   about: {
     eyebrow: 'About',

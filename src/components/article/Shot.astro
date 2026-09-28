@@ -1,0 +1,32 @@
+---
+import { Image } from 'astro:assets';
+
+/**
+ * One picture inside `Photos`. The caption is part of the writing, not a
+ * label: "Hampi, India" or a joke both work, an alt-text repeat does not.
+ */
+/** The shape comes from the `Photos` row this sits in, not from here. */
+interface Props {
+  src: ImageMetadata;
+  alt: string;
+  caption?: string | undefined;
+}
+const { src, alt, caption } = Astro.props;
+---
+<figure class="shot">
+  <Image src={src} alt={alt} widths={[320, 640, 1000]}
+         sizes="(max-width: 640px) 100vw, 320px"
+         class="img" loading="lazy" />
+  {caption && <figcaption class="t-14 muted">{caption}</figcaption>}
+</figure>
+<style>
+  .shot { margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+  .img {
+    width: 100%; height: auto; border-radius: var(--radius-m);
+    background: var(--surface);
+  }
+  /* A matched height stops a row of mixed ratios looking like an accident.
+     The row sets --shot-ratio; this is only the fallback. */
+  .img { aspect-ratio: var(--shot-ratio, 4 / 3); object-fit: cover; }
+  figcaption { line-height: 1.45; }
+</style>

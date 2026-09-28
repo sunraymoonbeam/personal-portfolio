@@ -1,0 +1,48 @@
+---
+/**
+ * A row of pictures inside an article, for a set that belongs together: three
+ * places, two X-rays, a sequence. Put `Shot` elements inside it.
+ *
+ * Not a carousel and not a lightbox. Every picture is visible at once, it
+ * prints, and it needs no JavaScript. On a phone it collapses to one column.
+ */
+interface Props {
+  /** How many across on a wide screen. Two is the default and reads best. */
+  cols?: 2 | 3 | undefined;
+  /**
+   * The shape every picture in this row is cropped to.
+   *
+   * It belongs to the ROW, not to each picture. Letting a single shot choose
+   * its own shape left one hanging below the others, which reads as a bug
+   * rather than as a decision.
+   */
+  ratio?: 'landscape' | 'portrait' | 'square' | undefined;
+  /** Sits above the row, in the mono eyebrow style. */
+  label?: string | undefined;
+}
+const { cols = 2, ratio = 'landscape', label } = Astro.props;
+---
+<figure class:list={['photos', `cols-${cols}`, `is-${ratio}`]}>
+  {label && <figcaption class="eyebrow label">{label}</figcaption>}
+  <div class="row"><slot /></div>
+</figure>
+<style>
+  .photos { margin: var(--s-7) 0; display: flex; flex-direction: column; gap: var(--s-4); }
+  .row { display: grid; gap: var(--s-3); }
+  .cols-2 .row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .cols-3 .row { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .label { color: var(--ink-3); }
+
+  /* Read by every Shot inside, so one row is one shape. */
+  .is-landscape { --shot-ratio: 4 / 3; }
+  .is-portrait  { --shot-ratio: 3 / 4; }
+  .is-square    { --shot-ratio: 1 / 1; }
+
+  /* Two small pictures side by side survive a phone; three do not. */
+  @media (max-width: 640px) {
+    .cols-3 .row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 420px) {
+    .row { grid-template-columns: minmax(0, 1fr); }
+  }
+</style>

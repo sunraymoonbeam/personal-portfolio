@@ -70,7 +70,9 @@ drift from the code the way a table in a file like this one can.
 Put image files in the entry's own folder. Two ways to use them:
 
 - **In the body**, as a `Figure`, next to the paragraph it illustrates. This is
-  for a picture that carries the narrative.
+  for a picture that carries the narrative. A set that belongs together goes in
+  a `Photos` row of `Shot` elements. The crop shape belongs to the row, not to
+  each picture, so a row never comes out ragged.
 - **In the `gallery` list** in the frontmatter, for pictures that belong to the
   entry rather than to a sentence. The order in the file is the order on the
   page, so re-arranging means moving a block. Alt text is required.

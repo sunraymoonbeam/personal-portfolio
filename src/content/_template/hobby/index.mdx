@@ -23,11 +23,18 @@ A portfolio is allowed to have a person in it. Say why you care.
 
 The bit that makes it more than a hobby photo.
 
-{/* A picture that carries the narrative goes here, beside the paragraph it
-    illustrates. Put the file in this folder, import it, then:
+{/* One picture, in the reading column:
 
       import shot from './shot.jpg'
       <Figure src={shot} alt="What it shows" caption="Why it matters." />
+
+    A set that belongs together. `ratio` is per ROW, so every picture in it
+    crops to the same shape:
+
+      <Photos cols={3} ratio="portrait" label="Optional heading">
+        <Shot src={a} alt="..." caption="Hampi, India" />
+        <Shot src={b} alt="..." caption="A caption can be a joke." />
+      </Photos>
 
     Pictures that belong to the entry rather than to a sentence go in the
     `gallery` list above instead. */}
