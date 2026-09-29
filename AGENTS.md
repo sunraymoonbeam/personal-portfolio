@@ -9,6 +9,9 @@ code.
 - `docs/astro-conventions.md` — why the tree is arranged this way, checked
   against Astro's own sites and the Google TypeScript Style Guide.
 - `docs/design/apple.md` — the design rules, and which are Apple's.
+- `docs/design-review.md` — the 2026-09-30 design audit: what was found, what
+  is already fixed and in which commit, and the gaps still open. Read this
+  before starting any design work, so you do not redo a closed finding.
 - `TODO.md` — what is unfinished.
 
 ## Before you claim something works
