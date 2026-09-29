@@ -24,6 +24,7 @@ const { items } = Astro.props;
 <style>
   .grid { display: grid; gap: var(--s-5); grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
   .cell { display: flex; flex-direction: column; gap: var(--s-3); height: 100%; }
+  a.cell { cursor: pointer; }
   .cell:hover .cap { color: var(--link); }
   .square {
     aspect-ratio: 1 / 1; display: grid; place-items: center; overflow: hidden;

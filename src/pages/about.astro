@@ -89,9 +89,15 @@ const a = pages.about;
   }
   .bio p { font-size: 19px; line-height: 1.55; letter-spacing: -0.02em; color: var(--ink); }
 
+  /*
+   * Stacked, the left column came first, so a phone showed a photograph and a
+   * table of facts before the reader knew whose they were. Order the DOM for
+   * reading and let the grid place them on a wide screen instead.
+   */
   @media (max-width: 900px) {
     .cols { grid-template-columns: 1fr; gap: var(--s-7); }
-    .side { max-width: 320px; }
+    .side { max-width: 320px; order: 2; }
+    .main { order: 1; }
   }
   @media (max-width: 600px) { .bio { padding-left: var(--s-4); } }
 </style>

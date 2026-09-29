@@ -21,6 +21,8 @@ export default defineConfig({
     '/work/nie-2023': '/work/nie',
     '/work/dos-2023': '/work/dos',
     '/work/tessaract-2022': '/work/tessaract',
+    // The Linux and Git exercise was folded back into the AI Singapore story.
+    '/projects/onboarding': '/work/ai-singapore',
   },
 
   image: {

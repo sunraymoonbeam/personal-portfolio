@@ -2,7 +2,11 @@
 title: Echo
 claim: A personal language-model experiment trained on my Telegram history.
 summary: >-
-  A digital clone of myself, built from five years of my own Telegram history. The model was never the hard part. Five years of messages is not a dataset, and most of the work went into turning it into one. I fine-tuned LLaMA 3 and Gemma 3 with Unsloth, then served the result through a small set of FastAPI services. The Telegram data lives on AWS S3.
+  A digital clone of myself, built from five years of my own Telegram history.
+  The model was never the hard part. Five years of messages is not a dataset,
+  and most of the work went into turning it into one. I fine-tuned LLaMA 3 and
+  Gemma 3 with Unsloth, then served the result through a small set of FastAPI
+  services behind a Streamlit front end, all on one GPU box.
 published: 2025-05
 status: Shipped
 tags: [AI/ML, Backend]
@@ -12,22 +16,54 @@ links:
 cardHighlights:
   - Training data from five years of my Telegram history
   - LLaMA 3 and Gemma 3 fine-tuned with Unsloth
-  - FastAPI services with storage on AWS S3
+  - Data prep, training and serving on one T4
 featuredOrder: 2
 cover: ./cover.jpg
-coverAlt: Placeholder image
+coverAlt: The Resonare web app, showing the step where you upload a Telegram chat export.
+coverDim: true
 ---
+import chat from './chat.jpg'
+import architecture from './architecture.jpg'
+import dataprep from './data-prep.jpg'
 
 ## The experiment
 
-Echo is a personal project: I wanted to see what a model trained on my own messages could sound like. I used five years of Telegram data to build a digital clone of my writing style. It is an experiment in personalisation, not a claim that a model can stand in for a person.
+Echo is a personal project: I wanted to see what a model trained on my own
+messages could sound like. I used five years of Telegram data to build a
+digital clone of my writing style. It is an experiment in personalisation, not
+a claim that a model can stand in for a person.
+
+It works, which is the funny part and the unsettling part at the same time.
+
+<Figure src={chat} alt="A chat with the fine-tuned model, which replies in Singlish about wanting to eat Kovan food." caption="It picked up the Singlish, the LOLs and the habit of suggesting food. I did not tell it to." />
+
+## Five years of messages is not a dataset
+
+A chat export is a pile of JSON with no notion of a turn, a topic or a reply.
+Most of the work was turning it into something a model could learn from:
+deciding what counts as a conversation, who said what, which messages to keep
+and how to pair a prompt with a response.
+
+<Figure src={dataprep} alt="The data preparation screen, showing statistics about the processed chat export." caption="The unglamorous half, and the half that decided how good the result was." />
 
 ## How I built it
 
-I fine-tuned open-source LLaMA 3 and Gemma 3 models with Unsloth. Its memory-efficient training path made the experiments practical on the hardware available to me. I split the application into small services behind a FastAPI backend and used AWS S3 for the stored Telegram data.
+I fine-tuned open-source LLaMA 3 and Gemma 3 models with Unsloth. Its
+memory-efficient training path made the experiments practical on the hardware
+available to me, which was a single T4.
 
-The data has its own limits. A chat export reflects who I was speaking to and what conversations I kept, so the model can only learn from that sample.
+I split the application into small services: one for data preparation, one for
+training and inference, and a Streamlit front end over both. Everything runs in
+Docker on one machine.
+
+<Figure src={architecture} alt="Architecture diagram: a Streamlit frontend, a data preparation service and an Unsloth training backend, all in Docker on one EC2 instance with a Tesla T4." caption="Three containers on one GPU box. Not elegant, but every part of it was mine to debug." />
 
 ## What I learned
 
-Most of the work turned out to be outside the model itself: cleaning the data, shaping the training set and deciding how to serve the result. It also made me think more carefully about what it means to build a personal system from private conversation data.
+Most of the work turned out to be outside the model itself: cleaning the data,
+shaping the training set and deciding how to serve the result. It also made me
+think more carefully about what it means to build a personal system from
+private conversation data.
+
+The data has its own limits. A chat export reflects who I was speaking to and
+what conversations I kept, so the model can only learn from that sample.
