@@ -4,6 +4,10 @@ import { pages } from '~/copy/pages';
 ---
 <SiteLayout title="CV — Zack Low" description={pages.cv.lede}>
   <section class="wrap head">
+    <p class="eyebrow">{pages.cv.eyebrow}</p>
+    <h1 class="t-64 title">{pages.cv.title}</h1>
+    <p class="t-21 muted lede">{pages.cv.lede}</p>
+
     <div class="actions">
       <a href="/cv.pdf" class="btn" download="Ren Hwa Low CV.pdf">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -23,17 +27,33 @@ import { pages } from '~/copy/pages';
   </section>
 
   <section class="wrap viewer">
+    {/* The <object> fallback only fires when the browser says it cannot render
+        the type. Mobile Chrome says it can, then paints a black slab, so the
+        fallback never appeared where it was needed most. Hide the embed on
+        small screens and show the card unconditionally instead. */}
     <object data="/cv.pdf#view=FitH" type="application/pdf" class="pdf" aria-label="CV, PDF">
       <div class="fallback">
         <p class="t-17">Your browser will not show the PDF inline.</p>
         <a href="/cv.pdf" class="btn" download>Download it instead</a>
       </div>
     </object>
+
+    <div class="onsmall">
+      <p class="t-17">A PDF does not read well on a phone.</p>
+      <a href="/cv.pdf" class="btn" download="Ren Hwa Low CV.pdf">Download the CV</a>
+      <a href="/cv.pdf" class="open t-17" target="_blank" rel="noopener">Open it in a new tab</a>
+    </div>
   </section>
 </SiteLayout>
 <style>
-  .head { display: flex; justify-content: flex-end; padding-block: var(--s-8) var(--s-5); }
-  .actions { display: flex; align-items: center; gap: var(--s-5); flex-wrap: wrap; }
+  /* Was a bare row of right-aligned buttons with no heading at all, while
+     pages.cv defined an eyebrow, a title and a lede that nothing imported. */
+  .head { padding-block: var(--s-8) var(--s-5); }
+  .lede { max-width: 30ch; margin-top: var(--s-4); }
+  .actions {
+    display: flex; align-items: center; gap: var(--s-5); flex-wrap: wrap;
+    margin-top: var(--s-7);
+  }
   .open { display: inline-flex; align-items: center; gap: 7px; color: var(--ink-2); }
   .open:hover { color: var(--ink); }
   .open svg { transition: transform 260ms cubic-bezier(0.22, 1, 0.36, 1); }
@@ -46,5 +66,17 @@ import { pages } from '~/copy/pages';
     border: 1px solid var(--border); border-radius: var(--radius-m); background: var(--surface);
   }
   .fallback { display: grid; place-items: center; gap: var(--s-4); height: 100%; padding: var(--s-7); }
-  @media (max-width: 734px) { .pdf { height: 70vh; } }
+
+  .onsmall {
+    display: none; text-align: center;
+    padding: var(--s-8) var(--s-7); border: 1px solid var(--border);
+    border-radius: var(--radius-m); background: var(--surface);
+  }
+  .onsmall .btn { margin-block: var(--s-5) var(--s-4); }
+  .onsmall .open { justify-content: center; }
+
+  @media (max-width: 734px) {
+    .pdf { display: none; }
+    .onsmall { display: block; }
+  }
 </style>

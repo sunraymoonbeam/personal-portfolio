@@ -111,6 +111,30 @@ a:hover { color: var(--link); }
 .link-arrow svg { transition: transform 200ms cubic-bezier(.25,.75,.5,1.25); }
 .link-arrow:hover svg { transform: translateX(4px); }
 
+/*
+ * Touch targets. Every measured failure was on height, never on width: text
+ * links sit at their own line box, which is 19-26px. Footer links measured
+ * 20px, the wordmark 26px, .link-arrow 25px, the contact rows 19px, the
+ * project filter pills 36px. A coarse pointer gets a 44px box; a mouse keeps
+ * the original spacing, so nothing on the desktop layout moves.
+ */
+@media (pointer: coarse) {
+  .link-arrow,
+  .footer .links a,
+  .brand,
+  .more,
+  .learnings,
+  .act,
+  .open,
+  .rows a,
+  .mail {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+  .pill { min-height: 44px; }
+}
+
 .chip {
   display: inline-flex; align-items: center; gap: 7px;
   padding: 7px 12px 7px 10px; border-radius: var(--radius-pill);

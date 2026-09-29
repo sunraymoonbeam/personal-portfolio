@@ -39,6 +39,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
       <button type="button" class="burger" data-menu-toggle
               aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
         <span class="bars" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span class="burger-label" aria-hidden="true">Menu</span>
       </button>
     </div>
   </nav>
@@ -96,7 +97,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
 
   .bar {
     display: flex; align-items: center; justify-content: space-between;
-    height: 64px; width: min(1152px, 100%);
+    height: 64px; width: min(var(--content), 100%);
     margin-inline: auto; padding-inline: var(--gutter);
   }
 
@@ -112,7 +113,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
     color: var(--ink-2); transition: color 200ms ease;
   }
   .nav-link:hover, .nav-link.on { color: var(--ink); }
-  .idx { font-size: 9.9px; color: var(--ink-3); }
+  .idx { font-size: 11px; color: var(--ink-3); }
   .nav-link.on .idx, .nav-link:hover .idx { color: var(--link); }
 
   /* One flourish: a hairline that grows from the left. */
@@ -140,11 +141,17 @@ const pad = (n: number) => String(n).padStart(2, '0');
   .cta:hover { border-color: var(--link); color: var(--link); background: var(--mark-bg); }
 
   /* ── mobile ── */
+  /*
+   * An unlabelled hamburger alone in an otherwise empty bar reads as an icon,
+   * not as navigation — visitors reported not knowing there was a menu at all.
+   * The word costs 38px and removes the guess.
+   */
   .burger {
-    display: inline-flex; align-items: center; justify-content: center;
-    width: 44px; height: 44px; margin-right: -10px;
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    min-width: 44px; height: 44px; padding-inline: 6px; margin-right: -6px;
     background: none; border: 0; color: var(--ink); cursor: pointer;
   }
+  .burger-label { font-family: var(--font-mono); font-size: 12.8px; line-height: 1; }
   .bars { position: relative; display: block; width: 20px; height: 16px; }
   .bars i {
     position: absolute; left: 0; display: block; width: 20px; height: 2px;
@@ -166,12 +173,17 @@ const pad = (n: number) => String(n).padStart(2, '0');
   .sheet-link {
     display: flex; align-items: center; gap: 12px; padding-block: 12px;
     font-family: var(--font-mono); font-size: 14px; color: var(--ink-2);
+    min-height: 44px;
   }
   .sheet-link:hover, .sheet-link.on { color: var(--ink); }
   .sheet-cta { display: flex; justify-content: center; margin-top: var(--s-3); }
 
+  /* Contact is the conversion target; it used to disappear on a phone. */
+  .cta { display: flex; }
+  @media (max-width: 420px) { .burger-label { display: none; } }
+
   @media (min-width: 880px) {
-    .links, .quiet, .cta { display: flex; }
+    .links, .quiet { display: flex; }
     .burger, .sheet { display: none; }
   }
 </style>

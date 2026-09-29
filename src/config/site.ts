@@ -23,10 +23,4 @@ export const site = {
     { href: '/hobbies', label: 'Hobbies' },
     { href: '/about', label: 'About' },
   ],
-  features: {
-    hero3d: true,
-    bulb: true,
-    cursors: true,
-    commandPalette: false, // deferred until there is enough to search
-  },
 } as const;

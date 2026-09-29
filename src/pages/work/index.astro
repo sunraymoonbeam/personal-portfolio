@@ -14,7 +14,7 @@ const rows = await Promise.all((await getWorkRows()).map(resolveWork));
   </section>
 
   <section class="wrap list">
-    <WorkList rows={rows} />
+    <WorkList rows={rows} headingLevel={2} />
   </section>
 </SiteLayout>
 <style>

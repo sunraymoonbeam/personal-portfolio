@@ -9,8 +9,13 @@ interface Row {
 }
 /** `compact` drops the bullets and the link: the home page shows the shape of
     a career, not the detail of each role. */
-interface Props { rows: Row[]; compact?: boolean; }
-const { rows, compact = false } = Astro.props;
+/** The role heading has to sit one level under whatever heading introduces the
+    list: h2 on /work/, where the page title is the h1, and h3 on the home page,
+    where the section already has an h2. Hard-coding h3 made /work/ skip a
+    level six times. */
+interface Props { rows: Row[]; compact?: boolean; headingLevel?: 2 | 3 | undefined; }
+const { rows, compact = false, headingLevel = 3 } = Astro.props;
+const Heading = `h${headingLevel}` as 'h2' | 'h3';
 ---
 {/* Dates and location in a mono rail on the left; role · company, one sentence,
     then bullets on the right. Hovering one role brings it forward and quiets
@@ -44,7 +49,7 @@ const { rows, compact = false } = Astro.props;
           <div class="body">
             <div class="top">
               <Image src={employer.data.logo} alt="" width={32} height={32} class="logo" loading="lazy" />
-              <h3 class="t-24 role">{d.role}<span class="at"> · {employer.data.name}</span></h3>
+              <Heading class="t-24 role">{d.role}<span class="at"> · {employer.data.name}</span></Heading>
             </div>
             <p class="t-17 muted summary">{d.summary}</p>
             {!compact && d.bullets && (
