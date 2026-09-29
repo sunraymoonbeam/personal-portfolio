@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { z } from 'astro/zod';
 import { selectFeatured, getAdjacent, keyOf, type ArticleLink } from '../src/lib/select.ts';
 import { formatMonth, formatRange, formatDuration, monthKey, yearOf } from '../src/lib/date.ts';
+import { readFileSync } from 'node:fs';
 
 // ── the schema behaviour the whole content contract rests on ────────────────
 
@@ -86,4 +87,19 @@ test('durations are inclusive of both endpoints', () => {
 test('monthKey sorts chronologically', () => {
   assert.ok(monthKey('2025-07') > monthKey('2025-06'));
   assert.ok(monthKey('2025-01') > monthKey('2024-12'));
+});
+
+/*
+ * A chevron with only `grid-column: 3` and no `grid-row` sat before .body in
+ * the DOM, so auto-placement pushed .body onto row 2 column 1 and every role
+ * rendered in a 190px ribbon above 800px. Nothing below 801px could see it,
+ * because the mobile branch collapses to one column. Pin all three children.
+ */
+test('every work row child is placed explicitly, so auto-placement cannot move it', () => {
+  const css = readFileSync(
+    new URL('../src/components/work/WorkList.astro', import.meta.url), 'utf8');
+  for (const sel of ['.rail', '.body', '.chevron']) {
+    const rule = new RegExp(`\\${sel}[^{]*\\{[^}]*grid-column:\\s*\\d+;\\s*grid-row:\\s*1`);
+    assert.ok(rule.test(css), `${sel} needs an explicit grid-column and grid-row: 1`);
+  }
 });

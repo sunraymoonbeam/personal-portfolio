@@ -96,6 +96,14 @@ const { rows, compact = false } = Astro.props;
   .list li:hover .row { transform: translateX(6px); }
   @media (prefers-reduced-motion: reduce) { .list li:hover .row { transform: none; } }
 
+  /*
+   * Place all three children explicitly. The chevron is before .body in the
+   * DOM, so with only `grid-column: 3` on the chevron, auto-placement pushed
+   * .body onto row 2 column 1 and every role rendered in a 190px ribbon.
+   */
+  .rail { grid-column: 1; grid-row: 1; }
+  .body { grid-column: 2; grid-row: 1; }
+
   .rail { font-family: var(--font-mono); font-size: 12px; line-height: 1.5; }
   .dates { display: flex; align-items: center; gap: 7px; color: var(--ink); }
   .sub { margin-top: 6px; text-transform: uppercase; letter-spacing: 0.15em; color: var(--ink-3); font-size: 11px; }
@@ -134,7 +142,7 @@ const { rows, compact = false } = Astro.props;
    * affordance: present at rest, so you know before you hover.
    */
   .chevron {
-    grid-column: 3; align-self: center; justify-self: end;
+    grid-column: 3; grid-row: 1; align-self: center; justify-self: end;
     color: var(--control);
     transition: color 200ms ease, transform 300ms cubic-bezier(0.22, 1, 0.36, 1);
   }
@@ -147,6 +155,8 @@ const { rows, compact = false } = Astro.props;
 
   @media (max-width: 800px) {
     .row { grid-template-columns: 1fr; gap: var(--s-4); }
+    /* One column: let the rail and body stack in source order again. */
+    .rail, .body { grid-column: 1; grid-row: auto; }
     /* No room for a rail on a phone; the link text carries it instead. */
     .chevron { display: none; }
     .rail { display: flex; gap: var(--s-4); align-items: baseline; flex-wrap: wrap; }
