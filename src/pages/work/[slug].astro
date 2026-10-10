@@ -5,6 +5,7 @@ import ArticleLayout from '~/layouts/ArticleLayout.astro';
 import Gallery from '~/components/article/Gallery.astro';
 import { getWorkArticles, toArticleLinks, getAdjacent, keyOf } from '~/lib/content';
 import { formatRange, formatDuration } from '~/lib/date';
+import { TECHNOLOGIES } from '~/data/technologies';
 import { Image } from 'astro:assets';
 
 // Only entries with writeup: true get a route. Drafts and no-writeup roles
@@ -18,52 +19,90 @@ const { entry } = Astro.props;
 const d = entry.data;
 const employer = await getEntry(d.employer);
 const { Content } = await render(entry);
-const links = toArticleLinks('work', await getWorkArticles());
+// A neighbouring role is named the way the reader knows it — "AI Engineer ·
+// AI Singapore" — not by its essay headline, which says nothing about where.
+const articles = await getWorkArticles();
+const links = await Promise.all(toArticleLinks('work', articles).map(async (link, i) => {
+  const a = articles[i]!.data;
+  const emp = await getEntry(a.employer);
+  return { ...link, title: `${a.role} · ${emp.data.name}`, sub: formatRange(a.start, a.end), logo: emp.data.logo };
+}));
 const { prev, next } = getAdjacent(links, keyOf('work', entry.id));
 ---
 <ArticleLayout
   title={d.title} summary={d.summary}
-  eyebrow={`${employer.data.name} · ${d.role} · ${formatRange(d.start, d.end)}`}
-  backHref="/work" backLabel="All work experience"
-  prev={prev} next={next}
+  eyebrow={`${d.role} at ${employer.data.name}, ${formatRange(d.start, d.end)}`}
+  backHref="/work" backLabel="Work experience"
+  prev={prev} next={next} noun="role"
 >
-  {d.cover && (
-    <figure slot="hero" class="cover">
-      <Image src={d.cover} alt={d.coverAlt ?? ''} widths={[720, 1200, 1600]}
-             sizes="(max-width: 980px) 100vw, 980px" loading="eager" />
-    </figure>
+  {/* Outcomes get their own band between the title and the story: under the
+      sidebar's facts they were buried, and on a phone they came after the
+      whole essay. A cover, when there is one, follows. */}
+  {(d.metrics || d.cover) && (
+    <div slot="hero" class="hero">
+      {d.metrics && (
+        <section class="outcomes" aria-labelledby="outcomes-h">
+          <h2 id="outcomes-h" class="eyebrow">Outcomes</h2>
+          <dl class:list={['grid', `n-${d.metrics.length}`]}>
+            {d.metrics.map((m) => (
+              <div class="metric">
+                <dt class="label">{m.label}</dt>
+                <dd class="value tabular">{m.value}</dd>
+                {m.context && <dd class="context">{m.context}</dd>}
+              </div>
+            ))}
+          </dl>
+        </section>
+      )}
+      {d.cover && (
+        <figure class="cover">
+          <Image src={d.cover} alt={d.coverAlt ?? ''} widths={[720, 1200, 1600]}
+                 sizes="(max-width: 980px) 100vw, 980px" loading="eager" />
+        </figure>
+      )}
+    </div>
   )}
 
   <dl slot="aside" class="facts">
-    <div><dt class="eyebrow bare">Role</dt><dd class="t-14">{d.role} · {d.kind}</dd></div>
-    <div><dt class="eyebrow bare">When</dt><dd class="t-14 tabular">{formatRange(d.start, d.end)} · {formatDuration(d.start, d.end)}</dd></div>
+    <div><dt class="eyebrow bare">Role</dt><dd class="t-14">{d.role}, {d.kind.toLowerCase()}</dd></div>
+    <div><dt class="eyebrow bare">When</dt><dd class="t-14 tabular">{formatRange(d.start, d.end)}<span class="muted">, {formatDuration(d.start, d.end)}</span></dd></div>
     <div><dt class="eyebrow bare">Where</dt><dd class="t-14">{d.location}</dd></div>
-    {d.metrics && (
-      <div><dt class="eyebrow">Outcome</dt>
-        <dd class="metrics">{d.metrics.map((m) => (
-          <span class="metric"><span class="t-28 tabular">{m.value}</span><span class="t-14 muted">{m.label}</span>{m.context && <span class="t-14 small">{m.context}</span>}</span>
-        ))}</dd>
-      </div>
+    {d.stack.length > 0 && (
+      <div><dt class="eyebrow bare">Built with</dt>
+        <dd class="built t-14">{d.stack.map((id) => <span>{TECHNOLOGIES[id]?.label ?? id}</span>)}</dd></div>
     )}
   </dl>
-  <div class="result">
-    <span class="eyebrow">In short</span>
-    <p class="t-19">{d.summary}</p>
-  </div>
 
   <Content components={articleComponents} />
   <Gallery items={d.gallery} />
 </ArticleLayout>
 <style>
-  .cover { margin: 0 0 var(--s-4); }
+  .hero { display: flex; flex-direction: column; gap: var(--s-8); }
+  .cover { margin: 0; }
   .cover img { width: 100%; border-radius: var(--radius-l); aspect-ratio: 16 / 9; object-fit: cover; }
-  .facts { display: flex; flex-direction: column; gap: var(--s-5); }
-  .result {
-    padding: var(--s-5); border-radius: var(--radius-m);
-    background: var(--surface); margin-bottom: var(--s-6);
-    display: flex; flex-direction: column; gap: var(--s-2);
+  .outcomes {
+    display: flex; flex-direction: column; gap: var(--s-5);
+    padding-block: var(--s-6) var(--s-7);
+    border-block: 1px solid var(--border);
   }
+  .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-6) var(--s-8); }
+  .grid.n-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 640px; }
+  .grid.n-1 { grid-template-columns: 1fr; }
+  /* Number first visually, label first in the DOM, so a screen reader hears
+     "tickets each month: 60,000+" and the eye lands on the figure. */
+  .metric { display: flex; flex-direction: column; gap: 6px; }
+  .value {
+    order: -1; margin: 0; color: var(--ink);
+    font-size: clamp(36px, 5vw, 52px); line-height: 1; font-weight: 600; letter-spacing: -0.04em;
+  }
+  .label { font-size: 17px; line-height: 1.35; letter-spacing: -0.016em; color: var(--ink); text-wrap: balance; }
+  .context { margin: 0; font-size: 14px; line-height: 1.45; color: var(--ink-3); text-wrap: pretty; }
+  @media (max-width: 640px) {
+    .grid, .grid.n-2 { grid-template-columns: 1fr; gap: var(--s-5); }
+    .value { font-size: 40px; }
+  }
+  .facts { display: flex; flex-direction: column; gap: var(--s-5); }
   .facts dd { margin: 0; margin-top: 6px; }
-  .metrics { display: flex; flex-direction: column; gap: var(--s-3); }
-  .metric { display: flex; flex-direction: column; }
+  .built { display: flex; flex-wrap: wrap; gap: 6px; }
+  .built span { padding: 3px 10px; border-radius: var(--radius-pill); background: var(--chip-bg); color: var(--ink-2); }
 </style>

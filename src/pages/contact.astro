@@ -20,13 +20,23 @@ const githubHandle = site.socials.github.replace('https://', '');
           {pages.contact.lede.map((line) => <p class="t-19">{line}</p>)}
         </blockquote>
 
-        <a href={`mailto:${site.email}`} class="t-24 mail">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-               stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <rect x="2" y="4" width="20" height="16" rx="2" /><path d="m2 7 10 6 10-6" />
-          </svg>
-          {site.email}
-        </a>
+        {/* The address opens a mail app; the button beside it copies it, for
+            everyone whose mail lives in a browser tab. */}
+        <div class="mailrow">
+          <a href={`mailto:${site.email}`} class="t-24 mail">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="2" y="4" width="20" height="16" rx="2" /><path d="m2 7 10 6 10-6" />
+            </svg>
+            {site.email}
+          </a>
+          <button type="button" class="copy" data-copy={site.email} hidden>
+            <svg class="i-copy" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2" /><path d="M5 15V5a2 2 0 0 1 2-2h10" /></svg>
+            <svg class="i-done" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" /></svg>
+            <span data-copy-label>Copy</span>
+          </button>
+          <span class="visually-hidden" role="status" aria-live="polite" data-copy-status></span>
+        </div>
 
         <ul class="rows">
           <li>
@@ -55,13 +65,13 @@ const githubHandle = site.socials.github.replace('https://', '');
         <div class="pair">
           <p class="field">
             <label for="name">Name</label>
-            <input id="name" name="name" autocomplete="name" placeholder="Jane Doe" required />
+            <input id="name" name="name" autocomplete="name" placeholder="Jane Doe…" required />
             <span class="err" id="err-name" role="alert" hidden></span>
           </p>
           <p class="field">
             <label for="email">Email</label>
             <input id="email" name="email" type="email" autocomplete="email"
-                   placeholder="jane@company.com" required />
+                   placeholder="jane@company.com…" required />
             <span class="err" id="err-email" role="alert" hidden></span>
           </p>
         </div>
@@ -69,7 +79,7 @@ const githubHandle = site.socials.github.replace('https://', '');
         <p class="field">
           <label for="message">Message</label>
           <textarea id="message" name="message" rows="6" required
-                    placeholder="Hey Zack, I came across your site and wanted to talk."></textarea>
+                    placeholder="Hey Zack, I came across your site and wanted to talk…"></textarea>
           <span class="err" id="err-message" role="alert" hidden></span>
         </p>
 
@@ -96,6 +106,29 @@ const githubHandle = site.socials.github.replace('https://', '');
   </section>
 </SiteLayout>
 
+<script>
+  // Copy needs the async clipboard API; where it is missing the button stays
+  // hidden and the mailto link is the whole story.
+  const btn = document.querySelector<HTMLButtonElement>('[data-copy]');
+  if (btn && navigator.clipboard) {
+    btn.hidden = false;
+    const label = btn.querySelector('[data-copy-label]')!;
+    const status = document.querySelector('[data-copy-status]')!;
+    let timer = 0;
+    btn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(btn.dataset.copy!);
+        btn.dataset.done = '';
+        label.textContent = 'Copied';
+        status.textContent = 'Email address copied.';
+        clearTimeout(timer);
+        timer = window.setTimeout(() => { delete btn.dataset.done; label.textContent = 'Copy'; status.textContent = ''; }, 2000);
+      } catch {
+        label.textContent = 'Press ⌘C';
+      }
+    });
+  }
+</script>
 <script is:inline define:vars={{ address: site.email }}>
   const form = document.querySelector('[data-contact]');
   if (form) {
@@ -147,15 +180,30 @@ const githubHandle = site.socials.github.replace('https://', '');
   .lede {
     display: flex; flex-direction: column; gap: var(--s-4);
     max-width: 44ch; margin: 0;
-    padding-left: var(--s-5); border-left: 2px solid var(--link);
+    padding-left: var(--s-5); border-left: 1px solid var(--border-strong);
   }
   .lede p { color: var(--ink); }
 
-  .mail { display: inline-flex; align-items: center; gap: var(--s-3); font-weight: 600; }
+  .mailrow { display: flex; align-items: center; flex-wrap: wrap; gap: var(--s-3) var(--s-4); }
+  .mail { display: inline-flex; align-items: center; gap: var(--s-3); font-weight: 600; overflow-wrap: anywhere; }
+  .copy {
+    display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px;
+    border: 1px solid var(--border); border-radius: var(--radius-pill); background: var(--subtle);
+    color: var(--ink-2); font: inherit; font-size: 14px; cursor: pointer; touch-action: manipulation;
+    transition: border-color 160ms ease, color 160ms ease, transform 160ms ease;
+  }
+  .copy[hidden] { display: none; }
+  .copy:hover { border-color: var(--border-strong); color: var(--ink); }
+  .copy:active { transform: scale(0.97); }
+  .copy .i-done { display: none; }
+  .copy[data-done] { color: var(--link); border-color: var(--link); }
+  .copy[data-done] .i-copy { display: none; }
+  .copy[data-done] .i-done { display: block; }
+  @media (prefers-reduced-motion: reduce) { .copy:active { transform: none; } }
   .mail svg { color: var(--link); flex-shrink: 0; }
 
-  .rows { display: flex; flex-direction: column; gap: var(--s-3); font-family: var(--font-mono); font-size: 13px; }
-  .rows a, .where { display: inline-flex; align-items: center; gap: var(--s-3); }
+  .rows { display: flex; flex-direction: column; gap: var(--s-1); font-size: 15px; letter-spacing: -0.01em; }
+  .rows a, .where { display: inline-flex; align-items: center; gap: var(--s-3); min-height: 36px; }
   .rows svg { color: var(--ink-3); flex-shrink: 0; transition: color 200ms ease; }
   .rows a:hover svg { color: var(--link); }
   .where { color: var(--ink-2); }
@@ -164,10 +212,7 @@ const githubHandle = site.socials.github.replace('https://', '');
   .form { display: flex; flex-direction: column; gap: var(--s-5); }
   .pair { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-5); }
   .field { display: flex; flex-direction: column; gap: var(--s-2); margin: 0; }
-  label {
-    font-family: var(--font-mono); font-size: 11px; font-weight: 500;
-    text-transform: uppercase; letter-spacing: 0.15em; color: var(--ink-2);
-  }
+  label { font-size: 14px; font-weight: 500; letter-spacing: -0.01em; color: var(--ink-2); }
   input, textarea {
     width: 100%; padding: 12px 14px; font: inherit; font-size: 16px;
     color: var(--ink); background: var(--subtle);
@@ -178,7 +223,7 @@ const githubHandle = site.socials.github.replace('https://', '');
   input::placeholder, textarea::placeholder { color: var(--control); }
   input:focus, textarea:focus { outline: none; border-color: var(--focus); }
   [aria-invalid='true'] { border-color: var(--mark); }
-  .err { font-family: var(--font-mono); font-size: 11px; color: var(--mark); }
+  .err { font-size: 13px; color: var(--mark); }
   .trap { position: absolute; left: -9999px; width: 1px; height: 1px; }
 
   .send { display: flex; align-items: center; gap: var(--s-4); flex-wrap: wrap; }

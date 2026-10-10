@@ -15,7 +15,8 @@ const items = [
     group: 'Projects', title: p.data.title, sub: p.data.claim, href: `/projects/${p.id}`,
   })),
   ...work.filter(({ entry }) => entry.data.writeup).map(({ entry, employer }) => ({
-    group: 'Work', title: entry.data.role, sub: employer.data.name, href: `/work/${entry.id}`,
+    // Two roles share the title "AI Engineer"; the company is what tells them apart.
+    group: 'Work experience', title: `${entry.data.role} · ${employer.data.name}`, sub: entry.data.title, href: `/work/${entry.id}`,
   })),
   ...hobbies.filter((h) => h.href).map((h) => ({
     group: 'Hobbies', title: h.title, sub: h.caption, href: h.href,
@@ -50,36 +51,29 @@ const items = [
 
 
 <style>
-  /* Sized like the reference: a 36px box, 6px corners, mono label, and the
-     shortcut pushed to the right edge once the box is wide enough to show it. */
+  /* A button that says what it does. Same 34px height and 14px type as every
+     other item in the bar, so it sits on their line; it used to be a 36px
+     empty field with the word hidden, which read as an input and floated
+     visibly above the nav text. The shortcut rides inside on wide screens. */
   .trigger {
     display: none; align-items: center; gap: 8px;
-    height: 36px; padding: 0 8px 0 10px;
-    border: 1px solid var(--border); border-radius: var(--radius-s);
+    height: 34px; padding: 0 8px 0 12px;
+    border: 1px solid var(--border); border-radius: var(--radius-pill);
     background: var(--subtle); color: var(--ink-2);
-    font-family: var(--font-mono); font-size: 12.2px; cursor: pointer;
-    transition: border-color 200ms ease, color 200ms ease;
+    font: inherit; font-size: 14px; letter-spacing: -0.01em; line-height: 1;
+    cursor: pointer;
+    transition: border-color 160ms ease, color 160ms ease, background-color 160ms ease;
   }
-  .trigger:hover { border-color: var(--border-strong); color: var(--ink); }
-  /* The word "Search" next to a magnifier says nothing the icon has not
-     already said, and it costs about 180px of bar. Icon and shortcut only. */
-  .trigger .label {
-    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
-    overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap;
-  }
+  .trigger:hover { border-color: var(--border-strong); color: var(--ink); background: var(--canvas); }
+  .trigger:active { transform: scale(0.98); }
   kbd {
-    font-family: var(--font-mono); font-size: 10.4px;
-    line-height: 1; padding: 3px 6px;
-    border: 1px solid var(--border-strong); border-radius: 4px; color: var(--ink-3);
+    font-family: var(--font-mono); font-size: 11px; line-height: 1;
+    padding: 4px 6px; border-radius: 999px;
+    background: var(--chip-bg); color: var(--ink-3);
   }
-
   @media (min-width: 880px) { .trigger { display: inline-flex; } }
-  /* Wide enough to read as a field rather than a button, with the shortcut
-     pinned to the right edge. The word "Search" still stays out. */
-  @media (min-width: 1040px) {
-    .trigger { width: 200px; }
-    kbd { margin-left: auto; }
-  }
+  /* Narrow desktop: icon and shortcut only; the label comes back with room. */
+  @media (max-width: 1039px) { .trigger .label { display: none; } .trigger { padding-left: 10px; } }
 
   .panel {
     width: min(560px, 92vw); margin-top: 12vh; padding: 0;

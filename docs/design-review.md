@@ -31,6 +31,40 @@ Do not redo these. Each line names the commit.
 | — | Bare URL as the accessible name on the `/contact/` GitHub row. | `c564c85` |
 | — | `site.features` had no consumer anywhere in `src/` — `hero3d`, `bulb`, `cursors`, `commandPalette` all dead, plus a `ThemeToggle` comment about a hero bulb that does not exist. | `c564c85` |
 
+
+### Polish pass, 2026-10-10 (uncommitted at time of writing)
+
+Read against Anthropic frontend-design, Vercel Web Interface Guidelines,
+ui-ux-pro-max and Impeccable polish. Refinement only: identity kept.
+
+- Header: nav numbers gone, every item 34px high on one line, search trigger
+  is a labelled pill. Search rows read "AI Engineer · Carro".
+- Work articles open on an outcome sentence built from `metrics`, with the
+  cover image below it; the duplicate "In short" box is gone. The cat covers
+  are kept on purpose as slots until real images land (owner's call).
+- Prev/next are cards naming the role and company, with logo and dates, and
+  ← → move between articles (ignored while typing or with search open).
+- `ScreenshotFrame` chrome is opt-in, so photographs no longer wear fake
+  window chrome. (Gap 2, chrome half.)
+- Eyebrows are sentence-case sans with no leading rule (no orphan); home
+  section numbers 01–04 and project numbers removed; middle-dot meta strings
+  on article eyebrows replaced by prose.
+- `/skills/`: chips used somewhere carry a count and open to show where, with
+  links. Built from the `stack` of roles and projects (`getSkillEvidence`).
+  (Gap 5, first bullet.)
+- `/work/`: chevron level with the title, durations in sentence case, Carro's
+  summary not repeated by its first bullet. Home work rows show metrics.
+- Projects: filters hidden under four projects; image first on mobile.
+- Prose figures get their own rhythm (Figure/Shot no longer zero the margin).
+- Contact: copy-email button with a polite live region; placeholders end in
+  "…"; labels sentence case; 1px neutral quote rule.
+- Footer: the divider becomes a line break on phones. Headings balance,
+  paragraphs `text-wrap: pretty` site-wide. SectionHead tighter on phones.
+
+Still open from below: real work imagery (gap 1), the Kanta screenshot,
+promoting Echo's `chat.jpg` (gap 2), the cursor explanation (gap 3), theme
+toggle only in the footer.
+
 ---
 
 ## Open gaps

@@ -28,7 +28,7 @@ const full = await getImage({ src, width: 1800, format: 'webp' });
   {caption && <figcaption class="t-14 muted">{caption}</figcaption>}
 </figure>
 <style>
-  .shot { margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+  .shot { margin-inline: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
   .frame {
     display: block; overflow: hidden; border-radius: var(--radius-s);
     background: var(--surface); cursor: zoom-in;

@@ -98,8 +98,9 @@ test('monthKey sorts chronologically', () => {
 test('every work row child is placed explicitly, so auto-placement cannot move it', () => {
   const css = readFileSync(
     new URL('../src/components/work/WorkList.astro', import.meta.url), 'utf8');
-  for (const sel of ['.rail', '.body', '.chevron']) {
+  for (const sel of ['.rail', '.body', '.open']) {
     const rule = new RegExp(`\\${sel}[^{]*\\{[^}]*grid-column:\\s*\\d+;\\s*grid-row:\\s*1`);
     assert.ok(rule.test(css), `${sel} needs an explicit grid-column and grid-row: 1`);
   }
 });
+

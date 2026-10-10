@@ -38,6 +38,9 @@ const year = new Date().getFullYear();
   }
   .links { display: flex; align-items: center; gap: var(--s-5); flex-wrap: wrap; justify-content: center; }
   .sep { width: 1px; height: 12px; background: var(--border-strong); }
+  /* On a phone the divider would orphan at the end of a wrapped line. It
+     becomes a line break instead: pages on one row, elsewhere on the next. */
+  @media (max-width: 640px) { .sep { flex-basis: 100%; width: 0; height: 0; } .links { row-gap: var(--s-3); column-gap: var(--s-3); } }
   .rule { width: 100%; max-width: var(--content); height: 1px; background: var(--border-strong); }
   .fine { display: flex; flex-direction: column; align-items: center; gap: var(--s-1); text-align: center; }
 </style>

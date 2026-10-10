@@ -34,6 +34,8 @@ body {
 }
 
 h1, h2, h3, h4, p, figure, blockquote, ul, ol, dl, dd { margin: 0; }
+h1, h2, h3, h4 { text-wrap: balance; }
+p { text-wrap: pretty; }
 ul, ol { padding: 0; list-style: none; }
 img, svg, video { display: block; max-width: 100%; }
 img { height: auto; }
@@ -61,21 +63,15 @@ a:hover { color: var(--link); }
 .small { color: var(--ink-3); }
 .tabular { font-variant-numeric: tabular-nums; }
 
-/* The rule before the label is the reference's, and it is what makes a section
-   label read as a marker rather than as small text. `.eyebrow.bare` opts out
-   where the label sits inline, e.g. beside a date. */
+/* A quiet label in the reading face. It was mono, tracked out and uppercase
+   with a leading rule; that read as template chrome, and the rule orphaned
+   beside the first line whenever a long label wrapped. */
 .eyebrow {
-  display: inline-flex; align-items: center; gap: 12px;
-  font-family: var(--font-mono); font-size: 12px; font-weight: 500;
-  line-height: 1.3334; letter-spacing: 0.07em; text-transform: uppercase;
-  color: var(--ink-2);
+  display: block; font-size: 14px; font-weight: 500;
+  line-height: 1.4286; letter-spacing: -0.01em;
+  color: var(--ink-2); text-wrap: balance;
 }
-.eyebrow::before {
-  content: ''; width: 28px; height: 1px; flex-shrink: 0;
-  background: var(--border-strong);
-}
-.eyebrow.bare { gap: 0; }
-.eyebrow.bare::before { content: none; }
+.eyebrow.bare { display: inline; }
 
 /* ── layout ── */
 .wrap { width: min(var(--content), 100% - var(--gutter) * 2); margin-inline: auto; }

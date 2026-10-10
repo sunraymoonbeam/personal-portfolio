@@ -95,3 +95,32 @@ export async function getHobbiesIndex(): Promise<
     }));
   return [...own, ...crossListed];
 }
+
+// ── skills ──────────────────────────────────────────────────────────────────
+
+export type SkillUse = { label: string; href?: string | undefined };
+
+/**
+ * Where each technology was actually used, read from the `stack` of every
+ * published role and project. The skills page shows this when a chip is
+ * opened, so a claim on the page always points at the work behind it.
+ */
+export async function getSkillEvidence(): Promise<Record<string, SkillUse[]>> {
+  const [roles, projects] = await Promise.all([getPublishedWork(), getPublishedProjects()]);
+  const out: Record<string, SkillUse[]> = {};
+  const add = (id: string, use: SkillUse) => (out[id] ??= []).push(use);
+  for (const entry of roles) {
+    const { employer } = await resolveWork(entry);
+    for (const id of entry.data.stack) add(id, {
+      label: `${entry.data.role} at ${employer.data.name}`,
+      href: entry.data.writeup ? `/work/${entry.id}` : undefined,
+    });
+  }
+  for (const p of projects) {
+    for (const id of p.data.stack) add(id, {
+      label: p.data.shortTitle ?? p.data.title,
+      href: p.data.writeup ? `/projects/${p.id}` : undefined,
+    });
+  }
+  return out;
+}

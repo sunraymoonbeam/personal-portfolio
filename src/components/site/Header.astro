@@ -6,11 +6,13 @@ import Search from './Search.astro';
 
 const path = Astro.url.pathname;
 const active = (href: string) => path === href || path.startsWith(href + '/');
-const pad = (n: number) => String(n).padStart(2, '0');
 ---
-{/* Geometry copied from the reference header: a 64px bar inside a 1152px
-    container, 32px between nav items, 20px in the right-hand cluster. The bar
-    is transparent until the page scrolls, then a hairline and blur appear. */}
+{/* A 64px bar on the content column, so the wordmark shares the left edge every
+    page uses. Three groups: brand, sections, actions. Every item in the bar is
+    one height (34px) and one type size, so they sit on the same line — the
+    old mono labels and a 36px search field did not, which made search look
+    like it floated above the links. The bar stays transparent until the page
+    scrolls, then a hairline and blur appear. */}
 <header class="header" data-header>
   <nav class="bar" aria-label="Main">
     <a href="/" class="brand" aria-label="Home">
@@ -19,11 +21,10 @@ const pad = (n: number) => String(n).padStart(2, '0');
     </a>
 
     <ul class="links">
-      {site.nav.map((l, i) => (
+      {site.nav.map((l) => (
         <li>
           <a href={l.href} class:list={['nav-link', { on: active(l.href) }]}
              aria-current={active(l.href) ? 'page' : undefined}>
-            <span class="idx tabular">{pad(i + 1)}</span>
             {l.href === '/hobbies'
               ? <><CrayonWord size={16} /><span class="visually-hidden">Hobbies</span></>
               : l.label}
@@ -46,17 +47,19 @@ const pad = (n: number) => String(n).padStart(2, '0');
 
   <div class="sheet" id="mobile-menu" data-menu hidden>
     <ul>
-      {site.nav.map((l, i) => (
+      {site.nav.map((l) => (
         <li>
-          <a href={l.href} class:list={['sheet-link', { on: active(l.href) }]}>
-            <span class="idx tabular">{pad(i + 1)}</span>{l.label}
+          <a href={l.href} class:list={['sheet-link', { on: active(l.href) }]}
+             aria-current={active(l.href) ? 'page' : undefined}>
+            {l.href === '/hobbies'
+              ? <><CrayonWord size={18} /><span class="visually-hidden">Hobbies</span></>
+              : l.label}
           </a>
         </li>
       ))}
       <li>
-        <a href="/cv" class:list={['sheet-link', { on: active('/cv') }]}>
-          <span class="idx tabular">{pad(site.nav.length + 1)}</span>CV
-        </a>
+        <a href="/cv" class:list={['sheet-link', { on: active('/cv') }]}
+           aria-current={active('/cv') ? 'page' : undefined}>CV</a>
       </li>
     </ul>
     <a href="/contact" class="cta sheet-cta">Contact</a>
@@ -96,47 +99,47 @@ const pad = (n: number) => String(n).padStart(2, '0');
   }
 
   .bar {
-    display: flex; align-items: center; justify-content: space-between;
+    display: flex; align-items: center; justify-content: space-between; gap: var(--s-6);
     height: 64px; width: min(var(--content), 100%);
     margin-inline: auto; padding-inline: var(--gutter);
   }
 
-  .brand { display: flex; align-items: center; gap: 10px; }
+  .brand { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
   .wordmark { font-size: 15px; font-weight: 600; letter-spacing: -0.02em; }
 
-  /* Nav labels are mono at 12.8px, the reference size, with the index one step down. */
-  .links { display: none; align-items: center; gap: 32px; }
+  /* Sans at 14px: these are the site's sections, not metadata. Mono at 12.8px
+     with 01–05 prefixes made them read as labels, and numbered a set that is
+     not a sequence. */
+  .links { display: none; align-items: center; gap: 28px; }
   .nav-link {
-    position: relative; display: inline-flex; align-items: center; gap: 6px;
-    padding-block: 4px;
-    font-family: var(--font-mono); font-size: 12.8px; line-height: 1;
-    color: var(--ink-2); transition: color 200ms ease;
+    position: relative; display: inline-flex; align-items: center;
+    height: 34px;
+    font-size: 14px; letter-spacing: -0.01em; line-height: 1;
+    color: var(--ink-2); transition: color 160ms ease;
   }
   .nav-link:hover, .nav-link.on { color: var(--ink); }
-  .idx { font-size: 11px; color: var(--ink-3); }
-  .nav-link.on .idx, .nav-link:hover .idx { color: var(--link); }
 
   /* One flourish: a hairline that grows from the left. */
   .nav-link::after {
-    content: ''; position: absolute; left: 0; bottom: -2px; height: 1px; width: 100%;
+    content: ''; position: absolute; left: 0; bottom: 4px; height: 1px; width: 100%;
     background: var(--link); transform: scaleX(0); transform-origin: left;
     transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1);
   }
   .nav-link:hover::after, .nav-link.on::after { transform: scaleX(1); }
 
-  .cluster { display: flex; align-items: center; gap: 20px; }
+  .cluster { display: flex; align-items: center; gap: 16px; flex-shrink: 0; }
   .quiet {
-    display: none;
-    font-family: var(--font-mono); font-size: 12.8px; color: var(--ink-2);
-    transition: color 200ms ease;
+    display: none; align-items: center; height: 34px;
+    font-size: 14px; letter-spacing: -0.01em; color: var(--ink-2);
+    transition: color 160ms ease;
   }
   .quiet:hover, .quiet.on { color: var(--ink); }
 
   .cta {
-    display: none; align-items: center;
-    padding: 8px 16px; border: 1px solid var(--border-strong); border-radius: var(--radius-s);
-    font-family: var(--font-mono); font-size: 12.8px; color: var(--ink);
-    transition: border-color 300ms ease, color 300ms ease, background-color 300ms ease;
+    display: none; align-items: center; height: 34px;
+    padding: 0 14px; border: 1px solid var(--border-strong); border-radius: var(--radius-pill);
+    font-size: 14px; font-weight: 500; letter-spacing: -0.01em; color: var(--ink);
+    transition: border-color 200ms ease, color 200ms ease, background-color 200ms ease;
   }
   .cta:hover { border-color: var(--link); color: var(--link); background: var(--mark-bg); }
 
@@ -151,7 +154,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
     min-width: 44px; height: 44px; padding-inline: 6px; margin-right: -6px;
     background: none; border: 0; color: var(--ink); cursor: pointer;
   }
-  .burger-label { font-family: var(--font-mono); font-size: 12.8px; line-height: 1; }
+  .burger-label { font-size: 14px; line-height: 1; }
   .bars { position: relative; display: block; width: 20px; height: 16px; }
   .bars i {
     position: absolute; left: 0; display: block; width: 20px; height: 2px;
@@ -172,9 +175,10 @@ const pad = (n: number) => String(n).padStart(2, '0');
   }
   .sheet-link {
     display: flex; align-items: center; gap: 12px; padding-block: 12px;
-    font-family: var(--font-mono); font-size: 14px; color: var(--ink-2);
-    min-height: 44px;
+    font-size: 17px; letter-spacing: -0.01em; color: var(--ink-2);
+    min-height: 48px; border-bottom: 1px solid var(--border);
   }
+  .sheet li:last-child .sheet-link { border-bottom: 0; }
   .sheet-link:hover, .sheet-link.on { color: var(--ink); }
   .sheet-cta { display: flex; justify-content: center; margin-top: var(--s-3); }
 

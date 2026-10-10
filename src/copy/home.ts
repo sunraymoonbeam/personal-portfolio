@@ -28,18 +28,16 @@ export const home = {
 
   sections: {
     projects: {
-      index: '01',
       title: 'Projects',
       sub: 'Things I build when I should probably be sleeping.',
     },
     work: {
-      index: '02',
-      title: 'Work',
+      title: 'Work experience',
       sub: "Where I've worked, and what I learned there.",
     },
-    skills: { index: '03', title: 'Skills' },
+    skills: { title: 'Skills' },
     /** The subtitle carries an inline <code>, so it is passed as a slot. */
-    hobbies: { index: '04' },
+    hobbies: {},
   },
 
   /** Title and body come from `pages.contact`: one message, in one place. */

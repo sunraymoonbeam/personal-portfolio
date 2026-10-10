@@ -17,7 +17,8 @@ export async function getStaticPaths() {
 const { entry } = Astro.props;
 const d = entry.data;
 const { Content } = await render(entry);
-const links = toArticleLinks('projects', await getProjectArticles());
+const articles = await getProjectArticles();
+const links = toArticleLinks('projects', articles).map((link, i) => ({ ...link, sub: articles[i]!.data.claim }));
 const { prev, next } = getAdjacent(links, keyOf('projects', entry.id));
 ---
 {/* Same order as the reference detail page: date and status, the name, the
@@ -25,9 +26,9 @@ const { prev, next } = getAdjacent(links, keyOf('projects', entry.id));
     only then the write-up with "built with" alongside it. */}
 <ArticleLayout
   title={d.title} summary={d.claim}
-  eyebrow={d.status === 'Shipped' ? formatMonth(d.published) : `${formatMonth(d.published)} · ${d.status}`}
+  eyebrow={d.status === 'Shipped' ? formatMonth(d.published) : `${formatMonth(d.published)}, ${d.status.toLowerCase()}`}
   backHref="/projects" backLabel="All projects"
-  prev={prev} next={next}
+  prev={prev} next={next} noun="project"
 >
   <div slot="head" class="head-bits">
     {(d.links?.repo || d.links?.live || d.links?.docs) && (

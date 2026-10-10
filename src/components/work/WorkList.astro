@@ -16,6 +16,8 @@ interface Row {
 interface Props { rows: Row[]; compact?: boolean; headingLevel?: 2 | 3 | undefined; }
 const { rows, compact = false, headingLevel = 3 } = Astro.props;
 const Heading = `h${headingLevel}` as 'h2' | 'h3';
+const words = (t: string) => t.toLowerCase().replace(/[*’']/g, '').split(/\s+/).slice(0, 5).join(' ');
+const sameOpening = (a: string, b: string) => words(a) === words(b);
 ---
 {/* Dates and location in a mono rail on the left; role · company, one sentence,
     then bullets on the right. Hovering one role brings it forward and quiets
@@ -27,7 +29,7 @@ const Heading = `h${headingLevel}` as 'h2' | 'h3';
     const href = d.writeup ? `/work/${entry.id}` : undefined;
     const current = !d.end;
     return (
-      <li>
+      <li class:list={{ linked: !!href }}>
         <article class:list={["row", "rise", { clickable: !!href }]} aria-current={current ? 'true' : undefined}>
           <div class="rail">
             <div class="dates">
@@ -38,12 +40,16 @@ const Heading = `h${headingLevel}` as 'h2' | 'h3';
             <div class="sub">{d.location}</div>
           </div>
 
+          {/* The one link in the row. Its ::after covers the whole row, so a
+              click anywhere opens the role; the pill is what says so. */}
           {href && (
-            <svg class="chevron" width="18" height="18" viewBox="0 0 24 24" fill="none"
-                 stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                 stroke-linejoin="round" aria-hidden="true">
-              <path d="M9 6l6 6-6 6" />
-            </svg>
+            <a href={href} class="open" aria-label={`Read about ${d.role} at ${employer.data.name}`}>
+              Read
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                   stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M9 6l6 6-6 6" />
+              </svg>
+            </a>
           )}
 
           <div class="body">
@@ -51,7 +57,17 @@ const Heading = `h${headingLevel}` as 'h2' | 'h3';
               <Image src={employer.data.logo} alt="" width={32} height={32} class="logo" loading="lazy" />
               <Heading class="t-24 role">{d.role}<span class="at"> · {employer.data.name}</span></Heading>
             </div>
-            <p class="t-17 muted summary">{d.summary}</p>
+            {/* On the home page a role shows its numbers when it has them: a quick
+                skim should leave a figure behind, not just a job title. On
+                /work/ the summary is skipped when the first bullet already says
+                it, which is how Carro read the same sentence twice. */}
+            {compact && d.metrics ? (
+              <p class="t-17 muted summary">{d.metrics.map((m: { value: string; label: string }, i: number) => (
+                <><strong class="tabular">{m.value}</strong> {m.label}{i < d.metrics.length - 1 ? ', ' : '.'}</>
+              ))}</p>
+            ) : (!d.bullets?.length || compact || !sameOpening(d.summary, d.bullets[0])) && (
+              <p class="t-17 muted summary">{d.summary}</p>
+            )}
             {!compact && d.bullets && (
               <ul class="bullets">
                 {d.bullets.map((b: string) => (
@@ -61,20 +77,6 @@ const Heading = `h${headingLevel}` as 'h2' | 'h3';
                   </li>
                 ))}
               </ul>
-            )}
-            {href && !compact && (
-              <a href={href} class="learnings t-17">
-                What I learned
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                     stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <path d="M9 6l6 6-6 6" />
-                </svg>
-              </a>
-            )}
-            {/* No visible label on the home page, so the link IS the row. An
-                empty anchor needs its own name, hence aria-label. */}
-            {href && compact && (
-              <a href={href} class="cover" aria-label={`What I learned as ${d.role} at ${employer.data.name}`}></a>
             )}
           </div>
         </article>
@@ -88,7 +90,7 @@ const Heading = `h${headingLevel}` as 'h2' | 'h3';
 
   .row {
     position: relative;
-    display: grid; grid-template-columns: 190px minmax(0, 1fr) 24px;
+    display: grid; grid-template-columns: 190px minmax(0, 1fr) auto;
     gap: var(--s-8); align-items: start;
     padding: var(--s-7) 0;
     transition: opacity 300ms cubic-bezier(0.22, 1, 0.36, 1),
@@ -97,21 +99,33 @@ const Heading = `h${headingLevel}` as 'h2' | 'h3';
   /* Without bullets a row is short, so it needs less air around it. */
   .compact .row { padding: var(--s-5) 0; }
   /* Spotlight: the hovered role stays lit and steps forward, the rest recede. */
-  .list:has(li:hover) li:not(:hover) .row { opacity: 0.4; }
-  .list li:hover .row { transform: translateX(6px); }
-  @media (prefers-reduced-motion: reduce) { .list li:hover .row { transform: none; } }
+  /* On the <li>, not the .row: .row runs the scroll-in animation, and an
+     animation's opacity and transform beat any hover rule, so the spotlight
+     on .row never showed. Only a role that opens dims the rest. */
+  .list > li { position: relative; isolation: isolate; transition: opacity 250ms ease; }
+  .list:has(li.linked:hover) > li:not(:hover) { opacity: 0.45; }
+  /* A soft panel behind the hovered role, bleeding past the column edge, so
+     the whole row reads as one target. */
+  .linked::before {
+    content: ''; position: absolute; inset: 0 calc(var(--s-5) * -1);
+    border-radius: var(--radius-l); background: var(--surface);
+    opacity: 0; transition: opacity 250ms ease; pointer-events: none; z-index: -1;
+  }
+  .linked:hover::before { opacity: 1; }
+  .linked:hover + li { border-top-color: transparent; }
+  .list > li:has(+ .linked:hover) + li { border-top-color: transparent; }
 
   /*
-   * Place all three children explicitly. The chevron is before .body in the
-   * DOM, so with only `grid-column: 3` on the chevron, auto-placement pushed
+   * Place all three children explicitly. The Read pill is before .body in the
+   * DOM, so with only `grid-column: 3` on it, auto-placement pushed
    * .body onto row 2 column 1 and every role rendered in a 190px ribbon.
    */
   .rail { grid-column: 1; grid-row: 1; }
   .body { grid-column: 2; grid-row: 1; }
 
-  .rail { font-family: var(--font-mono); font-size: 12px; line-height: 1.5; }
+  .rail { font-family: var(--font-mono); font-size: 12px; line-height: 1.5; padding-top: 7px; }
   .dates { display: flex; align-items: center; gap: 7px; color: var(--ink); }
-  .sub { margin-top: 6px; text-transform: uppercase; letter-spacing: 0.15em; color: var(--ink-3); font-size: 11px; }
+  .sub { margin-top: 4px; color: var(--ink-3); font-family: var(--font-sans); font-size: 13px; letter-spacing: -0.01em; }
 
   /* Quiet pulse on the current role. */
   .live { width: 7px; height: 7px; border-radius: 50%; background: var(--fill); flex-shrink: 0; animation: pulse 2.4s ease-in-out infinite; }
@@ -124,48 +138,41 @@ const Heading = `h${headingLevel}` as 'h2' | 'h3';
   .role { font-weight: 600; }
   .at { color: var(--ink-2); font-weight: 400; }
   .summary { max-width: 62ch; }
+  .summary strong { color: var(--ink); font-weight: 600; }
 
   .bullets { display: flex; flex-direction: column; gap: 10px; margin-top: var(--s-1); }
   .bullets li { display: flex; gap: 12px; max-width: 64ch; line-height: 1.55; }
   .bullets strong { color: var(--ink); font-weight: 600; }
   .dash { margin-top: 13px; width: 12px; height: 1px; flex-shrink: 0; background: var(--fill); opacity: 0.6; }
 
-  /* The visible link is the only link, but its ::after covers the whole row,
-     so clicking anywhere opens it. One target for a mouse, one for a screen
-     reader, and no nested anchors. */
-  .learnings {
-    display: inline-flex; align-items: center; gap: 8px;
-    color: var(--link); margin-top: var(--s-2);
-  }
-  .learnings::after { content: ''; position: absolute; inset: 0; }
-  .cover { position: absolute; inset: 0; }
-  .clickable { cursor: pointer; }
-
   /*
-   * The row was already clickable and looked like prose. On the home page the
-   * link was visually hidden, so there was nothing at all to see. This is the
-   * affordance: present at rest, so you know before you hover.
+   * The Read pill is the row's only link. Its ::after covers the whole row,
+   * so clicking anywhere opens the role: one target for a mouse, one name for
+   * a screen reader, no nested anchors. It is visible at rest, so a visitor
+   * knows the row opens before they hover.
    */
-  .chevron {
-    grid-column: 3; grid-row: 1; align-self: center; justify-self: end;
-    color: var(--control);
-    transition: color 200ms ease, transform 300ms cubic-bezier(0.22, 1, 0.36, 1);
+  .clickable { cursor: pointer; }
+  .open {
+    grid-column: 3; grid-row: 1; align-self: start; justify-self: end; margin-top: 1px;
+    display: inline-flex; align-items: center; gap: 4px; height: 30px; padding: 0 10px 0 14px;
+    border: 1px solid var(--border); border-radius: var(--radius-pill);
+    font-size: 14px; letter-spacing: -0.01em; color: var(--ink-2); white-space: nowrap;
+    transition: color 200ms ease, background-color 200ms ease, border-color 200ms ease;
   }
-  .clickable:hover .chevron { color: var(--link); transform: translateX(3px); }
-  .row:has(.learnings):hover .role, .row:has(.cover):hover .role {
-    color: var(--link); transition: color 200ms ease;
-  }
-  .learnings svg { transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1); }
-  .learnings:hover svg { transform: translateX(3px); }
+  .open::after { content: ''; position: absolute; inset: 0; }
+  .open svg { transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1); }
+  .clickable:hover .open { color: var(--canvas); background: var(--link); border-color: var(--link); }
+  .clickable:hover .open svg { transform: translateX(2px); }
+  .clickable:hover .role { color: var(--link); }
+  .role { transition: color 200ms ease; }
 
   @media (max-width: 800px) {
     .row { grid-template-columns: 1fr; gap: var(--s-4); }
-    /* One column: let the rail and body stack in source order again. */
+    /* One column: rail, body, then the pill, in that order. */
     .rail, .body { grid-column: 1; grid-row: auto; }
-    /* No room for a rail on a phone; the link text carries it instead. */
-    .chevron { display: none; }
+    .open { grid-column: 1; grid-row: auto; order: 1; justify-self: start; margin-top: 0; }
     .rail { display: flex; gap: var(--s-4); align-items: baseline; flex-wrap: wrap; }
     .sub { margin-top: 0; }
-    .list li:hover .row { transform: none; }
+    .linked::before { inset: 0 calc(var(--s-3) * -1); }
   }
 </style>

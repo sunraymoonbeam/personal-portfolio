@@ -8,9 +8,11 @@ interface Props {
 }
 const {
   title = '', src, alt = '', dim = false,
-  ratio = '16 / 10', eager = false, chrome = true, morph,
+  ratio = '16 / 10', eager = false, chrome = false, morph,
 } = Astro.props;
 ---
+{/* Window chrome claims "this is a screenshot of the app". It is opt-in, and
+    only for images that really are one; the covers here are photographs. */}
 <div class:list={['frame', { chrome }]} style={morph ? `view-transition-name:${morph}` : undefined}>
   {chrome && (
     <div class="bar" aria-hidden="true">

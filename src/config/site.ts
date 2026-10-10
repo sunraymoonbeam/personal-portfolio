@@ -18,7 +18,7 @@ export const site = {
    */
   nav: [
     { href: '/projects', label: 'Projects' },
-    { href: '/work', label: 'Work' },
+    { href: '/work', label: 'Work experience' },
     { href: '/skills', label: 'Skills' },
     { href: '/hobbies', label: 'Hobbies' },
     { href: '/about', label: 'About' },

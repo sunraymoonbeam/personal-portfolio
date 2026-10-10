@@ -85,7 +85,7 @@ const a = pages.about;
   .bio {
     display: flex; flex-direction: column; gap: var(--s-5);
     max-width: 62ch; margin: 0;
-    padding-left: var(--s-6); border-left: 2px solid var(--link);
+    padding-left: var(--s-6); border-left: 1px solid var(--border-strong);
   }
   .bio p { font-size: 19px; line-height: 1.55; letter-spacing: -0.02em; color: var(--ink); }
 
@@ -94,10 +94,15 @@ const a = pages.about;
    * table of facts before the reader knew whose they were. Order the DOM for
    * reading and let the grid place them on a wide screen instead.
    */
+  /* …but with the photo after the whole bio, a phone never put a face to the
+     name. The main column dissolves into the grid so the portrait and facts
+     slot in after the buttons, before the long version. */
   @media (max-width: 900px) {
-    .cols { grid-template-columns: 1fr; gap: var(--s-7); }
-    .side { max-width: 320px; order: 2; }
-    .main { order: 1; }
+    .cols { display: flex; flex-direction: column; gap: 0; }
+    .main { display: contents; }
+    .side { max-width: 320px; order: 1; margin-top: var(--s-8); }
+    .label, .bio { order: 2; }
+    .label { margin-top: var(--s-9); }
   }
   @media (max-width: 600px) { .bio { padding-left: var(--s-4); } }
 </style>

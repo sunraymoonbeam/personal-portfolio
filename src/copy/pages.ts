@@ -6,7 +6,7 @@ export const pages = {
     lede: 'Open any project for the full story.',
   },
   work: {
-    eyebrow: 'Work',
+    eyebrow: 'Work experience',
     title: "Where I've worked, and what I did there.",
     /** The first paragraph doubles as the meta description. */
     body: [

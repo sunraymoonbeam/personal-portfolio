@@ -4,7 +4,6 @@ import { articleComponents } from '~/components/article/mdx';
 import ArticleLayout from '~/layouts/ArticleLayout.astro';
 import Gallery from '~/components/article/Gallery.astro';
 import { getPublishedHobbies, toArticleLinks, getAdjacent, keyOf } from '~/lib/content';
-import { formatMonth } from '~/lib/date';
 import { Image } from 'astro:assets';
 
 export async function getStaticPaths() {
@@ -16,11 +15,12 @@ const { entry } = Astro.props;
 const d = entry.data;
 const { Content } = await render(entry);
 const all = (await getPublishedHobbies()).filter((e) => e.data.writeup);
-const { prev, next } = getAdjacent(toArticleLinks('hobbies', all), keyOf('hobbies', entry.id));
+const links = toArticleLinks('hobbies', all).map((link, i) => ({ ...link, sub: all[i]!.data.summary }));
+const { prev, next } = getAdjacent(links, keyOf('hobbies', entry.id));
 ---
 <ArticleLayout
-  title={d.title} summary={d.summary} eyebrow={`Hobbies · ${formatMonth(d.published)}`}
-  backHref="/hobbies" backLabel="All hobbies" prev={prev} next={next}
+  title={d.title} summary={d.summary}
+  backHref="/hobbies" backLabel="All hobbies" prev={prev} next={next} noun="hobby"
 >
   {d.cover && (
     <figure slot="hero" class="cover">

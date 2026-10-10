@@ -1,21 +1,25 @@
 ---
 import SiteLayout from './SiteLayout.astro';
 import ArrowLink from '~/components/ui/ArrowLink.astro';
+import { Image } from 'astro:assets';
 import type { ArticleLink } from '~/lib/content';
 
 interface Props {
   title: string; summary?: string | undefined; eyebrow?: string | undefined;
   backHref: string; backLabel: string;
   prev?: ArticleLink | undefined; next?: ArticleLink | undefined;
+  /** What one of these is called, for the neighbour labels: "Previous role". */
+  noun?: string | undefined;
 }
-const { title, summary, eyebrow, backHref, backLabel, prev, next } = Astro.props;
+const { title, summary, eyebrow, backHref, backLabel, prev, next, noun } = Astro.props;
+const label = (dir: 'Previous' | 'Next') => (noun ? `${dir} ${noun}` : dir);
 ---
 <SiteLayout title={`${title} — Zack Low`} description={summary}>
   <article>
     <header class="head wrap measure-start">
       <ArrowLink href={backHref} label={backLabel} back />
       {eyebrow && <p class="eyebrow">{eyebrow}</p>}
-      <h1 class="t-64">{title}</h1>
+      <h1 class="title">{title}</h1>
       {summary && <p class="t-21 muted">{summary}</p>}
       {/* Links and numbers sit with the title, as on the reference page. */}
       <div class="head-extra"><slot name="head" /></div>
@@ -29,16 +33,60 @@ const { title, summary, eyebrow, backHref, backLabel, prev, next } = Astro.props
     </div>
 
     {(prev || next) && (
-      <nav class="wrap adjacent" aria-label="More">
-        <span>{next && <a href={next.href} class="stack"><span class="eyebrow bare">Next</span><span class="t-21">{next.title}</span></a>}</span>
-        <span class="right">{prev && <a href={prev.href} class="stack"><span class="eyebrow bare">Previous</span><span class="t-21">{prev.title}</span></a>}</span>
+      /* Previous sits left with ←, next sits right with →, so the arrow keys
+         and the layout agree. Each card names its neighbour the way a reader
+         knows it, with the one line that tells similar titles apart. */
+      <nav class="wrap adjacent" aria-label={noun ? `Other ${noun === 'hobby' ? 'hobbies' : noun + 's'}` : 'More'} data-adjacent>
+        {prev ? (
+          <a href={prev.href} class="adj prev" rel="prev" data-adj="prev" aria-keyshortcuts="ArrowLeft">
+            <span class="dir t-14"><svg class="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6" /></svg>{label('Previous')}</span>
+            <span class="who">
+              {prev.logo && <Image src={prev.logo} alt="" width={28} height={28} class="logo" />}
+              <span class="t-21 name">{prev.title}</span>
+            </span>
+            {prev.sub && <span class="t-14 muted sub">{prev.sub}</span>}
+          </a>
+        ) : <span class="adj-gap" aria-hidden="true" />}
+        {next ? (
+          <a href={next.href} class="adj next" rel="next" data-adj="next" aria-keyshortcuts="ArrowRight">
+            <span class="dir t-14">{label('Next')}<svg class="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6" /></svg></span>
+            <span class="who">
+              {next.logo && <Image src={next.logo} alt="" width={28} height={28} class="logo" />}
+              <span class="t-21 name">{next.title}</span>
+            </span>
+            {next.sub && <span class="t-14 muted sub">{next.sub}</span>}
+          </a>
+        ) : <span class="adj-gap" aria-hidden="true" />}
+        <p class="t-12 keyhint" aria-hidden="true"><kbd>←</kbd><kbd>→</kbd> to move between {noun === 'hobby' ? 'hobbies' : noun ? noun + 's' : 'articles'}</p>
       </nav>
     )}
   </article>
 </SiteLayout>
+<script>
+  // ← and → move between neighbouring articles. Ignored while typing, with a
+  // modifier held (so browser back/forward shortcuts still work), or when a
+  // dialog such as search is open.
+  const onKey = (e: KeyboardEvent) => {
+    if (e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return;
+    if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+    const t = e.target as HTMLElement | null;
+    if (t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName))) return;
+    if (document.querySelector('dialog[open]')) return;
+    const link = document.querySelector<HTMLAnchorElement>(`[data-adj="${e.key === 'ArrowLeft' ? 'prev' : 'next'}"]`);
+    if (link) { e.preventDefault(); link.click(); }
+  };
+  document.addEventListener('keydown', onKey);
+</script>
 <style>
   .head { display: flex; flex-direction: column; gap: var(--s-4); padding-block: var(--s-10) var(--s-6); }
   .head-extra:empty { display: none; }
+  /* The article title is the page's one display moment: a step above the
+     index pages' t-64, wide enough that most titles set in two lines. */
+  .title {
+    font-size: clamp(36px, 7.4vw, 76px); line-height: 1.04; font-weight: 600;
+    letter-spacing: -0.045em; max-width: 16ch;
+  }
+  .measure-start > .title { max-width: 16ch; }
   .hero-slot:empty { display: none; }
   .body {
     display: grid; grid-template-columns: minmax(0, var(--reading)) minmax(0, 1fr);
@@ -47,13 +95,50 @@ const { title, summary, eyebrow, backHref, backLabel, prev, next } = Astro.props
   .side { position: sticky; top: 96px; display: flex; flex-direction: column; gap: var(--s-6); }
   .side:empty { display: none; }
   .adjacent {
-    display: flex; justify-content: space-between; gap: var(--s-5);
-    padding-block: var(--s-6); border-top: 1px solid var(--border);
+    display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-4);
+    padding-block: var(--s-8) var(--s-10); border-top: 1px solid var(--border);
   }
-  .adjacent .right { text-align: right; }
-  .adjacent .stack { gap: var(--s-1); }
+  .adj {
+    display: flex; flex-direction: column; gap: var(--s-2);
+    padding: var(--s-5); border: 1px solid var(--border); border-radius: var(--radius-m);
+    color: var(--ink); background: var(--canvas);
+    transition: border-color 200ms ease, background-color 200ms ease, transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .adj.next { align-items: flex-end; text-align: right; }
+  .adj:hover { border-color: var(--border-strong); background: var(--subtle); color: var(--ink); }
+  .adj:active { transform: scale(0.99); }
+  .dir { display: inline-flex; align-items: center; gap: 6px; color: var(--ink-2); }
+  .adj:hover .dir { color: var(--link); }
+  .arrow { transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1); }
+  .prev:hover .arrow { transform: translateX(-3px); }
+  .next:hover .arrow { transform: translateX(3px); }
+  .who { display: flex; align-items: center; gap: var(--s-3); }
+  .next .who { flex-direction: row-reverse; }
+  .logo { width: 28px; height: 28px; border-radius: 6px; object-fit: contain; flex-shrink: 0; }
+  .name { text-wrap: balance; }
+  .sub { font-variant-numeric: tabular-nums; }
+  .keyhint {
+    grid-column: 1 / -1; justify-self: center; margin: var(--s-2) 0 0;
+    display: none; align-items: center; gap: 4px; color: var(--ink-3);
+  }
+  .keyhint kbd {
+    font-family: var(--font-mono); font-size: 11px; line-height: 1;
+    padding: 3px 6px; border-radius: 4px; background: var(--chip-bg);
+  }
+  /* The keyboard hint only means something where there is a keyboard. */
+  @media (hover: hover) and (pointer: fine) { .keyhint { display: inline-flex; } }
+  @media (max-width: 640px) {
+    .adjacent { grid-template-columns: 1fr; }
+    .adj-gap { display: none; }
+    .adj.next { align-items: flex-start; text-align: left; }
+    .next .who { flex-direction: row; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .adj, .arrow { transition: border-color 200ms ease, background-color 200ms ease; }
+    .prev:hover .arrow, .next:hover .arrow, .adj:active { transform: none; }
+  }
   @media (max-width: 900px) {
-    .body { grid-template-columns: 1fr; gap: var(--s-7); }
+    .body { grid-template-columns: 1fr; gap: var(--s-7); padding-top: var(--s-6); }
     .side { position: static; }
   }
 </style>

@@ -9,7 +9,16 @@ export type EntryKey = `${'projects' | 'work' | 'hobbies'}:${string}`;
 export const keyOf = (collection: 'projects' | 'work' | 'hobbies', id: string): EntryKey =>
   `${collection}:${id}`;
 
-export type ArticleLink = { key: EntryKey; href: string; title: string };
+
+/**
+ * A neighbouring article. `title` is what the reader recognises it by — for a
+ * role that is "AI Engineer · Carro", not the essay headline — and `sub` is
+ * the one line that tells two similar titles apart.
+ */
+export type ArticleLink = {
+  key: EntryKey; href: string; title: string;
+  sub?: string | undefined; logo?: ImageMetadata | undefined;
+};
 
 export const isPublished = <T extends { data: { draft: boolean } }>(e: T) => !e.data.draft;
 
