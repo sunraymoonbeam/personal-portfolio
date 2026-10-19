@@ -24,7 +24,6 @@ const hobbies = (await getHobbiesIndex()).slice(0, 3);
   <section class="hero wrap">
     <div class="copy">
       <h1 class="name"><span class="given">Ren Hwa</span> <span class="nick">(Zack)</span> <span class="family">Low</span></h1>
-      <p class="t-24 role">{home.role}</p>
       {home.lede.map((para) => (
         <p class="t-19 muted lede">
           {para.map((part) => {
@@ -81,9 +80,8 @@ const hobbies = (await getHobbiesIndex()).slice(0, 3);
 
   <section class="section">
     <div class="wrap">
-      <SectionHead {...home.sections.hobbies} href="/hobbies" linkLabel="View all hobbies">
+      <SectionHead href="/hobbies" linkLabel="View all hobbies">
         <CrayonWord slot="title" />
-        <Fragment slot="sub">Because there is more to life than <code>git push</code>.</Fragment>
       </SectionHead>
       <HobbyGrid items={hobbies} />
     </div>
@@ -119,7 +117,6 @@ const hobbies = (await getHobbiesIndex()).slice(0, 3);
     -webkit-background-clip: text; background-clip: text; color: transparent;
   }
   .name .nick { white-space: nowrap; }
-  .role { color: var(--ink-2); font-weight: 500; }
   .lede { max-width: 620px; }
   .lede strong { color: var(--ink); font-weight: 600; }
   .lede .hi { color: var(--link); }

@@ -1,10 +1,8 @@
 ---
 title: Kanta
-claim: A shared camera app for events, with face detection and photo organisation.
+claim: A shared, collaborative event camera, with smart features like face detection and automatic photo sorting.
 summary: |-
-  Basically Google Drive for photos at an event. Everyone shoots on their own phone, the photos land in one place, and face detection helps each guest find the shots they are in.
-
-  I built the backend with FastAPI, Azure Blob Storage and Azure PostgreSQL, deployed on Azure Container Apps. Face clustering runs separately on AWS Lambda so a burst of uploads does not block the app.
+  Basically Google Drive for photos at an event. Everyone shoots on their own phone, the photos land in one album, and face detection helps each guest find the shots they're in. The backend is FastAPI on Azure, with face clustering on AWS Lambda.
 published: 2025-05
 status: Shipped
 tags: [Full-stack, Photography]
@@ -23,16 +21,22 @@ import storage from './storage.svg'
 
 ## Why I built it
 
-Kanta is a collaborative camera app for events. The idea was to make it easier for people to put their photos in one place and find the ones they care about. I wanted sharing to work more like a common photo library than a set of separate chats and albums.
+After an event, the photos are spread across a dozen camera rolls and group
+chats, and most people never see most of them. I wanted one album that every
+guest adds to, where you can jump straight to the photos you're in instead of
+scrolling through hundreds.
 
-## The backend
+## How it works
 
-I built the backend with FastAPI. Images live in Azure Blob Storage, and Azure PostgreSQL stores the metadata we use to find and query them. The application runs on Azure Container Apps. I used an AWS Lambda job for unsupervised clustering to help organise the photo collection.
+The backend is FastAPI on Azure Container Apps. Image files go to Azure Blob
+Storage, and the metadata used to search them goes to Azure PostgreSQL. Face
+clustering runs separately as an AWS Lambda job, so a burst of uploads after a
+group photo doesn't slow the app down.
 
-<Figure src={storage} alt="FastAPI on Azure Container Apps connects to Blob Storage for image files and PostgreSQL for queryable photo data." caption="The storage split in Kanta's backend. An architecture summary, not a product screenshot." />
+<Figure src={storage} alt="FastAPI on Azure Container Apps connects to Blob Storage for image files and PostgreSQL for queryable photo data." caption="Files in Blob Storage, everything you search by in PostgreSQL." />
 
-Kanta also uses face detection to make a large set of event photos easier to navigate.
+## The main decision
 
-## What I took from it
-
-Building a photo app forced me to think about both sides of a file upload: where the image bytes live and how a person finds the right image afterwards. The storage and query model had to support the experience together.
+Splitting storage this way was the decision that shaped the rest. Blob storage
+is cheap for large files but can't answer "which photos is this person in?",
+and a database is the reverse. Each one holds the part it's good at.

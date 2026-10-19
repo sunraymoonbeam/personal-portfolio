@@ -5,35 +5,57 @@ kind: Apprenticeship
 location: Singapore
 start: 2024-06
 end: 2025-04
-title: Generating 3D animation from a text prompt
+title: Turning text prompts into 3D character motion
 summary: >-
-  Built an end-to-end GenAI pipeline for generating 3D character animations from text prompts for a gaming industry project.
-stack: [pytorch, huggingface]
+  Diffusion models that generate 3D character motion from text prompts, for the gaming industry.
+stack: [pytorch, huggingface, gitlab]
 bullets:
-  - "Delivered a GenAI MVP for a gaming industry project, **generating 3D character animations from text**."
-  - "Built **end-to-end ML pipelines** to train and deploy state-of-the-art diffusion models using PyTorch."
-  - "Used multimodal video LLMs for automated data labelling, **improving text-to-motion metrics by 20% over baseline**."
-  - "Optimized Gitlab CI/CD pipelines, resulting in an **80% reduction in testing and deployment time**."
+  - "Delivered a GenAI MVP for a gaming industry project, generating 3D character animations from text."
+  - "Built end-to-end ML pipelines in PyTorch to train and deploy diffusion models for text-to-motion generation."
+  - "Auto-labeled training data with multimodal video LLMs, improving text-to-motion metrics by **20%** over baseline."
+  - "Optimized GitLab CI/CD pipelines, reducing testing and deployment time by **80%**."
 metrics:
-  - { value: "20%", label: "improvement over baseline", context: "text-to-motion metrics reported in my résumé" }
-  - { value: "80%", label: "faster testing and deployment", context: "after GitLab CI/CD changes" }
+  - { value: "20%", label: "better text-to-motion metrics", context: "over baseline, after auto-labelling the training data" }
+  - { value: "80%", label: "faster testing and deployment", context: "after optimising the GitLab CI/CD pipelines" }
 featuredOrder: 2
 cover: ./cover.jpg
-coverAlt: Placeholder image
 ---
 
-## What we were trying to make easier
+## The project
 
-Animating a game character usually involves designing a character, rigging it and building each movement by hand. At AI Singapore, I worked on a GenAI MVP for a gaming company that would turn a text prompt into 3D motion. A prompt such as “a man walking” could produce motion that a developer could bring into Unity.
+Animating a game character takes a lot of manual work. Someone designs the
+character, rigs it, then animates each movement by hand. At AI Singapore I
+worked on an MVP for a gaming company that skips the last step: you type
+"a man walking" and get back a walking animation, joints and mesh, ready to
+import into Unity.
 
-## Making the data usable
+## What I built
 
-The motion came from different sources and in different formats. It included joint positions, movement relationships and velocities. I worked on a modular pipeline to bring those datasets into one training format. That preparation mattered as much as the diffusion model we trained with PyTorch.
+Our motion capture data came from several sources, and each one stored joint
+positions, kinematics and velocities its own way. I built a modular pipeline
+that converts all of it into one training format, then trained diffusion
+models on it in PyTorch.
 
-The model also needed motion clips paired with descriptions. Some clips had missing or incomplete prompts, so we used a video captioning model to generate descriptions in the data pipeline. The resulting work improved our text-to-motion metrics by 20% over baseline, as recorded in my résumé.
+Some clips had missing or thin text descriptions. We ran a multimodal video LLM
+over those clips to write new ones, and that improved our text-to-motion
+metrics by 20% over baseline.
 
-## Beyond the model
+I also optimised our GitLab CI/CD pipelines. Testing and deployment now take a
+fifth of the time they used to.
 
-I helped build the training and deployment pipeline and improved the GitLab CI/CD checks. Testing and deployment time fell by 80%. I also made onboarding materials and a small interactive repository for practising Linux and version control. Explaining those basics to teammates with different backgrounds made me a clearer engineer.
+## Looking back
 
-This project taught me to work from the data backwards. A more capable model cannot compensate for inconsistent motion files and missing descriptions.
+The biggest jumps in quality came from fixing the data: one consistent format,
+and descriptions for the clips that had none. If I did it again, I'd start
+there before touching the model.
+
+My team had a fresh graduate, an experienced engineer and two career switchers.
+Explaining Linux and Git to people from other fields took more time than I
+expected, and it showed me where my own understanding was thin. I wrote
+onboarding guides, built a small interactive repo for practising Linux commands
+and version control, and added checks to CI/CD so fewer mistakes reached
+review.
+
+I also learned when to stop. Early on I spent time polishing parts of the MVP
+that didn't need it yet. On a proof of concept with a deadline, that time
+belongs to the riskiest part.

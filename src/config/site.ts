@@ -1,7 +1,7 @@
 /** Identity, routing and switches. Page copy lives in src/copy/. */
 export const site = {
   name: 'Zack Low',
-  fullName: 'Renhwa (Zack) Low',
+  fullName: 'Ren Hwa (Zack) Low',
   role: 'Software engineer (AI)',
   location: 'Singapore',
   wordmark: 'Zack Low',

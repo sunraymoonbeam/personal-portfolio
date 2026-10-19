@@ -20,6 +20,8 @@ export const TECHNOLOGIES: Record<string, Tech> = {
   langchain:    { id: 'langchain',    label: 'LangChain',    icon: 'langchain' },
   langgraph:    { id: 'langgraph',    label: 'LangGraph',    icon: 'langgraph' },
   langfuse:     { id: 'langfuse',     label: 'Langfuse' },
+  googleadk:    { id: 'googleadk',    label: 'Google ADK' },
+  hermes:       { id: 'hermes',       label: 'Hermes Agent' },
   litellm:      { id: 'litellm',      label: 'LiteLLM' },
   pytorch:      { id: 'pytorch',      label: 'PyTorch',      icon: 'pytorch' },
   huggingface:  { id: 'huggingface',  label: 'Hugging Face', icon: 'huggingface' },
@@ -29,6 +31,7 @@ export const TECHNOLOGIES: Record<string, Tech> = {
   n8n:          { id: 'n8n',          label: 'n8n',          icon: 'n8n' },
   gnubash:      { id: 'gnubash',      label: 'Bash',         icon: 'gnubash' },
   git:          { id: 'git',          label: 'Git',          icon: 'git' },
+  gitlab:       { id: 'gitlab',       label: 'GitLab CI/CD', icon: 'gitlab' },
   linux:        { id: 'linux',        label: 'Linux',        icon: 'linux' },
   traefikproxy: { id: 'traefikproxy', label: 'Traefik',      icon: 'traefikproxy' },
   terraform:    { id: 'terraform',    label: 'Terraform',    icon: 'terraform' },
@@ -39,10 +42,10 @@ export const TECHNOLOGIES: Record<string, Tech> = {
   aws:          { id: 'aws',          label: 'AWS' },
 };
 
-/** The About page's grouped view. */
+/** The grouped view on the home and skills pages, in résumé order. */
 export const STACK_GROUPS: Array<{ title: string; items: string[] }> = [
-  { title: 'Languages',       items: ['python', 'typescript', 'javascript', 'postgresql'] },
-  { title: 'Web & product',   items: ['astro', 'fastapi', 'django'] },
-  { title: 'AI & agents',     items: ['langgraph', 'langchain', 'langfuse', 'litellm', 'pytorch', 'huggingface', 'nvidia'] },
-  { title: 'Cloud & systems', items: ['docker', 'n8n', 'terraform', 'googlecloud', 'git', 'linux', 'gnubash', 'azure', 'aws'] },
+  { title: 'Languages',              items: ['python', 'typescript', 'postgresql'] },
+  { title: 'Backend & DevOps',       items: ['fastapi', 'django', 'n8n', 'git', 'docker', 'gitlab'] },
+  { title: 'AI & Agents',            items: ['langchain', 'langgraph', 'googleadk', 'hermes', 'litellm', 'langfuse', 'pytorch', 'huggingface', 'nvidia'] },
+  { title: 'Cloud & Infrastructure', items: ['terraform', 'googlecloud', 'azure', 'aws'] },
 ];

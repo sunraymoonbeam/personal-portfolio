@@ -10,14 +10,12 @@ const evidence = await getSkillEvidence();
 ---
 {/* The same groups as the home page section, from the same data file. A chip
     that was used somewhere on this site opens to show where, so LangGraph,
-    which runs twelve production workflows, no longer weighs the same as a
+    which runs Carro's production agents, no longer weighs the same as a
     line on a CV. Chips without evidence stay plain. */}
 <SiteLayout title="Skills — Zack Low" description={pages.skills.lede}>
   <section class="section wrap intro measure-start">
-    <p class="eyebrow">{pages.skills.eyebrow}</p>
     <h1 class="t-64">{pages.skills.title}</h1>
     <p class="t-21 muted">{pages.skills.lede}</p>
-    <p class="t-14 small hint">Open a skill with a count to see where I used it.</p>
   </section>
 
   <section class="wrap groups" data-skills>

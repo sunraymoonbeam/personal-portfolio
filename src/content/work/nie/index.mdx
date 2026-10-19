@@ -7,28 +7,40 @@ start: 2023-10
 end: 2024-03
 title: Finding who spoke when in classroom recordings
 summary: >-
-  Developed an ASR and speaker diarisation pipeline for analysing student participation across classroom recordings.
+  A speaker diarization system, built with professors, that measures student participation and learning outcomes from classroom recordings.
 stack: [python, pytorch, nvidia]
 bullets:
-  - "Developed a **speaker diarization system** with professors to measure student participation and learning outcomes."
-  - "Implemented an automatic speech recognition (ASR) and diarization pipeline with Nvidia’s Nemo, fine tuning models with self-annotated transcripts to **outperform open-source benchmarks by 30%**."
+  - "Partnered with professors to build a speaker diarization system that measures student participation and learning outcomes."
+  - "Fine-tuned NVIDIA NeMo ASR models on self-annotated transcripts, beating open-source baselines by **30%**."
 metrics:
-  - { value: "200+", label: "hours of recordings studied", context: "classroom discussion data described in my notes" }
-  - { value: "30%", label: "above open-source benchmarks", context: "result reported in my résumé" }
+  - { value: "200+", label: "hours of classroom recordings" }
+  - { value: "30%", label: "better than open-source baselines", context: "after fine-tuning on transcripts I annotated" }
 cover: ./cover.jpg
-coverAlt: Placeholder image
 ---
 
-## Listening for participation
+## The project
 
-At the National Institute of Education, I worked with researchers studying how students take part in discussions. The recordings covered more than 200 hours. We needed to know who spoke when, alongside what was said, before the researchers could examine interruptions and participation patterns.
+At the National Institute of Education, I worked with professors studying how
+students take part in group discussions. They had more than 200 hours of
+classroom recordings and wanted to know how speaking patterns, interruptions
+and turn-taking related to learning outcomes.
 
-That is a speaker diarization problem. Classroom audio makes it difficult: voices overlap, microphones pick up noise and short turns can be hard to assign to the right person.
+First, someone had to work out who spoke when. That's speaker diarization, and
+classroom audio makes it hard: voices overlap, students talk over each other
+and the microphones pick up the whole room.
 
-## The work behind the transcript
+## What I built
 
-I worked on an automatic speech recognition and diarization pipeline using NVIDIA NeMo. I also labelled and transcribed recordings for evaluation and model fine-tuning. My résumé reports performance 30% above the open-source benchmarks we compared against.
+I built an ASR and diarization pipeline on NVIDIA NeMo. I transcribed and
+labelled recordings myself, for evaluation and for fine-tuning, and the
+fine-tuned models beat the open-source baselines by 30%.
 
-We used audio preprocessing, including beamforming with two microphones, to make the speech signal clearer. The microphones receive the same voice at slightly different times. Aligning those signals can reinforce sound from one direction and reduce noise from others.
+To clean up the audio, we used beamforming with a pair of microphones. A voice
+reaches the two microphones at slightly different times. Delay one signal by
+that gap and add the two together, and sound from the speaker's direction gets
+louder while sound from other directions partly cancels out.
 
-I learned how much research depends on careful labels and an evaluation set that resembles the real recordings. A transcript that looks plausible is not enough if the speaker assignments are wrong.
+## Looking back
+
+Labelling the recordings myself was slow, but it gave us a test set that came
+from real classrooms, noise and all. The 30% is measured on that.

@@ -35,19 +35,17 @@ const a = pages.about;
 
       <div class="main">
         <h1 class="t-64">{a.title}</h1>
-        <p class="t-21 muted summary">{a.summary}</p>
         <div class="actions">
           <a href="/cv" class="btn">CV</a>
           <a href="/contact" class="btn btn-ghost">Contact</a>
         </div>
 
-        <p class="eyebrow label">{a.quoteLabel}</p>
         <blockquote class="bio rise">
-          <p>I studied Computer Science at NTU. After working on analytics projects, I became interested in the systems that make data useful. That eventually took me to AI Singapore. AI is where I specialise now, but I still think of myself as a software engineer first.</p>
-          <p>Building a model also means understanding the database, the pipeline, and the people who use the result.</p>
-          <p>At AI Singapore I worked on a generative animation MVP for a gaming company. At NIE I worked on speech and signal processing for classroom discussions. At the Department of Statistics I prototyped LLM and text analytics tools. I now build agent workflows and their infrastructure at Carro.</p>
-          <p>I enjoy finding the cause of a bug. I step back to understand the input, the expected result and the surrounding system, then work through a fix. I also care about explaining technical ideas clearly to teammates and stakeholders. Teaching others has made me check my own understanding.</p>
-          <p>I have learned to keep priorities visible, and to avoid polishing a small piece while the real problem waits.</p>
+          <p>I studied Computer Science at NTU, mostly doing web development. A few analytics projects got me interested in data, and by graduation I was choosing between data engineering and AI. I picked AI.</p>
+          <p>Before graduating I'd already tried a bit of it: LLM tools at the Department of Statistics and speech processing at NIE. Then I joined AI Singapore, where we built a model that turns text into 3D animation for a game company. Seeing it change how their developers worked is when I realised what I enjoy most: building systems that solve a real problem, especially when there's data involved. Now I build AI agents at Carro.</p>
+          <p>I specialise in AI, but I think of myself as a software engineer first. You can't build a good model without good data, and someone has to set up the database, the pipeline and the deployment around it. I'm happy to be that person.</p>
+          <p>I actually like running into bugs, because that's where I learn how a system really works. I zoom out to see how the parts connect, then zoom in on the one that failed.</p>
+          <p>Outside work I climb, cook for my family, make too much coffee and play guitar badly.</p>
         </blockquote>
       </div>
     </div>
@@ -77,14 +75,12 @@ const a = pages.about;
   .fact dd { margin: 0; text-align: right; }
 
   .main { display: flex; flex-direction: column; }
-  .summary { max-width: 46ch; margin-top: var(--s-4); }
   .actions { display: flex; gap: var(--s-3); flex-wrap: wrap; margin-top: var(--s-6); }
-  .label { margin-top: var(--s-10); margin-bottom: var(--s-4); }
 
   /* The whole bio is the quote, so the rule runs its full height. */
   .bio {
     display: flex; flex-direction: column; gap: var(--s-5);
-    max-width: 62ch; margin: 0;
+    max-width: 62ch; margin: var(--s-10) 0 0;
     padding-left: var(--s-6); border-left: 1px solid var(--border-strong);
   }
   .bio p { font-size: 19px; line-height: 1.55; letter-spacing: -0.02em; color: var(--ink); }
@@ -101,8 +97,7 @@ const a = pages.about;
     .cols { display: flex; flex-direction: column; gap: 0; }
     .main { display: contents; }
     .side { max-width: 320px; order: 1; margin-top: var(--s-8); }
-    .label, .bio { order: 2; }
-    .label { margin-top: var(--s-9); }
+    .bio { order: 2; margin-top: var(--s-9); }
   }
   @media (max-width: 600px) { .bio { padding-left: var(--s-4); } }
 </style>

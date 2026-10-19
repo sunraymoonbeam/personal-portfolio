@@ -1,43 +1,31 @@
 /** Home page copy. Edit sentences here, never in a component. */
 export const home = {
   name: 'Ren Hwa (Zack) Low',
-  role: 'Software engineer (AI)',
 
   /**
-   * The opening. Two paragraphs. `em` sets a phrase in the ink colour and
-   * `hi` sets it in the accent, so the emphasis lives with the sentence rather
-   * than in a component.
-   * No tagline above it: the positioning is woven into the prose instead.
+   * The opening. Two paragraphs, mirroring the résumé summary. `em` sets a
+   * phrase in the ink colour and `hi` sets it in the accent, so the emphasis
+   * lives with the sentence rather than in a component.
    */
   lede: [
     [
-      { text: 'I love building ' },
-      { text: 'full-stack software', em: true },
-      { text: ': real applications that people actually use. I specialise in ' },
+      { text: 'Software engineer specialising in ' },
       { text: 'AI', em: true },
-      { text: ', and my work has taken me through many different domains, such as data systems, computer vision, motion and speech.' },
+      { text: ', with experience across multiple domains: agentic systems, computer vision, generative AI and speech processing. Strong programming fundamentals and full-stack experience.' },
     ],
     [
-      { text: 'I try to ' },
+      { text: 'I ' },
       { text: 'work from first principles', em: true },
-      { text: ': understand what is actually wrong, decide what matters, then own the solution end to end. ' },
-      { text: 'Solving problems is my forte', hi: true },
+      { text: ": I take the time to understand the problem deeply and how the ideal solution might fit into the bigger picture. I'm comfortable owning ambiguous problems end to end, from discovery with stakeholders to evaluation and deployment. " },
+      { text: 'Solving problems is what I do', hi: true },
       { text: '. Writing code is only one of the ways I do it.' },
     ],
   ],
 
   sections: {
-    projects: {
-      title: 'Projects',
-      sub: 'Things I build when I should probably be sleeping.',
-    },
-    work: {
-      title: 'Work experience',
-      sub: "Where I've worked, and what I learned there.",
-    },
+    projects: { title: 'Projects' },
+    work: { title: 'Work experience' },
     skills: { title: 'Skills' },
-    /** The subtitle carries an inline <code>, so it is passed as a slot. */
-    hobbies: {},
   },
 
   /** Title and body come from `pages.contact`: one message, in one place. */

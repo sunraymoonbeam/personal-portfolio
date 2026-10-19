@@ -57,15 +57,9 @@ const sameOpening = (a: string, b: string) => words(a) === words(b);
               <Image src={employer.data.logo} alt="" width={32} height={32} class="logo" loading="lazy" />
               <Heading class="t-24 role">{d.role}<span class="at"> · {employer.data.name}</span></Heading>
             </div>
-            {/* On the home page a role shows its numbers when it has them: a quick
-                skim should leave a figure behind, not just a job title. On
-                /work/ the summary is skipped when the first bullet already says
-                it, which is how Carro read the same sentence twice. */}
-            {compact && d.metrics ? (
-              <p class="t-17 muted summary">{d.metrics.map((m: { value: string; label: string }, i: number) => (
-                <><strong class="tabular">{m.value}</strong> {m.label}{i < d.metrics.length - 1 ? ', ' : '.'}</>
-              ))}</p>
-            ) : (!d.bullets?.length || compact || !sameOpening(d.summary, d.bullets[0])) && (
+            {/* The summary is the one line that says what the role built. On
+                /work/ it is skipped when the first bullet already says it. */}
+            {(!d.bullets?.length || compact || !sameOpening(d.summary, d.bullets[0])) && (
               <p class="t-17 muted summary">{d.summary}</p>
             )}
             {!compact && d.bullets && (

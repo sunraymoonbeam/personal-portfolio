@@ -1,12 +1,12 @@
 ---
 title: Echo
-claim: A personal language-model experiment trained on my Telegram history.
+claim: An LLM fine-tuned on five years of my messages, so it talks like me.
 summary: >-
   A digital clone of myself, built from five years of my own Telegram history.
-  The model was never the hard part. Five years of messages is not a dataset,
-  and most of the work went into turning it into one. I fine-tuned LLaMA 3 and
-  Gemma 3 with Unsloth, then served the result through a small set of FastAPI
-  services behind a Streamlit front end, all on one GPU box.
+  The model was never the hard part: most of the work went into turning a raw
+  chat export into training data. I fine-tuned LLaMA 3 and Gemma 3 with
+  Unsloth, then served the result through a few FastAPI services behind a
+  Streamlit front end, all on one GPU box.
 published: 2025-05
 status: Shipped
 tags: [AI/ML, Backend]
@@ -28,16 +28,13 @@ import dataprep from './data-prep.jpg'
 
 ## The experiment
 
-Echo is a personal project: I wanted to see what a model trained on my own
-messages could sound like. I used five years of Telegram data to build a
-digital clone of my writing style. It is an experiment in personalisation, not
-a claim that a model can stand in for a person.
+I wanted to know what a model trained on my own messages would sound like.
 
 It works, which is the funny part and the unsettling part at the same time.
 
-<Figure src={chat} alt="A chat with the fine-tuned model, which replies in Singlish about wanting to eat Kovan food." caption="It picked up the Singlish, the LOLs and the habit of suggesting food. I did not tell it to." />
+<Figure src={chat} alt="A chat with the fine-tuned model, which replies in Singlish about wanting to eat Kovan food." caption="It picked up the Singlish, the LOLs and the habit of suggesting food. I didn't tell it to." />
 
-## Five years of messages is not a dataset
+## Five years of messages isn’t a dataset
 
 A chat export is a pile of JSON with no notion of a turn, a topic or a reply.
 Most of the work was turning it into something a model could learn from:
@@ -58,12 +55,10 @@ Docker on one machine.
 
 <Figure src={architecture} alt="Architecture diagram: a Streamlit frontend, a data preparation service and an Unsloth training backend, all in Docker on one EC2 instance with a Tesla T4." caption="Three containers on one GPU box. Not elegant, but every part of it was mine to debug." />
 
-## What I learned
+## Looking back
 
-Most of the work turned out to be outside the model itself: cleaning the data,
-shaping the training set and deciding how to serve the result. It also made me
-think more carefully about what it means to build a personal system from
-private conversation data.
+Training a model on private conversations made me think harder about whose
+data it really is. Half of every chat is someone else's messages.
 
-The data has its own limits. A chat export reflects who I was speaking to and
+The data has its own limits too. A chat export reflects who I was speaking to and
 what conversations I kept, so the model can only learn from that sample.

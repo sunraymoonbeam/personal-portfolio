@@ -7,25 +7,39 @@ start: 2022-07
 end: 2023-02
 title: Database migrations for legal and insurance clients
 summary: >-
-  Managed production databases and migrated more than 300,000 records for law firms using Python and PostgreSQL.
+  Production PostgreSQL databases for law and insurance firms, and migrations of 300,000+ records for more than ten law firms.
 stack: [postgresql, python]
 bullets:
-  - "Maintained production databases with PL/pgSQL and Python scripts, **migrating 300,000+ records for 10+ law firms**."
+  - "Maintained production PostgreSQL databases with PL/pgSQL and Python, migrating **300,000+** records for 10+ law firms."
 metrics:
-  - { value: "300,000+", label: "records migrated", context: "reported in my résumé" }
-  - { value: "10+", label: "law firms", context: "reported in my résumé" }
+  - { value: "300,000+", label: "records migrated" }
+  - { value: "10+", label: "law firms onboarded" }
 cover: ./cover.jpg
-coverAlt: Placeholder image
 ---
 
-## The work
+## The project
 
-At Tessaract.io, I maintained databases for law and insurance clients. I used Python and PostgreSQL scripts to improve performance, prepare reports and move client data into production systems. My résumé records migrations of more than 300,000 records for over ten law firms.
+At Tessaract.io, a legal-tech startup, I looked after the production PostgreSQL
+databases behind its platform for law and insurance firms. I wrote PL/pgSQL and
+Python scripts to keep them fast, built reports, and migrated more than 300,000
+records from over ten law firms onto the platform.
 
-This was also client-facing work. I spoke with people about migration needs and the workflows they relied on. Technical correctness mattered, but so did explaining what could be delivered by a deadline.
+## Working with clients
 
-## A lesson in assumptions
+The work was client-facing too. On one onboarding, a large law firm's
+accountants were unhappy about leaving the workflows they knew, and the launch
+date was close. Saying yes to every request would have sunk the launch, so I
+told them plainly what we could change before launch, what would come later,
+and why. I also wrote guides for the problems I expected them to hit, like
+reconciling records and handling missing fields. The onboarding went smoothly.
 
-On one migration, confidentiality meant we did not receive representative client data until close to delivery. The real files had inconsistent columns, missing values and formatting we had not planned for. We had to clean and revalidate the data late, which caused delays.
+## Looking back
 
-I learned to ask for a representative sample early, leave time for unexpected formats and make assumptions visible in the migration plan. When the data is sensitive and the deadline is fixed, discovering its shape at the end is an avoidable risk.
+On another migration, the client kept their real data back until close to
+delivery, for confidentiality reasons. We'd written the scripts against our
+guesses about its format. The real files had inconsistent column names, missing
+values and formatting we hadn't planned for, and we had to clean and revalidate
+everything in the last few days.
+
+Now I ask for a representative sample at the start, even an anonymised one,
+and write scripts that expect the data to be messier than promised.

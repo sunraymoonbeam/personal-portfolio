@@ -1,44 +1,31 @@
 /** Copy for the index pages. Edit sentences here, never in a component. */
 export const pages = {
   projects: {
-    eyebrow: 'Projects',
-    title: "Things I've built, end to end.",
-    lede: 'Open any project for the full story.',
+    title: 'Projects',
+    lede: "Things I've built outside work, with the code on GitHub.",
   },
   work: {
-    eyebrow: 'Work experience',
-    title: "Where I've worked, and what I did there.",
-    /** The first paragraph doubles as the meta description. */
-    body: [
-      "I've gone from flipping patties behind a burger counter to working on " +
-        'databases, AI systems and production infrastructure.',
-      'I learn best by doing the work. Moving between different roles taught ' +
-        'me to pick up unfamiliar things quickly, and to look at the same ' +
-        'problem from different perspectives.',
-      'The job I enjoy most is the one where I get to touch both the code and ' +
-        'the people.',
-    ],
+    title: 'Work experience',
+    /** Doubles as the meta description. */
+    lede:
+      "I started out flipping patties at Shake Shack. Since then I've migrated " +
+      'law firm databases, prototyped LLM tools for the government in the ' +
+      "GPT-3.5 days, worked out who's speaking in classroom recordings and " +
+      'generated 3D animation from text. Now I build the AI agents that handle ' +
+      "Carro's customer tickets.",
   },
   skills: {
-    eyebrow: 'Skills',
-    title: 'Things I know how to do.',
-    lede: 'Learned some in theory. Learned most the hard way.',
+    title: 'Skills',
+    lede: 'Tap a skill with a number to see where I used it.',
   },
   hobbies: {
-    eyebrow: 'Hobbies',
-    title: 'Life away from the terminal.',
-    lede:
-      'Four things I do when nobody is paying me. They mostly involve making ' +
-      'something, learning something, or obsessing over an improvement nobody ' +
-      'else would notice.',
+    title: 'Hobbies',
+    lede: 'Climbing, cooking for my family, coffee and some guitar.',
   },
   about: {
     eyebrow: 'About',
     title: "Hi, I'm Zack.",
-    /** One line under the name. The long version is the quote below it. */
-    summary:
-      "I'm a software engineer who likes understanding a problem properly, " +
-      'then owning the solution to the end.',
+    /** The meta description. */
     lede:
       'Ren Hwa Low on paper, Zack to most people. A software engineer ' +
       'specialising in AI, currently at Carro in Singapore.',
@@ -47,26 +34,21 @@ export const pages = {
       { k: 'Based in', v: 'Singapore' },
       { k: 'Currently', v: 'AI Engineer at Carro' },
       { k: 'Studied', v: 'B.E. Computer Science, NTU' },
-      { k: 'Focus', v: 'Full-stack, AI, data infrastructure' },
+      { k: 'Focus', v: 'AI, agents, full-stack' },
     ],
-    /** Label above the quote. */
-    quoteLabel: 'In my own words',
   },
   cv: {
-    eyebrow: 'CV',
-    title: 'One page.',
-    lede: 'Read it here, or take a copy.',
+    title: 'CV',
+    lede: 'One page, updated October 2026.',
   },
   contact: {
-    eyebrow: 'Contact',
-    title: 'Got a problem worth solving?',
+    title: 'Get in touch',
     /** One string per line, set as a quote. */
     lede: [
-      "That's kind of my thing. I like messy problems and ambiguous ideas, " +
-        'especially when I can turn them into something useful.',
-      "I'm interested in roles where I can own a problem end to end and build " +
-        'something people actually find useful.',
-      'Or just ask me out for coffee.',
+      "I'm open to roles where I can own a problem from the first conversation " +
+        'with users through to production. If that sounds like your team, send ' +
+        'me an email.',
+      "Or ask me out for coffee. I'll probably end up talking about grind size.",
     ],
   },
 } as const;

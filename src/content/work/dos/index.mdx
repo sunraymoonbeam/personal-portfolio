@@ -5,24 +5,34 @@ kind: Internship
 location: Singapore
 start: 2023-05
 end: 2023-08
-title: Prototyping text tools for public-sector analysts
+title: Prototyping LLM tools for public-sector analysts
 summary: >-
-  Built early LLM prototypes for government teams, covering text classification, question answering and automated report generation.
+  LLM prototypes for government departments, covering text classification, Q&A and report generation, built with LangChain and GPT-3.5 in 2023.
 stack: [python, langchain]
 bullets:
-  - "Partnered with various departments to **prototype NLP solutions** for text classification, Q&A, and automated report generation using LangChain and GPT-3.5."
+  - "Prototyped NLP tools for several departments (classification, Q&A, report generation) using LangChain and GPT-3.5."
 cover: ./cover.jpg
-coverAlt: Placeholder image
 ---
 
-## Where the questions came from
+## The project
 
-During my internship at the Department of Statistics, I worked with different departments on possible uses for large language models. The tasks included text classification, answering questions and drafting reports. These were prototypes at an early point in the technology's development.
+In mid-2023 I interned at the Department of Statistics, building LLM
+prototypes with different departments. GPT-3.5 was new, LangChain had just come
+out and people were already calling it bloated. We tried three kinds of tool:
+text classification, question answering and report generation.
 
-One use case was a chatbot for recurring questions about statistics, such as definitions and data sources. Another supported analysts preparing sector outlooks for the Economic Development Board. They had to bring together PDFs, news articles and CSV files.
+## What I built
 
-## What I tried
+One was a chatbot for the questions SingStat gets again and again, such as what
+a statistic means or where the data comes from. Another helped analysts who
+prepare quarterly sector outlooks for the Economic Development Board, and who
+had to pull together PDFs, news articles and CSV files to do it.
 
-I worked with LangChain and GPT-3.5 to retrieve relevant material before generating an answer. That retrieval step was important for both the question-answering and report tasks: the answer had to be grounded in the right source material.
+Both used retrieval-augmented generation: find the relevant documents first,
+then have the model answer from them.
 
-This internship showed me the practical side of text analytics. A useful system begins with the documents people already work with and the question they need to answer. A fluent response alone does not establish that the answer is sound.
+## Looking back
+
+Most of this is standard now. LangChain, the library everyone called bloated
+that summer, runs a lot of production systems today, including some of the
+agents I work on at Carro.

@@ -6,11 +6,10 @@ import { pages } from '~/copy/pages';
 
 const rows = await Promise.all((await getWorkRows()).map(resolveWork));
 ---
-<SiteLayout title="Work — Zack Low" description={pages.work.body[0]}>
+<SiteLayout title="Work — Zack Low" description={pages.work.lede}>
   <section class="section wrap intro">
-    <p class="eyebrow">{pages.work.eyebrow}</p>
     <h1 class="t-64">{pages.work.title}</h1>
-    {pages.work.body.map((para) => <p class="t-19 muted body">{para}</p>)}
+    <p class="t-19 muted body">{pages.work.lede}</p>
   </section>
 
   <section class="wrap list">
