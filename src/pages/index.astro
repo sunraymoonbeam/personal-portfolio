@@ -80,8 +80,9 @@ const hobbies = (await getHobbiesIndex()).slice(0, 3);
 
   <section class="section">
     <div class="wrap">
-      <SectionHead href="/hobbies" linkLabel="View all hobbies">
+      <SectionHead {...home.sections.hobbies} href="/hobbies" linkLabel="View all hobbies">
         <CrayonWord slot="title" />
+        <Fragment slot="sub">Because there's more to life than <code>git push</code>.</Fragment>
       </SectionHead>
       <HobbyGrid items={hobbies} />
     </div>
@@ -110,13 +111,14 @@ const hobbies = (await getHobbiesIndex()).slice(0, 3);
   /* The one place a gradient is allowed: his name. */
   .name {
     margin: 0;
-    font-size: clamp(38px, 5vw, 62px); line-height: 1.06;
+    font-size: clamp(36px, 4.4vw, 56px); line-height: 1.06;
     font-weight: 600; letter-spacing: -0.042em;
     text-wrap: balance;
     background: linear-gradient(100deg, var(--ink) 18%, #0071e3 62%, #2997ff 96%);
     -webkit-background-clip: text; background-clip: text; color: transparent;
   }
   .name .nick { white-space: nowrap; }
+  @media (min-width: 901px) { .name { white-space: nowrap; } }
   .lede { max-width: 620px; }
   .lede strong { color: var(--ink); font-weight: 600; }
   .lede .hi { color: var(--link); }

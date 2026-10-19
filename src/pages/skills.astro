@@ -12,10 +12,9 @@ const evidence = await getSkillEvidence();
     that was used somewhere on this site opens to show where, so LangGraph,
     which runs Carro's production agents, no longer weighs the same as a
     line on a CV. Chips without evidence stay plain. */}
-<SiteLayout title="Skills — Zack Low" description={pages.skills.lede}>
+<SiteLayout title="Skills — Zack Low" description={pages.skills.description}>
   <section class="section wrap intro measure-start">
     <h1 class="t-64">{pages.skills.title}</h1>
-    <p class="t-21 muted">{pages.skills.lede}</p>
   </section>
 
   <section class="wrap groups" data-skills>
@@ -35,8 +34,8 @@ const evidence = await getSkillEvidence();
                       ? <svg viewBox="0 0 24 24" aria-hidden="true"><path fill={`#${hex}`} d={path} /></svg>
                       : <span class="mono" aria-hidden="true">{label.slice(0, 2)}</span>}
                     {label}
-                    <span class="count tabular" aria-hidden="true">{uses.length}</span>
-                    <span class="visually-hidden">, used in {uses.length} {uses.length === 1 ? 'place' : 'places'}</span>
+                    <svg class="chev" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6" /></svg>
+                    <span class="visually-hidden">, see where I used it</span>
                   </button>
                 </li>
               );
@@ -86,7 +85,6 @@ const evidence = await getSkillEvidence();
 </script>
 <style>
   .intro { display: flex; flex-direction: column; gap: var(--s-4); }
-  .hint { margin-top: var(--s-2); }
   .groups { display: flex; flex-direction: column; padding-bottom: var(--s-11); }
   .group {
     display: grid; grid-template-columns: 200px 1fr; gap: var(--s-7);
@@ -103,13 +101,8 @@ const evidence = await getSkillEvidence();
   .open:hover { border-color: var(--border-strong); }
   .open:active { transform: scale(0.97); }
   .open[aria-expanded='true'] { background: var(--canvas); border-color: var(--link); }
-  .count {
-    min-width: 18px; height: 18px; padding: 0 5px; margin-left: 1px;
-    display: inline-flex; align-items: center; justify-content: center;
-    border-radius: 999px; font-size: 11px; font-weight: 600;
-    background: var(--canvas); color: var(--ink-2);
-  }
-  .open[aria-expanded='true'] .count { background: var(--link); color: var(--canvas); }
+  .chev { color: var(--ink-3); transition: transform 200ms ease; }
+  .open[aria-expanded='true'] .chev { transform: rotate(180deg); color: var(--link); }
   .mono {
     min-width: 15px; height: 15px; padding: 0 3px; border-radius: 4px; flex-shrink: 0;
     background: var(--ink); color: var(--canvas);

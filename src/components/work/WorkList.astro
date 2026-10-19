@@ -16,8 +16,6 @@ interface Row {
 interface Props { rows: Row[]; compact?: boolean; headingLevel?: 2 | 3 | undefined; }
 const { rows, compact = false, headingLevel = 3 } = Astro.props;
 const Heading = `h${headingLevel}` as 'h2' | 'h3';
-const words = (t: string) => t.toLowerCase().replace(/[*’']/g, '').split(/\s+/).slice(0, 5).join(' ');
-const sameOpening = (a: string, b: string) => words(a) === words(b);
 ---
 {/* Dates and location in a mono rail on the left; role · company, one sentence,
     then bullets on the right. Hovering one role brings it forward and quiets
@@ -57,11 +55,11 @@ const sameOpening = (a: string, b: string) => words(a) === words(b);
               <Image src={employer.data.logo} alt="" width={32} height={32} class="logo" loading="lazy" />
               <Heading class="t-24 role">{d.role}<span class="at"> · {employer.data.name}</span></Heading>
             </div>
-            {/* The summary is the one line that says what the role built. On
-                /work/ it is skipped when the first bullet already says it. */}
-            {(!d.bullets?.length || compact || !sameOpening(d.summary, d.bullets[0])) && (
-              <p class="t-17 muted summary">{d.summary}</p>
-            )}
+            {/* Home: the summary, one full line on what the role built. /work/:
+                the short tagline, if any, because the bullets give the detail. */}
+            {compact
+              ? <p class="t-17 muted summary">{d.summary}</p>
+              : d.tagline && <p class="t-17 muted summary">{d.tagline}</p>}
             {!compact && d.bullets && (
               <ul class="bullets">
                 {d.bullets.map((b: string) => (

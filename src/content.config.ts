@@ -94,6 +94,8 @@ const work = defineCollection({
         /** Tenure, not employer: `carro-2025` and `carro-2029` are separate. */
         employer: reference('employers'),
         role: z.string().min(1),
+        /** One short line under the role on /work: what the job was, briefly. */
+        tagline: z.string().min(1).max(200).optional(),
         kind: z.enum(['Full-time', 'Part-time', 'Internship', 'Apprenticeship', 'Contract']),
         location: z.string().min(1),
         start: month,

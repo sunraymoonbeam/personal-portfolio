@@ -2,10 +2,9 @@
 import SiteLayout from '~/layouts/SiteLayout.astro';
 import { pages } from '~/copy/pages';
 ---
-<SiteLayout title="CV — Zack Low" description={pages.cv.lede}>
+<SiteLayout title="CV — Zack Low" description={pages.cv.description}>
   <section class="wrap head">
     <h1 class="t-64 title">{pages.cv.title}</h1>
-    <p class="t-21 muted lede">{pages.cv.lede}</p>
 
     <div class="actions">
       <a href="/resume.pdf" class="btn" download="Ren Hwa Low resume.pdf">
@@ -32,7 +31,7 @@ import { pages } from '~/copy/pages';
         small screens and show the card unconditionally instead. */}
     <object data="/resume.pdf#view=FitH" type="application/pdf" class="pdf" aria-label="CV, PDF">
       <div class="fallback">
-        <p class="t-17">Your browser won't show the PDF inline.</p>
+        <p class="t-17">This browser can't preview the PDF.</p>
         <a href="/resume.pdf" class="btn" download>Download it instead</a>
       </div>
     </object>

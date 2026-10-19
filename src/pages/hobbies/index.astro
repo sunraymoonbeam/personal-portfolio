@@ -1,14 +1,15 @@
 ---
+import CrayonWord from '~/components/site/CrayonWord.astro';
 import SiteLayout from '~/layouts/SiteLayout.astro';
 import HobbyGrid from '~/components/hobbies/HobbyGrid.astro';
 import { getHobbiesIndex } from '~/lib/content';
 import { pages } from '~/copy/pages';
 const items = await getHobbiesIndex();
 ---
-<SiteLayout title="Hobbies — Zack Low" description={pages.hobbies.lede}>
+<SiteLayout title="Hobbies — Zack Low" description={pages.hobbies.description}>
   <section class="section wrap intro measure-start">
-    <h1 class="t-64">{pages.hobbies.title}</h1>
-    <p class="t-21 muted">{pages.hobbies.lede}</p>
+    <h1 class="t-64"><CrayonWord /><span class="visually-hidden">Hobbies</span></h1>
+    <p class="t-21 muted"><CrayonWord word="Play" /><span class="visually-hidden">Play</span> is just as important as work.</p>
   </section>
   <section class="wrap" style="padding-bottom: var(--s-11)"><HobbyGrid items={items} /></section>
 </SiteLayout>

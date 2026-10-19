@@ -2,25 +2,32 @@
 export const pages = {
   projects: {
     title: 'Projects',
-    lede: "Things I've built outside work, with the code on GitHub.",
+    lede: "Things I've built when I should probably be sleeping.",
   },
   work: {
     title: 'Work experience',
-    /** Doubles as the meta description. */
-    lede:
-      "I started out flipping patties at Shake Shack. Since then I've migrated " +
-      'law firm databases, prototyped LLM tools for the government in the ' +
-      "GPT-3.5 days, worked out who's speaking in classroom recordings and " +
-      'generated 3D animation from text. Now I build the AI agents that handle ' +
-      "Carro's customer tickets.",
+    /** The first paragraph doubles as the meta description. */
+    body: [
+      'The work I enjoy most starts before any code. I like talking to people ' +
+        "as much as I like writing code: working out what's really slowing " +
+        'them down, and translating their pain points into a set of requirements.',
+      'I like building full-stack systems that are carefully designed, with AI ' +
+        'as one part of them. The model is usually a small piece. Most of the ' +
+        'work is the design around it: the data, the interfaces, and what ' +
+        'happens when the model gets it wrong.',
+      'What I love building most are automations, and computer vision, ' +
+        'especially segmentation and object detection.',
+    ],
   },
   skills: {
     title: 'Skills',
-    lede: 'Tap a skill with a number to see where I used it.',
+    /** Meta description only; the page has no lede. */
+    description: 'Languages, frameworks and tools, and where on this site I used each one.',
   },
   hobbies: {
-    title: 'Hobbies',
-    lede: 'Climbing, cooking for my family, coffee and some guitar.',
+    /** The h1 is the crayon wordmark and the subtitle crayons "Play", so both
+        are markup in the page. This is the plain meta description. */
+    description: 'Play is just as important as work. Climbing, cooking, coffee and guitar.',
   },
   about: {
     eyebrow: 'About',
@@ -39,7 +46,7 @@ export const pages = {
   },
   cv: {
     title: 'CV',
-    lede: 'One page, updated October 2026.',
+    description: "Ren Hwa (Zack) Low's one-page résumé, as a PDF.",
   },
   contact: {
     title: 'Get in touch',

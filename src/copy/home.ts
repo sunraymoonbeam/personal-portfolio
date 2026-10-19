@@ -3,7 +3,7 @@ export const home = {
   name: 'Ren Hwa (Zack) Low',
 
   /**
-   * The opening. Two paragraphs, mirroring the résumé summary. `em` sets a
+   * The opening. Three paragraphs, mirroring the résumé summary. `em` sets a
    * phrase in the ink colour and `hi` sets it in the accent, so the emphasis
    * lives with the sentence rather than in a component.
    */
@@ -16,16 +16,23 @@ export const home = {
     [
       { text: 'I ' },
       { text: 'work from first principles', em: true },
-      { text: ": I take the time to understand the problem deeply and how the ideal solution might fit into the bigger picture. I'm comfortable owning ambiguous problems end to end, from discovery with stakeholders to evaluation and deployment. " },
+      { text: ": I take the time to understand the problem deeply and how the ideal solution might fit into the bigger picture. I'm comfortable owning ambiguous problems end to end, from discovery with stakeholders to evaluation and deployment." },
+    ],
+    [
       { text: 'Solving problems is what I do', hi: true },
       { text: '. Writing code is only one of the ways I do it.' },
     ],
   ],
 
   sections: {
-    projects: { title: 'Projects' },
+    projects: {
+      title: 'Projects',
+      sub: "Things I've built when I should probably be sleeping.",
+    },
     work: { title: 'Work experience' },
     skills: { title: 'Skills' },
+    /** The subtitle carries an inline <code>, so it is passed as a slot. */
+    hobbies: {},
   },
 
   /** Title and body come from `pages.contact`: one message, in one place. */
