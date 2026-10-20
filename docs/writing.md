@@ -15,6 +15,7 @@ and these rules are what fixed it. Read this before you touch any sentence.
 | `public/resume.pdf` | Copied from `~/Documents/documents/portfolio/resume/resume.pdf`. |
 
 If you need a fact you do not have, ask him. Do not guess and do not pad.
+The questions, and his answers so far, are in [`interview.md`](interview.md).
 
 ## The patterns that made it read as AI
 

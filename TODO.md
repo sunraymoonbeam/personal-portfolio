@@ -14,10 +14,8 @@ About. The rules are in [`docs/writing.md`](docs/writing.md).
 
 Still open:
 
-- **Carro "Looking back".** Needs his answers: what existed when he joined,
-  one workflow before and after, the hardest part, why he looked at cost, what
-  incident led to the evals, whose idea the platform was, what he'd do
-  differently, what he learned about agents since AISG.
+- **Carro "Looking back".** Needs his answers. Run the Carro section of
+  [`docs/interview.md`](docs/interview.md), then AI Singapore.
 - **Kanta's origin.** Was it built for a wedding? The cover suggests so.
 - **Echo's privacy line** ("Half of every chat is someone else's messages")
   was added in the rewrite. Confirm he agrees.

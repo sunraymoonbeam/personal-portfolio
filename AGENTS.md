@@ -11,6 +11,8 @@ code.
 - `docs/writing.md` — how the copy is written and why. Read it before you
   change any sentence: what is verbatim from the résumé, the AI-writing
   patterns to avoid, and his voice.
+- `docs/interview.md` — questions to ask him, page by page, and the answers
+  so far. Interview before writing any reflection; never invent one.
 - `docs/design/apple.md` — the design rules, and which are Apple's.
 - `docs/design-review.md` — the 2026-09-30 design audit: what was found, what
   is already fixed and in which commit, and the gaps still open. Read this
