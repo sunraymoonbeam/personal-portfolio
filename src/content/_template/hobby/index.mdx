@@ -3,8 +3,9 @@
 title: The thing
 summary: One sentence for search results and the article header.
 caption: The line under the square on the grid. Keep it short.
+# quoteBy: Chris Sharma      # summary is a quote: the header sets it as one
 published: 2026-01
-# cover: ./cover.jpg
+# cover: ./cover.jpg         # the grid square; also use it in the body
 # coverAlt: What the picture shows
 # gallery:                    # optional. Order here is order on the page.
 #   - src: ./photo-1.jpg      #   Re-arranging = moving one of these blocks.
@@ -23,22 +24,16 @@ A portfolio is allowed to have a person in it. Say why you care.
 
 The bit that makes it more than a hobby photo.
 
-{/* One picture, in the reading column:
+{/* Text first, then the photos for that paragraph, right under it. There is
+    no cover above the text, so import the cover and place it here too.
 
-      import shot from './shot.jpg'
-      <Figure src={shot} alt="What it shows" caption="Why it matters." />
-
-    A set that belongs together, as a tight grid. `ratio` is per GRID, so
-    every picture in it crops to the same shape and the block stays square.
-    Clicking one opens it large; with no JavaScript it opens the file.
-
-      <Photos cols={3} ratio="square">
-        <Shot src={a} alt="..." caption="Hampi, India" />
-        <Shot src={b} alt="..." />
+      import a from './a.jpg'
+      <Photos>
+        <Shot src={a} alt="What it shows" caption="Hampi, India." />
+        <Shot src={b} alt="What it shows" />
       </Photos>
 
-    Captions are optional and most pictures do not need one. Use one when it
-    says something the picture does not: a place, a date, a joke.
-
-    Pictures that belong to the entry rather than to a sentence go in the
-    `gallery` list above instead. */}
+    Every block is two across and square; one Shot alone spans the column at
+    3:2. There are no props: the shape is the same on every page on purpose.
+    Captions only for a joke or a place. See docs/design/apple.md and
+    docs/writing.md before writing the words. */}

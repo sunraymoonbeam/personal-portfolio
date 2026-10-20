@@ -8,6 +8,9 @@ code.
 
 - `docs/astro-conventions.md` — why the tree is arranged this way, checked
   against Astro's own sites and the Google TypeScript Style Guide.
+- `docs/writing.md` — how the copy is written and why. Read it before you
+  change any sentence: what is verbatim from the résumé, the AI-writing
+  patterns to avoid, and his voice.
 - `docs/design/apple.md` — the design rules, and which are Apple's.
 - `docs/design-review.md` — the 2026-09-30 design audit: what was found, what
   is already fixed and in which commit, and the gaps still open. Read this
@@ -36,6 +39,9 @@ routes at phone and desktop width, in both themes.
   scales with element height and leaves tall blocks invisible on screen.
 - Work bullets are verbatim from the CV. `**…**` marks emphasis and adds no
   words. Do not paraphrase them.
+- After a schema or frontmatter change, a build can fail with
+  `UnknownContentCollectionError` on an entry that is fine. That is Astro's
+  stale content cache: `rm -rf .astro` and build again.
 
 ## Dev server
 

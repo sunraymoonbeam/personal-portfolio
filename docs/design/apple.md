@@ -47,6 +47,29 @@ The exception is deliberate and small: the Hobbies wordmark is a rainbow in a
 crayon face. It is a signature, not a control, and it never appears next to
 something clickable that it could be confused with.
 
+## Articles and photos
+
+A judgement for this site, taken from devansdesign.com rather than Apple, and
+applied in `4c0b669` and `bedeb3a`.
+
+- **One width.** An article without a sidebar (every hobby) is one centred
+  column of `--reading` (660px). Text, headings and photos share both edges.
+  `ArticleLayout` switches to this when the `aside` slot is empty.
+- **No cover above the text.** The page opens with the title and the summary
+  (or a quote, via `quoteBy`). The cover is the card image on the grids, and
+  appears in the body next to the paragraph it belongs to.
+- **Text first, then photos.** Each photo block sits under the paragraph that
+  mentions it.
+- **One photo shape.** Every `Photos` block is two across, square, with an 8px
+  gap. A single photo spans the column at 3:2. The shape is fixed in
+  `Photos.astro`, not chosen per block, because mixing 2- and 3-across grids
+  and different crops is what made the old pages look unplanned.
+- **Few captions.** Only a joke or a place. Most photos have none.
+- **Colour comes from the photos.** The page around them stays neutral.
+
+Work and project articles keep the text column plus sidebar for now, without a
+cover above the text. Whether they go single-column too is still open.
+
 ## Type
 
 **Apple's tracking table is for Apple's typeface.** The values in the HIG are

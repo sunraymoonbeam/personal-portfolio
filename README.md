@@ -38,6 +38,9 @@ The rule that keeps this honest: **pages read content, components receive it.**
 A component never calls `getCollection`, and exactly one file decides what is
 published.
 
+**[`docs/writing.md`](docs/writing.md)** is how the copy is written: where
+each line comes from, and the patterns that made it read as AI-written.
+
 **[`docs/astro-conventions.md`](docs/astro-conventions.md)** has the reasoning:
 what Astro actually requires, what this repo chose, how it compares to the
 sites the Astro team ships, and the one known gap.
@@ -69,11 +72,12 @@ drift from the code the way a table in a file like this one can.
 
 Put image files in the entry's own folder. Two ways to use them:
 
-- **In the body**, as a `Figure`, next to the paragraph it illustrates. This is
-  for a picture that carries the narrative. A set that belongs together goes in
-  a `Photos` grid of `Shot` elements: tight gap, one shared crop, click to
-  enlarge. The crop belongs to the grid, not to each picture, so the block
-  stays square. Captions are optional and most pictures do not need one.
+- **In the body**, as a `Photos` block of `Shot` elements, under the paragraph
+  it belongs to. Every block is two across and square; a single `Shot` spans
+  the column at 3:2. The shape is fixed, so there are no props to set. Click
+  to enlarge. Captions only for a joke or a place. `Figure` is for diagrams and
+  screenshots that must not be cropped. The rules and the reasoning are in
+  [`docs/design/apple.md`](docs/design/apple.md#articles-and-photos).
 - **In the `gallery` list** in the frontmatter, for pictures that belong to the
   entry rather than to a sentence. The order in the file is the order on the
   page, so re-arranging means moving a block. Alt text is required.

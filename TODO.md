@@ -4,34 +4,34 @@ Rough order of value. Nothing here is started.
 
 ## 0. Hobbies: done
 
-Four essays with real photographs, written 2026-09-28. Nothing left here
-except a chicken rice recipe box, if you still want one.
+Four essays with real photographs, rewritten 2026-10-20 in the new layout
+(text first, paired square photos). See `docs/writing.md`.
 
-## 1. Rewrite the content
+## 1. Finish the content
 
-Every article is currently a sketch written from the CV and a set of notes,
-and it reads like it. The voice is not yours and the detail is thin.
+Rewritten 2026-10-20: home, every index page, all six roles, both projects,
+About. The rules are in [`docs/writing.md`](docs/writing.md).
 
-**Every line of copy on the site is extracted into
-[`docs/content-review.md`](docs/content-review.md)**, with a review prompt at
-the top. Send that file to a reviewer, or work through it yourself.
+Still open:
 
-- 6 roles in `src/content/work/`, 3 projects, 3 hobbies.
-- The frontmatter is fine. It is the **bodies** that need rewriting, plus the
-  `summary` and `claim` lines that listings show.
-- Work bullets stay verbatim from the CV. Everything else is fair game.
-- Shake Shack has no article at all yet: it is `writeup: false` and carries
-  two bullets. Give it a page or leave it deliberately short.
+- **Carro "Looking back".** Needs his answers: what existed when he joined,
+  one workflow before and after, the hardest part, why he looked at cost, what
+  incident led to the evals, whose idea the platform was, what he'd do
+  differently, what he learned about agents since AISG.
+- **Kanta's origin.** Was it built for a wedding? The cover suggests so.
+- **Echo's privacy line** ("Half of every chat is someone else's messages")
+  was added in the rewrite. Confirm he agrees.
 
 ## 2. Real pictures
 
-Hobbies are done. Every project and work cover is still a placeholder, and
-some are cats.
+Hobbies are done. Work and project articles no longer show a cover above the
+text; the work covers are still placeholder cats and only matter if a page
+starts using them again.
 
-- One `cover.jpg` per entry, in the entry's own folder.
-- Gallery support is already built and tested. Four pictures give two columns
-  with no extra work. See the `gallery` block in any template.
-- Alt text is required by the schema, so the build fails without it. Good.
+- Real photos for Carro and AI Singapore first: the team, the office, a screen
+  that is safe to show.
+- Project covers are stock. `echo/chat.jpg` is the honest one; consider it.
+- Decide whether work and project articles go single-column like the hobbies.
 
 ## 3. A personal log
 
