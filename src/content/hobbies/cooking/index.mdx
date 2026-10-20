@@ -7,6 +7,7 @@ featuredOrder: 2
 cover: ./cover.jpg
 coverAlt: A wok tilted over a gas flame in a home kitchen.
 ---
+import cover from './cover.jpg'
 import mise from './mise.jpg'
 import clams from './clams.jpg'
 
@@ -15,13 +16,18 @@ knowing anything else about it. Growing up in Singapore, that's exactly why
 Western food appealed to me. It was different from what I ate every day, so
 it's what I learned to cook first.
 
-<Figure src={clams} alt="Linguine in a pot, clams in another, and garlic softening in a pan." caption="The Western food era. I stand by the clams." />
+<Photos>
+  <Shot src={clams} alt="Linguine in a pot, clams in another, and garlic softening in a pan." caption="The Western food era. I stand by the clams." />
+</Photos>
 
 Getting older did the opposite. I started appreciating the food I grew up with,
 and these days I cook a lot of it for my family: char kway teow, Hokkien mee,
 prawn mee, chicken rice.
 
-<Figure src={mise} alt="A kitchen counter covered in bowls of prepared prawns, pork and chicken beside sauces and a knife block." caption="The part nobody photographs, and the part that decides how dinner goes." />
+<Photos>
+  <Shot src={mise} alt="A kitchen counter covered in bowls of prepared prawns, pork and chicken beside sauces and a knife block." caption="The part nobody photographs." />
+  <Shot src={cover} alt="A wok tilted over a gas flame in a home kitchen." />
+</Photos>
 
 Chicken rice is my favourite because it looks simple and isn't. The rice needs
 aromatics and chicken fat, so first you render the fat. The stock has to carry

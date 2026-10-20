@@ -2,7 +2,10 @@
 export const pages = {
   projects: {
     title: 'Projects',
-    lede: "Things I've built when I should probably be sleeping.",
+    lede:
+      "Things I've built when I should probably be sleeping. My interests " +
+      'usually lean towards automations and computer vision, especially ' +
+      'segmentation and object detection.',
   },
   work: {
     title: 'Work experience',
@@ -15,8 +18,6 @@ export const pages = {
         'as one part of them. The model is usually a small piece. Most of the ' +
         'work is the design around it: the data, the interfaces, and what ' +
         'happens when the model gets it wrong.',
-      'What I love building most are automations, and computer vision, ' +
-        'especially segmentation and object detection.',
     ],
   },
   skills: {
@@ -27,7 +28,7 @@ export const pages = {
   hobbies: {
     /** The h1 is the crayon wordmark and the subtitle crayons "Play", so both
         are markup in the page. This is the plain meta description. */
-    description: 'Play is just as important as work. Climbing, cooking, coffee and guitar.',
+    description: 'Because play is just as important as work. Climbing, cooking, coffee and guitar.',
   },
   about: {
     eyebrow: 'About',

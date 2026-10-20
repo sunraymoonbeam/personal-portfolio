@@ -1,12 +1,13 @@
 ---
 title: Coffee
-summary: A V60 most mornings.
-caption: A V60 most mornings.
+summary: My daily science experiment.
+caption: My daily science experiment.
 published: 2026-09
 featuredOrder: 3
 cover: ./cover.jpg
 coverAlt: A V60 dripper, server and hand grinder on a kitchen bench by a window.
 ---
+import cover from './cover.jpg'
 import flight from './flight.jpg'
 import cafe from './cafe.jpg'
 import chai from './chai.jpg'
@@ -32,20 +33,24 @@ guess, change one thing, brew, taste and decide what to change tomorrow. Some
 mornings I learn something. Other mornings I've just made worse coffee, which
 is also data.
 
-<Photos cols={3}>
+<Photos>
+  <Shot src={cover} alt="A V60 dripper, server and hand grinder on a kitchen bench by a window." />
   <Shot src={flight} alt="Three specialty coffee drinks on a counter beside their tasting notes." />
-  <Shot src={cafe} alt="Drinking from a small cup in a cafe with a weathered wall behind." />
-  <Shot src={chai} alt="Holding a glass of milky chai on a terrace looking out at green mountains." caption="Chai in the hills. Different rules entirely." />
 </Photos>
 
 Since the V60 I've tried the AeroPress, immersion brewing and a few other ways
 of making filter coffee. Espresso is the next rabbit hole.
 
-<Photos cols={2} ratio="portrait">
-  <Shot src={venice} alt="An espresso and a camera on a table beside a canal in Venice." caption="Venice. The one that set the benchmark." />
-  <Shot src={venice2} alt="An espresso and a slice of tiramisu on a metal table in a narrow alley." />
+<Photos>
+  <Shot src={cafe} alt="Drinking from a small cup in a cafe with a weathered wall behind." />
+  <Shot src={chai} alt="Holding a glass of milky chai on a terrace looking out at green mountains." caption="Chai in the hills. Different rules entirely." />
 </Photos>
 
-That espresso in Venice is still the best I've had, which has unfortunately set
-the benchmark rather high. Until I get close, I'll keep changing the numbers
-every morning.
+The best espresso I've had was in Venice, which has unfortunately set the
+benchmark rather high. Until I get close, I'll keep changing the numbers every
+morning.
+
+<Photos>
+  <Shot src={venice} alt="An espresso and a camera on a table beside a canal in Venice." />
+  <Shot src={venice2} alt="An espresso and a slice of tiramisu on a metal table in a narrow alley." caption="Venice." />
+</Photos>

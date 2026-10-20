@@ -6,7 +6,6 @@ import Gallery from '~/components/article/Gallery.astro';
 import { getWorkArticles, toArticleLinks, getAdjacent, keyOf } from '~/lib/content';
 import { formatRange, formatDuration } from '~/lib/date';
 import { TECHNOLOGIES } from '~/data/technologies';
-import { Image } from 'astro:assets';
 
 // Only entries with writeup: true get a route. Drafts and no-writeup roles
 // generate nothing — the policy lives in one place and routes obey it.
@@ -38,7 +37,7 @@ const { prev, next } = getAdjacent(links, keyOf('work', entry.id));
   {/* Outcomes get their own band between the title and the story: under the
       sidebar's facts they were buried, and on a phone they came after the
       whole essay. A cover, when there is one, follows. */}
-  {(d.metrics || d.cover) && (
+  {d.metrics && (
     <div slot="hero" class="hero">
       {d.metrics && (
         <section class="outcomes" aria-labelledby="outcomes-h">
@@ -53,12 +52,6 @@ const { prev, next } = getAdjacent(links, keyOf('work', entry.id));
             ))}
           </dl>
         </section>
-      )}
-      {d.cover && (
-        <figure class="cover">
-          <Image src={d.cover} alt={d.coverAlt ?? ''} widths={[720, 1200, 1600]}
-                 sizes="(max-width: 980px) 100vw, 980px" loading="eager" />
-        </figure>
       )}
     </div>
   )}
@@ -78,8 +71,6 @@ const { prev, next } = getAdjacent(links, keyOf('work', entry.id));
 </ArticleLayout>
 <style>
   .hero { display: flex; flex-direction: column; gap: var(--s-8); }
-  .cover { margin: 0; }
-  .cover img { width: 100%; border-radius: var(--radius-l); aspect-ratio: 16 / 9; object-fit: cover; }
   .outcomes {
     display: flex; flex-direction: column; gap: var(--s-5);
     padding-block: var(--s-6) var(--s-7);

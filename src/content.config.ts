@@ -150,6 +150,8 @@ const hobbies = defineCollection({
         ...common(image),
         published: month,
         caption: z.string().min(1).max(160),
+        /** When the summary is a quote, who said it. The header sets it as a quote. */
+        quoteBy: z.string().min(1).optional(),
       })
       .strict(),
 });

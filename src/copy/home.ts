@@ -25,10 +25,7 @@ export const home = {
   ],
 
   sections: {
-    projects: {
-      title: 'Projects',
-      sub: "Things I've built when I should probably be sleeping.",
-    },
+    projects: { title: 'Projects' },
     work: { title: 'Work experience' },
     skills: { title: 'Skills' },
     /** The subtitle carries an inline <code>, so it is passed as a slot. */

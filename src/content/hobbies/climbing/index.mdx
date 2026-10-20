@@ -1,13 +1,15 @@
 ---
 title: Rock climbing
 shortTitle: Climbing
-summary: Since 2018. Malaysia, Thailand and Hampi so far.
-caption: Since 2018. Malaysia, Thailand and Hampi so far.
+summary: The rock still has something to teach me.
+caption: The rock still has something to teach me.
+quoteBy: Chris Sharma
 published: 2026-09
 featuredOrder: 1
 cover: ./cover.jpg
 coverAlt: Sitting on top of a granite boulder at sunset in Hampi, India.
 ---
+import cover from './cover.jpg'
 import gym from './gym.jpg'
 import plate from './xray-plate.jpg'
 import healed from './xray-healed.jpg'
@@ -18,12 +20,14 @@ I started climbing in 2018 through a PE elective in school. I'd never really
 thought about it before, but the first time I got on the wall, something about
 it felt strangely natural.
 
-<Figure src={gym} alt="A bouldering gym, mid-session, with a wall of coloured holds." caption="Where it started, and still where most of it happens." />
+<Photos>
+  <Shot src={gym} alt="A bouldering gym, mid-session, with a wall of coloured holds." />
+</Photos>
 
 Two years later I broke both my arms and had to stop for a while. Coming back
 took time: I had to rebuild my strength and my confidence.
 
-<Photos cols={2} ratio="portrait">
+<Photos>
   <Shot src={plate} alt="X-ray of a forearm with a metal plate and screws along the bone." caption="I can sing Titanium with a straight face now." />
   <Shot src={healed} alt="X-ray of a healed forearm with no hardware." />
 </Photos>
@@ -32,7 +36,7 @@ Since then climbing has taken me to Malaysia, Thailand and Hampi in India, and
 introduced me to some of my closest friends. Every place has made the sport
 feel slightly different.
 
-<Photos cols={2} ratio="portrait">
+<Photos>
   <Shot src={limestone} alt="Climbing a steep limestone face on a rope." />
   <Shot src={roof} alt="Bouldering upside down under a granite roof, feet above head." caption="Hampi, India." />
 </Photos>
@@ -40,5 +44,11 @@ feel slightly different.
 What keeps me coming back is the problem solving. A move can feel impossible
 for a whole session, and then I turn my hip slightly, move a foot a few
 centimetres or grip the same hold from a different angle, and it suddenly goes.
-Trying harder rarely fixes it. Usually I've missed something small, and the
-climb is about finding it.
+Trying harder rarely fixes it.
+
+I think a lot of life works the same way. Something small, changed in the right
+place, can change everything.
+
+<Photos>
+  <Shot src={cover} alt="Sitting on top of a granite boulder at sunset in Hampi, India." />
+</Photos>

@@ -1,57 +1,15 @@
 ---
 /**
- * A grid of pictures inside an article.
- *
- * Shape borrowed from the portfolio case studies that do this well: a tight
- * grid of identically cropped images, sitting as one block rather than
- * scattered through the text. Symmetry is the whole effect, so the crop
- * belongs to the GRID and not to each picture. An earlier version let a
- * picture choose its own shape and one portrait photograph hung below the
- * rest, which reads as a bug.
+ * A block of photographs inside an article. Every block on the site has the
+ * same shape: two across, one shared crop, a tight gap, the same width as the
+ * text. A single photo spans the column in a wider crop. Consistency is the
+ * whole effect, so the shape is fixed here rather than chosen per block.
  */
-interface Props {
-  /** Across on a wide screen. Two is the default and matches the reference. */
-  cols?: 2 | 3 | undefined;
-  /** The crop every picture in this grid shares. */
-  ratio?: 'square' | 'landscape' | 'portrait' | undefined;
-  /** A quiet mono line above the grid. Most grids do not need one. */
-  label?: string | undefined;
-  /** Let the grid breathe past the reading column on a wide screen. */
-  wide?: boolean | undefined;
-}
-const { cols = 2, ratio = 'square', label, wide = false } = Astro.props;
 ---
-<figure class:list={['photos', `cols-${cols}`, `is-${ratio}`, { wide }]}>
-  {label && <figcaption class="eyebrow label">{label}</figcaption>}
-  <div class="grid"><slot /></div>
-</figure>
+<figure class="photos"><div class="grid"><slot /></div></figure>
 <style>
-  .photos { margin: var(--s-8) 0; display: flex; flex-direction: column; gap: var(--s-4); }
-  .label { color: var(--ink-3); }
-
-  /* Tight, so the set reads as one object rather than separate pictures. */
-  .grid { display: grid; gap: 10px; }
-  .cols-2 .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .cols-3 .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-
-  /* Read by every Shot inside, so one grid is one shape. */
-  .is-square    { --shot-ratio: 1 / 1; }
-  .is-landscape { --shot-ratio: 4 / 3; }
-  .is-portrait  { --shot-ratio: 3 / 4; }
-
-  /*
-   * The reading column is sized for text, not for four pictures. A grid may
-   * spill symmetrically into the margins, but only where there is room, and
-   * never so far that it collides with the sticky aside.
-   */
-  @media (min-width: 1100px) {
-    .wide { width: calc(100% + 2 * var(--s-8)); margin-inline: calc(var(--s-8) * -1); }
-  }
-
-  @media (max-width: 640px) {
-    .cols-3 .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  }
-  @media (max-width: 420px) {
-    .grid { grid-template-columns: minmax(0, 1fr); }
-  }
+  .photos { margin: var(--s-8) 0; }
+  .grid { display: grid; gap: 8px; grid-template-columns: repeat(2, minmax(0, 1fr)); --shot-ratio: 4 / 5; }
+  .grid:has(> :only-child) { grid-template-columns: minmax(0, 1fr); --shot-ratio: 3 / 2; }
+  @media (max-width: 420px) { .grid { gap: 6px; } }
 </style>

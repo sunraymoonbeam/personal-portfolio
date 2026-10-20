@@ -4,7 +4,6 @@ import { articleComponents } from '~/components/article/mdx';
 import ArticleLayout from '~/layouts/ArticleLayout.astro';
 import Gallery from '~/components/article/Gallery.astro';
 import { getPublishedHobbies, toArticleLinks, getAdjacent, keyOf } from '~/lib/content';
-import { Image } from 'astro:assets';
 
 export async function getStaticPaths() {
   const entries = (await getPublishedHobbies()).filter((e) => e.data.writeup);
@@ -20,19 +19,13 @@ const { prev, next } = getAdjacent(links, keyOf('hobbies', entry.id));
 ---
 <ArticleLayout
   title={d.title} summary={d.summary}
+  quoteBy={d.quoteBy}
   backHref="/hobbies" backLabel="All hobbies" prev={prev} next={next} noun="hobby"
 >
-  {d.cover && (
-    <figure slot="hero" class="cover">
-      <Image src={d.cover} alt={d.coverAlt ?? ''} widths={[720, 1200, 1600]}
-             sizes="(max-width: 980px) 100vw, 980px" loading="eager" />
-    </figure>
-  )}
+  {/* No cover above the text: the article opens with words, and the cover
+      photo appears in the body next to the paragraph it belongs to. */}
 
   <Content components={articleComponents} />
   <Gallery items={d.gallery} />
 </ArticleLayout>
-<style>
-  .cover { margin: 0 0 var(--s-4); }
-  .cover img { width: 100%; border-radius: var(--radius-l); aspect-ratio: 16 / 9; object-fit: cover; }
-</style>
+

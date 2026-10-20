@@ -2,131 +2,32 @@
 import SiteLayout from '~/layouts/SiteLayout.astro';
 import TechChip from '~/components/ui/TechChip.astro';
 import { STACK_GROUPS } from '~/data/technologies';
-import { resolveTech } from '~/lib/icons';
-import { getSkillEvidence } from '~/lib/content';
 import { pages } from '~/copy/pages';
-
-const evidence = await getSkillEvidence();
 ---
-{/* The same groups as the home page section, from the same data file. A chip
-    that was used somewhere on this site opens to show where, so LangGraph,
-    which runs Carro's production agents, no longer weighs the same as a
-    line on a CV. Chips without evidence stay plain. */}
+{/* The same groups as the home page section, from the same data file. Plain
+    chips: the work and project pages already say where each one was used. */}
 <SiteLayout title="Skills — Zack Low" description={pages.skills.description}>
   <section class="section wrap intro measure-start">
     <h1 class="t-64">{pages.skills.title}</h1>
   </section>
 
-  <section class="wrap groups" data-skills>
+  <section class="wrap groups">
     {STACK_GROUPS.map((g) => (
       <div class="group rise">
         <h2 class="t-21">{g.title}</h2>
-        <div class="col">
-          <ul class="chips">
-            {g.items.map((id) => {
-              const uses = evidence[id];
-              if (!uses?.length) return <TechChip id={id} />;
-              const { label, path, hex } = resolveTech(id);
-              return (
-                <li>
-                  <button type="button" class="chip open" aria-expanded="false" aria-controls={`ev-${id}`} data-skill={id}>
-                    {path
-                      ? <svg viewBox="0 0 24 24" aria-hidden="true"><path fill={`#${hex}`} d={path} /></svg>
-                      : <span class="mono" aria-hidden="true">{label.slice(0, 2)}</span>}
-                    {label}
-                    <svg class="chev" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6" /></svg>
-                    <span class="visually-hidden">, see where I used it</span>
-                  </button>
-                </li>
-              );
-            })}
-          </ul>
-          {g.items.filter((id) => evidence[id]?.length).map((id) => (
-            <div class="evidence" id={`ev-${id}`} hidden>
-              <p class="t-14 muted">Where I used {resolveTech(id).label}</p>
-              <ul class="uses">
-                {evidence[id]!.map((u) => (
-                  <li>{u.href
-                    ? <a href={u.href} class="use">{u.label}<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6" /></svg></a>
-                    : <span class="use plain">{u.label}</span>}</li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
+        <ul class="chips">{g.items.map((id) => <TechChip id={id} />)}</ul>
       </div>
     ))}
   </section>
 </SiteLayout>
-<script>
-  // One skill open at a time across the page. Escape closes it and returns
-  // focus to its chip.
-  const root = document.querySelector<HTMLElement>('[data-skills]');
-  if (root) {
-    const close = (btn: HTMLButtonElement) => {
-      btn.setAttribute('aria-expanded', 'false');
-      document.getElementById(btn.getAttribute('aria-controls')!)?.setAttribute('hidden', '');
-    };
-    root.addEventListener('click', (e) => {
-      const btn = (e.target as HTMLElement).closest<HTMLButtonElement>('button[data-skill]');
-      if (!btn) return;
-      const wasOpen = btn.getAttribute('aria-expanded') === 'true';
-      root.querySelectorAll<HTMLButtonElement>('button[aria-expanded="true"]').forEach(close);
-      if (wasOpen) return;
-      btn.setAttribute('aria-expanded', 'true');
-      document.getElementById(btn.getAttribute('aria-controls')!)?.removeAttribute('hidden');
-    });
-    root.addEventListener('keydown', (e) => {
-      if (e.key !== 'Escape') return;
-      const open = root.querySelector<HTMLButtonElement>('button[aria-expanded="true"]');
-      if (open) { close(open); open.focus(); }
-    });
-  }
-</script>
 <style>
-  .intro { display: flex; flex-direction: column; gap: var(--s-4); }
+  .intro { padding-bottom: var(--s-7); }
   .groups { display: flex; flex-direction: column; padding-bottom: var(--s-11); }
   .group {
     display: grid; grid-template-columns: 200px 1fr; gap: var(--s-7);
     align-items: start; padding-block: var(--s-6); border-top: 1px solid var(--border);
   }
-  .col { display: flex; flex-direction: column; gap: var(--s-4); min-width: 0; }
   .chips { display: flex; flex-wrap: wrap; gap: var(--s-2); }
-
-  .open {
-    font: inherit; font-size: 14px; border: 1px solid transparent; cursor: pointer;
-    padding-block: 6px; touch-action: manipulation;
-    transition: background-color 160ms ease, border-color 160ms ease, transform 160ms ease;
-  }
-  .open:hover { border-color: var(--border-strong); }
-  .open:active { transform: scale(0.97); }
-  .open[aria-expanded='true'] { background: var(--canvas); border-color: var(--link); }
-  .chev { color: var(--ink-3); transition: transform 200ms ease; }
-  .open[aria-expanded='true'] .chev { transform: rotate(180deg); color: var(--link); }
-  .mono {
-    min-width: 15px; height: 15px; padding: 0 3px; border-radius: 4px; flex-shrink: 0;
-    background: var(--ink); color: var(--canvas);
-    font-family: var(--font-mono); font-size: 9px; font-weight: 600; display: inline-flex;
-    align-items: center; justify-content: center;
-  }
-
-  .evidence {
-    display: flex; flex-direction: column; gap: var(--s-2);
-    padding: var(--s-4) var(--s-5); border-radius: var(--radius-m); background: var(--surface);
-    transition: opacity 220ms ease, translate 220ms cubic-bezier(0.16, 1, 0.3, 1);
-  }
-  .evidence[hidden] { display: none; }
-  @starting-style { .evidence { opacity: 0; translate: 0 -4px; } }
-  .uses { display: flex; flex-wrap: wrap; gap: var(--s-1) var(--s-5); }
-  .use { display: inline-flex; align-items: center; gap: 6px; min-height: 32px; font-size: 17px; letter-spacing: -0.016em; }
-  a.use { color: var(--link); }
-  a.use svg { transition: transform 200ms ease; }
-  a.use:hover svg { transform: translateX(3px); }
-  .plain { color: var(--ink); }
-  @media (prefers-reduced-motion: reduce) {
-    .evidence { transition: none; }
-    .open:active { transform: none; }
-  }
   @media (max-width: 860px) {
     .group { grid-template-columns: 1fr; gap: var(--s-3); }
   }

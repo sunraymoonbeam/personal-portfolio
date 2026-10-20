@@ -10,17 +10,23 @@ interface Props {
   prev?: ArticleLink | undefined; next?: ArticleLink | undefined;
   /** What one of these is called, for the neighbour labels: "Previous role". */
   noun?: string | undefined;
+  /** Set the summary as a quote, attributed to this person. */
+  quoteBy?: string | undefined;
 }
-const { title, summary, eyebrow, backHref, backLabel, prev, next, noun } = Astro.props;
+const { title, summary, eyebrow, backHref, backLabel, prev, next, noun, quoteBy } = Astro.props;
+/** No sidebar: one centred column, text and photos sharing both edges. */
+const solo = !Astro.slots.has('aside');
 const label = (dir: 'Previous' | 'Next') => (noun ? `${dir} ${noun}` : dir);
 ---
 <SiteLayout title={`${title} — Zack Low`} description={summary}>
-  <article>
+  <article class:list={{ solo }}>
     <header class="head wrap measure-start">
       <ArrowLink href={backHref} label={backLabel} back />
       {eyebrow && <p class="eyebrow">{eyebrow}</p>}
       <h1 class="title">{title}</h1>
-      {summary && <p class="t-21 muted">{summary}</p>}
+      {summary && (quoteBy
+        ? <figure class="quote"><blockquote class="t-21">“{summary}”</blockquote><figcaption class="t-14 muted">{quoteBy}</figcaption></figure>
+        : <p class="t-21 muted">{summary}</p>)}
       {/* Links and numbers sit with the title, as on the reference page. */}
       <div class="head-extra"><slot name="head" /></div>
     </header>
@@ -80,6 +86,12 @@ const label = (dir: 'Previous' | 'Next') => (noun ? `${dir} ${noun}` : dir);
 <style>
   .head { display: flex; flex-direction: column; gap: var(--s-4); padding-block: var(--s-10) var(--s-6); }
   .head-extra:empty { display: none; }
+  .quote {
+    margin: var(--s-2) 0 0; padding-left: var(--s-5); border-left: 2px solid var(--border-strong);
+    display: flex; flex-direction: column; gap: var(--s-2);
+  }
+  .quote blockquote { margin: 0; color: var(--ink-2); font-style: italic; }
+  .quote figcaption::before { content: '— '; }
   /* The article title is the page's one display moment: a step above the
      index pages' t-64, wide enough that most titles set in two lines. */
   .title {
@@ -94,6 +106,8 @@ const label = (dir: 'Previous' | 'Next') => (noun ? `${dir} ${noun}` : dir);
   }
   .side { position: sticky; top: 96px; display: flex; flex-direction: column; gap: var(--s-6); }
   .side:empty { display: none; }
+  .solo .wrap { width: min(var(--reading), 100% - var(--gutter) * 2); }
+  .solo .body { grid-template-columns: minmax(0, 1fr); }
   .adjacent {
     display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-4);
     padding-block: var(--s-8) var(--s-10); border-top: 1px solid var(--border);
