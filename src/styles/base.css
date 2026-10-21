@@ -31,7 +31,11 @@ body {
   background: var(--canvas);
   color: var(--ink);
   font-size: 17px; line-height: 1.4706; letter-spacing: -0.016em;
+  caret-color: var(--link);
 }
+
+/* Selected text takes the one accent's tint, not the browser's default blue. */
+::selection { background: var(--mark-bg); color: var(--ink); }
 
 h1, h2, h3, h4, p, figure, blockquote, ul, ol, dl, dd { margin: 0; }
 h1, h2, h3, h4 { text-wrap: balance; }

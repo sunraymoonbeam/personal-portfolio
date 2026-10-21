@@ -47,6 +47,10 @@ The exception is deliberate and small: the Hobbies wordmark is a rainbow in a
 crayon face. It is a signature, not a control, and it never appears next to
 something clickable that it could be confused with.
 
+The second exception is the brand red (`--mark`) on article section openers:
+each `###` under an `##` gets a hairline, a 32px red lead and a red count.
+It marks structure, never a link, so blue keeps its one job.
+
 ## Articles and photos
 
 A judgement for this site, taken from devansdesign.com rather than Apple, and
