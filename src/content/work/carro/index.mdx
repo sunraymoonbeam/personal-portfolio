@@ -10,14 +10,14 @@ summary: >-
   Ticketing agents that handle Carro's customer journey, from triage to appointment booking, for 60,000+ tickets a month across three countries, plus an internal multi-agent orchestration platform for every department.
 stack: [langgraph, litellm, langfuse, n8n, googlecloud]
 bullets:
-  - "Led Carro’s customer-facing ticketing agents, working with operations teams to turn their processes into agentic workflows spanning the customer journey (triage, inventory creation, appointments) for **60,000+** monthly tickets across 3 countries."
+  - "Led development of Carro’s ticketing agents for **60,000+** monthly tickets across 3 countries. Worked with operations teams to turn their processes into agentic workflows spanning the customer journey (triage, inventory creation, appointments)."
   - "Developed an internal multi-agent orchestration platform that mirrors Carro’s departments, automating their workflows such as data retrieval and reporting, governed by role-based access controls for multiple users and roles."
-  - "Cut LLM cost per ticket by **84–94%** across six workflows through harness engineering, prompt caching and judged model trials."
-  - "Designed an LLM-as-judge evaluation that checks agent changes against SOPs before release, so adherence held at **93%** after the model switch."
-  - "Automated marketing outreach (customer engagement, follow-up) on n8n for SG workshops."
+  - "Reduced LLM costs by **80%** through harness engineering and intelligent model routing."
+  - "Designed an LLM-as-judge evaluation pipeline that validates agent changes before release, reducing SOP deviations by **30%**."
+  - "Automated marketing outreach (customer engagement, follow-up) on n8n, driving **30%** revenue growth for SG workshops."
 metrics:
   - { value: "60,000+", label: "tickets a month", context: "across Singapore, Malaysia and Hong Kong" }
-  - { value: "84–94%", label: "lower LLM cost per ticket", context: "six workflows, judged trials in production" }
+  - { value: "76–80%", label: "lower LLM cost per ticket", context: "six workflows, judged trials in production" }
   - { value: "93%", label: "SOP adherence after the switch", context: "against 92% on Claude Sonnet" }
 featuredOrder: 1
 cover: ./cover.jpg
@@ -42,7 +42,7 @@ agents, and to make those agents cheap and safe enough to run at that volume.
 
 ### Ticketing agents
 
-We started with two agents. Today the team runs twenty-five, and most of them
+We started with two agents. Today the team runs fifteen, and most of them
 were built on the new ticketing platform I led.
 
 In the beginning we were on Google ADK. A workflow, like selling a car, has
@@ -108,7 +108,7 @@ sessions stopped. Separately, a clock in the system prompt changed every
 minute, so the prompt cache never held. Fixing it cut cache writes by 84% in
 testing. Then I ran judged trials in production, model against model in
 matched time windows, and moved six workflows from Claude Sonnet to DeepSeek
-at 84–94% lower cost per ticket. SOP adherence held at 93%, against 92%
+at 76–80% lower cost per ticket. SOP adherence held at 93%, against 92%
 before.
 
 ### Automations

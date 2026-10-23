@@ -75,8 +75,10 @@ One of these alone is fine; several together are what a reader notices.
   `src/styles/article.css`). The Outcomes band holds at most three numbers.
   Carro is the reference page; older roles still use "What I built" and
   "Looking back" until they are rewritten.
-- **Numbers on work pages** must trace to a source doc. Carro's 71% and 30%
-  had none, so they became 84–94% and 93% (see the Carro vault `numbers.md`).
+- **Numbers on work pages:** the bullets follow the résumé, even where the
+  number is his call (Carro: 80% cost, 30% SOP deviations, 30% revenue). Prose
+  and the Outcomes band use numbers that trace to a source doc (76–80%, under
+  the measured 84–94%, and 93% adherence; see the Carro vault `numbers.md`).
 - **Hobby articles:** text first, each photo block under the paragraph it
   belongs to. See [`design/apple.md`](design/apple.md#articles-and-photos).
 
