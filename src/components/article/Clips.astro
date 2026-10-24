@@ -1,0 +1,19 @@
+---
+/**
+ * A block of `Clip`s: one alone spans the column, two sit side by side for a
+ * before/after. Same width as the text, like `Photos`.
+ */
+interface Props { caption?: string | undefined; }
+const { caption } = Astro.props;
+---
+<figure class="clips">
+  <div class="grid"><slot /></div>
+  {caption && <figcaption class="t-14 small cap">{caption}</figcaption>}
+</figure>
+<style>
+  .clips { margin: var(--s-8) 0; }
+  .grid { display: grid; gap: 12px; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: end; }
+  .grid:has(> :only-child) { grid-template-columns: minmax(0, 420px); justify-content: center; }
+  .cap { margin-top: var(--s-3); }
+  @media (max-width: 420px) { .grid { gap: 8px; } }
+</style>

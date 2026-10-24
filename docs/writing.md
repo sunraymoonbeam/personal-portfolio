@@ -73,7 +73,7 @@ One of these alone is fine; several together are what a reader notices.
   as the quality itself ("Attention to detail", not "Every word has weight").
   Each `###` opens with a numbered red rule that restarts per section (see
   `src/styles/article.css`). The Outcomes band holds at most three numbers.
-  Carro is the reference page; older roles still use "What I built" and
+  Carro and AI Singapore are the reference pages; older roles still use "What I built" and
   "Looking back" until they are rewritten.
 - **Numbers on work pages:** the bullets follow the résumé, even where the
   number is his call (Carro: 80% cost, 30% SOP deviations, 30% revenue). Prose

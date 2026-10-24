@@ -9,54 +9,179 @@ title: Turning text prompts into 3D character motion
 tagline: "Trained and deployed diffusion models that turn text prompts into 3D character motion."
 summary: >-
   Generating 3D character motion sequences from text prompts with diffusion models, for the gaming industry.
-stack: [pytorch, huggingface, gitlab]
+stack: [pytorch, huggingface, docker, fastapi, gitlab, googlecloud]
 bullets:
   - "Delivered a GenAI MVP for a gaming industry project, generating 3D character animations from text."
   - "Built end-to-end ML pipelines in PyTorch to train and deploy diffusion models for text-to-motion generation."
   - "Auto-labeled training data with multimodal video LLMs, improving text-to-motion metrics by **20%** over baseline."
   - "Optimized GitLab CI/CD pipelines, reducing testing and deployment time by **80%**."
 metrics:
-  - { value: "20%", label: "better text-to-motion metrics", context: "over baseline, after auto-labelling the training data" }
-  - { value: "80%", label: "faster testing and deployment", context: "after optimising the GitLab CI/CD pipelines" }
+  - { value: "0.780", label: "R-precision (top 3)", context: "our final model, against 0.707 for the published MDM" }
+  - { value: "20 → 2 min", label: "CI pipeline time", context: "smaller images and dependency caching in GitLab CI" }
+  - { value: "7 months", label: "kickoff to sign-off", context: "nine sprints with a game studio and SUTD" }
 featuredOrder: 2
 cover: ./cover.jpg
 ---
+import architecture from './architecture.png';
+import dataPipeline from './data-pipeline.png';
+import gitlab from './gitlab-pipeline.png';
+
+<Clips caption="Our final model, given the prompt “a person is dancing to a happy song”.">
+  <Clip src="/work/ai-singapore/happy-dance-final.mp4" poster="/work/ai-singapore/happy-dance-final.webp"
+        alt="A blue 3D body on a grey floor dances, swinging its arms and stepping side to side." />
+</Clips>
 
 ## The project
 
 Animating a game character takes a lot of manual work. Someone designs the
-character, rigs it, then animates each movement by hand. At AI Singapore I
-worked on an MVP for a gaming company that skips the last step: you type
-"a man walking" and get back a walking animation, joints and mesh, ready to
-import into Unity.
+character, rigs it, then animates each movement by hand, and one character can
+take weeks. At AI Singapore I was one of five apprentices on a seven-month
+project with a game studio and SUTD: you type "a man walking" and get back a
+walking animation, joints and mesh, ready to import into Unity. Think ChatGPT,
+but for motion.
 
-## What I built
+We delivered a framework, not only a model. One data pipeline takes motion
+capture from several datasets, training pipelines plug in different models,
+one evaluation module scores them all, and the whole thing ships as Docker
+images with the final model's weights. We ran it as Scrum, with three-week
+sprints and a review with the studio and SUTD at the end of each.
 
-Our motion capture data came from several sources, and each one stored joint
-positions, kinematics and velocities its own way. I built a modular pipeline
-that converts all of it into one training format, then trained diffusion
-models on it in PyTorch.
+<Figure src={architecture} zoom alt="The system architecture. A data pipeline turns raw SMPL motion parameters and text annotations into processed motions and annotations, versioned with DVC. A training module trains T2M and MDM models in PyTorch with hyperparameter tuning, logging to MLflow. An inference module serves a FastAPI server and batch inference. An evaluation module generates motions and computes R-precision, FID, diversity and multimodality. A CI/CD lane runs linting and unit tests, builds the Docker image on Google Cloud and builds Sphinx docs." caption="The whole system. Tap to open it full size." />
 
-Some clips had missing or thin text descriptions. We ran a multimodal video LLM
-over those clips to write new ones, and that improved our text-to-motion
-metrics by 20% over baseline.
+## Noteworthy projects
 
-I also optimised our GitLab CI/CD pipelines. Testing and deployment now take a
-fifth of the time they used to.
+### One pipeline for every dataset
 
-## Looking back
+Each motion dataset stores the body its own way. HumanML3D has 14,616 motions
+with 44,970 captions at 20 frames a second. AIST++ has 1,408 dance clips at
+60, a different skeleton, no body shape and no captions at all. Motion-X
+uses SMPL-X, which adds hands and a face.
+
+I wrote the AIST++ conversion: fill the missing body shape with the average,
+resample, and build captions from the clip's metadata, so "break, indian step"
+becomes "A man is doing an indian step, Break style dance". Later I split the
+processing into eight stages, added SMPL-X support for Motion-X, and replaced
+a step that loaded every motion into memory to compute the mean and standard
+deviation. It crashed on the bigger datasets. Welford's online algorithm gives
+the same numbers one file at a time.
+
+We also found a leak. The reference code computed those statistics over the
+whole dataset, test set included. We moved to training-set statistics only, and
+I retrained our models on the fixed data. The scores went down, and they were
+honest.
+
+<Figure src={dataPipeline} zoom alt="The data processing pipeline. Motions go through pose extraction from SMPL parameters, mirroring, normalisation to a target skeleton facing Z+, and conversion to a 263-dimensional motion representation. Annotations go through text cleaning and part-of-speech tagging." caption="The data pipeline: motions on top, captions underneath." />
+
+### Training and an evaluation we could trust
+
+We replicated several published models before choosing one, and I did the MDM
+(Motion Diffusion Model) replication and its training pipeline. It's a
+transformer that learns to remove noise from a motion one step at a time,
+guided by the text. On a third of an A100 it trained in 31 hours, where the
+paper used three days on a 2080 Ti. A latent-diffusion model we also tried took
+228 hours, which settled that choice.
+
+<Clips caption="Same prompt, “man jumping in excitement”. MDM is the one that looks excited.">
+  <Clip label="T2M" src="/work/ai-singapore/jump-t2m.mp4" poster="/work/ai-singapore/jump-t2m.webp"
+        alt="A 3D body makes one small jump." />
+  <Clip label="Final MDM" src="/work/ai-singapore/jump-mdm.mp4" poster="/work/ai-singapore/jump-mdm.webp"
+        alt="A 3D body makes a series of jumps and hops." />
+</Clips>
+
+I built the evaluation module. It generates motions from the test captions and
+scores them: R-precision (does the motion match its own caption better than 31
+others?), FID (does it look like real motion?), plus diversity and
+multimodality, logged to MLflow during training. Its first numbers inside
+training were much worse than the standalone evaluator's. The model was fine.
+My evaluator was sampling without classifier-free guidance, the setting that
+makes the model follow the text. With it on, R-precision went from 0.523 to
+0.739, matching the standalone run. I added a warning for when it's off.
+
+With an evaluator we trusted, the team tuned the hyperparameters. The final
+model scored 0.780 R-precision and 0.471 FID, against 0.707 and 0.489 for the
+published MDM.
+
+<Clips caption="“A person is dancing to a happy song”, early in the project and at the end.">
+  <Clip label="First trained model" src="/work/ai-singapore/happy-dance-first.mp4" poster="/work/ai-singapore/happy-dance-first.webp"
+        alt="A 3D body sways and waves one hand." />
+  <Clip label="Final model" src="/work/ai-singapore/happy-dance-final.mp4" poster="/work/ai-singapore/happy-dance-final.webp"
+        alt="A 3D body dances with bigger arm swings and side steps." />
+</Clips>
+
+### Teaching it to dance
+
+The studio wanted dance moves for in-game emotes, and the main dataset has
+almost none. I fine-tuned MDM on the AIST++ dance clips, and it learned the
+genres: ask for ballet jazz and you get turns.
+
+<Clips caption="“A woman is doing a chaînés, ballet jazz style dance”.">
+  <Clip label="Before fine-tuning" src="/work/ai-singapore/ballet-humanml3d.mp4" poster="/work/ai-singapore/ballet-humanml3d.webp"
+        alt="A stick figure shifts its weight and lifts one arm." />
+  <Clip label="After fine-tuning on dance" src="/work/ai-singapore/ballet-finetuned.mp4" poster="/work/ai-singapore/ballet-finetuned.webp"
+        alt="A stick figure turns and travels across the floor." />
+</Clips>
+
+It also forgot things. "A man walks forward, sits and crosses his legs" started
+to dance. That's catastrophic forgetting: train on a narrow set and the model
+drifts from what it knew. I tried freezing layers and combining the two
+datasets' statistics. The fine-tuned model is better at dance and worse at
+everything else, and that trade-off is what I presented to the studio.
+
+The captions were the other gap. AIST++ only has metadata, so I prototyped
+captioning the 1,408 dance videos with a video language model, VideoLLaMA3:
+eight prompts, a Docker image to run it, and a plan to merge several captions
+into one with GPT-4o. We handed it over as the next step.
+
+### CI/CD and deployment
+
+I set up our GitLab pipeline: lint and unit tests, build the Docker image,
+push it to Google Cloud, then a manual deploy to the GPU cluster. The first
+version took 20 minutes a run. A Micromamba image on Alpine, caching for conda
+and pip, and quieter pip flags brought it to 2.
+
+<Figure src={gitlab} alt="A GitLab pipeline: test:pytest and test:quality pass, then build:docker and deploy:docker pass, and a manual deploy:runai job waits." caption="Test, build, deploy. The last step waits for a person." />
+
+The studio got the final system as a Docker Compose setup with a training
+service and an inference service, a FastAPI endpoint, the model weights, and
+data pulled with DVC. We ran two handover sessions to walk their engineers
+through the code.
+
+## Reflections
+
+### Data first
 
 The biggest jumps in quality came from fixing the data: one consistent format,
-and descriptions for the clips that had none. If I did it again, I'd start
-there before touching the model.
+statistics without the test set, captions for clips that had none. You can't
+build good AI models without good data. If I did it again, I'd start there
+before touching the model.
 
-My team had a fresh graduate, an experienced engineer and two career switchers.
-Explaining Linux and Git to people from other fields took more time than I
-expected, and it showed me where my own understanding was thin. I wrote
+### Doubting the numbers
+
+When the evaluation said the model was bad, the easy move was to start tuning.
+The evaluator was wrong, not the model. Now when a number surprises me, I check
+how it was measured before I act on it.
+
+### Knowing what's good enough
+
+Early on I spent time polishing parts of the MVP that didn't need it yet. On a
+proof of concept with a deadline, that time belongs to the riskiest part. My
+manager's advice was to know what's good enough and fail fast, and I still
+use it.
+
+### Explaining it simply
+
+My team had a fresh graduate, an experienced engineer and two career
+switchers. Explaining Linux and Git to people from other fields took more time
+than I expected, and it showed me where my own understanding was thin. I wrote
 onboarding guides, built a small interactive repo for practising Linux commands
 and version control, and added checks to CI/CD so fewer mistakes reached
 review.
 
-I also learned when to stop. Early on I spent time polishing parts of the MVP
-that didn't need it yet. On a proof of concept with a deadline, that time
-belongs to the riskiest part.
+### Processes, not people
+
+When a teammate was frustrated and the mood dipped, I talked to him one to one
+and suggested a Thursday sync so everyone knew how their part touched the
+others. We talked about the process, never about who was slow. It didn't fix
+everything, and I learned where my job ended: keep my own work on track,
+protect my energy, and raise it with the manager when it's needed. We still
+hit our deadlines.

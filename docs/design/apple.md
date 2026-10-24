@@ -70,6 +70,13 @@ applied in `4c0b669` and `bedeb3a`.
   and different crops is what made the old pages look unplanned.
 - **Few captions.** Only a joke or a place. Most photos have none.
 - **Colour comes from the photos.** The page around them stays neutral.
+- **Clips, not GIFs.** Short loops (generated motion, screen recordings) are
+  `<Clips>`/`<Clip>`: H.264 MP4 in `public/`, a WebP poster beside it, one
+  alone or two side by side for a before/after. They play only on screen and
+  never with reduced motion (`src/scripts/clips.ts`). A 2 MB GIF became about
+  140 KB this way.
+- **Dense diagrams zoom.** `<Figure zoom>` links to a full-size copy that
+  opens in the lightbox.
 
 Work and project articles keep the text column plus sidebar for now, without a
 cover above the text. Whether they go single-column too is still open.

@@ -1,0 +1,35 @@
+---
+/**
+ * One short looping clip inside a `Clips` block: a generated motion, a screen
+ * recording. Silent, so it may autoplay; src/scripts/clips.ts plays it only
+ * while it is on screen and never for someone who asked for reduced motion.
+ *
+ * Files live in public/ (Astro does not process video). Encode as H.264 MP4
+ * with +faststart and keep a WebP poster beside it, so the block has a frame
+ * before the video loads and when it never plays.
+ */
+interface Props {
+  /** Path under public/, e.g. /work/ai-singapore/jump-mdm.mp4 */
+  src: string;
+  poster: string;
+  /** What the clip shows, for screen readers. */
+  alt: string;
+  /** A short label above the clip, e.g. the model that made it. */
+  label?: string | undefined;
+}
+const { src, poster, alt, label } = Astro.props;
+---
+<figure class="clip">
+  {label && <figcaption class="t-14 label">{label}</figcaption>}
+  <video src={src} poster={poster} muted loop playsinline preload="metadata"
+         aria-label={alt} data-clip></video>
+</figure>
+<style>
+  .clip { margin: 0; display: flex; flex-direction: column; gap: var(--s-2); min-width: 0; }
+  .label { color: var(--ink-2); }
+  /* The renders are on white; keep them on white in dark mode too, framed. */
+  video {
+    display: block; width: 100%; height: auto; aspect-ratio: 1 / 1;
+    background: #fff; border-radius: var(--radius-m); border: 1px solid var(--border);
+  }
+</style>
