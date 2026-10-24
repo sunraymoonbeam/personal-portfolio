@@ -5,7 +5,7 @@ kind: Internship
 location: Singapore
 start: 2023-05
 end: 2023-08
-title: Prototyping LLM tools for public-sector analysts
+title: LLM prototypes for public-sector analysts
 tagline: "Prototyped early LLM tools for government departments."
 summary: >-
   LLM prototypes for government departments, covering text classification, Q&A and report generation, built with LangChain and GPT-3.5 in 2023.
@@ -32,9 +32,11 @@ Unit. GPT-3.5 was new, LangChain had just come out, and a new open model
 appeared every week. The brief was a question: what can pre-trained language
 models do for statistics work, and which ideas deserve more time?
 
-Two things made it hard. Most of the department's text has few labels, and
-labelling it is slow. And data can't move freely between divisions, so a
-prototype had to prove itself on public data first.
+Two things made it hard:
+
+- **Few labels.** Most of the department's text has none, and labelling is slow.
+- **Data stays put.** Data can't move freely between divisions, so a prototype
+  had to prove itself on public data first.
 
 Over twelve weeks I read through the field, built three prototypes in
 Streamlit, each aimed at a real team's problem, and presented what I found in
@@ -71,7 +73,7 @@ and a classifier against a text generator, so it shows the order of magnitude,
 not a benchmark. For labelling survey text, the order of magnitude was the
 point.
 
-<Figure src={latency} alt="One prediction on a laptop CPU, log scale: SetFit 69 ms, flan-t5-small 0.86 s, flan-t5-base 4.1 s, flan-t5-large 12.8 s, flan-t5-xl 42.5 s." caption="Single timed runs on a laptop CPU in 2023." />
+<Figure src={latency} alt="One prediction on a laptop CPU, log scale: SetFit 69 ms, flan-t5-small 0.86 s, flan-t5-base 4.1 s, flan-t5-large 12.8 s, flan-t5-xl 42.5 s." caption="One timed run each, on a laptop CPU in 2023." />
 
 ### Answering questions from official publications
 
@@ -114,8 +116,12 @@ I ran Vicuna-13B on my MacBook's CPU with llama.cpp, and let an open model
 write the conclusion slide.
 
 The roadmap said LLMs are one component among many. Check whether a use case
-is worth it first, then build the boring parts: a vector database, embeddings
-that run offline, retrieval, and fine-tuning only where it pays.
+is worth it first, then build the boring parts:
+
+- a vector database;
+- embeddings that run offline;
+- retrieval;
+- fine-tuning, only where it pays.
 
 ## Reflections
 

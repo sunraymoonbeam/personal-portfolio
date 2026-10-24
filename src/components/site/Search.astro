@@ -57,14 +57,14 @@ const items = [
      visibly above the nav text. The shortcut rides inside on wide screens. */
   .trigger {
     display: none; align-items: center; gap: 8px;
-    height: 34px; padding: 0 8px 0 12px;
-    border: 1px solid var(--border); border-radius: var(--radius-pill);
-    background: var(--subtle); color: var(--ink-2);
+    height: 34px; padding: 0 6px;
+    border: 0; border-radius: var(--radius-s, 8px);
+    background: none; color: var(--ink-2);
     font: inherit; font-size: 14px; letter-spacing: -0.01em; line-height: 1;
     cursor: pointer;
     transition: border-color 160ms ease, color 160ms ease, background-color 160ms ease;
   }
-  .trigger:hover { border-color: var(--border-strong); color: var(--ink); background: var(--canvas); }
+  .trigger:hover { color: var(--ink); background: var(--chip-bg); }
   .trigger:active { transform: scale(0.98); }
   kbd {
     font-family: var(--font-mono); font-size: 11px; line-height: 1;
@@ -73,7 +73,7 @@ const items = [
   }
   @media (min-width: 880px) { .trigger { display: inline-flex; } }
   /* Narrow desktop: icon and shortcut only; the label comes back with room. */
-  @media (max-width: 1039px) { .trigger .label { display: none; } .trigger { padding-left: 10px; } }
+  @media (max-width: 1039px) { .trigger .label { display: none; } }
 
   .panel {
     width: min(560px, 92vw); margin-top: 12vh; padding: 0;

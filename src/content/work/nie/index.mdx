@@ -45,10 +45,12 @@ a recording into talk time per student.
 ### Learning a new field, notebook by notebook
 
 I came from a final-year project on animal sounds and an internship in NLP, so
-I started by teaching myself. I wrote a notebook for each stage: finding
-speech (voice activity detection), turning each stretch of speech into a voice
-fingerprint (speaker embeddings), grouping fingerprints by speaker
-(clustering), and scoring the result.
+I started by teaching myself. I wrote a notebook for each stage:
+
+1. **Find the speech** (voice activity detection).
+2. **Fingerprint each stretch of speech** (speaker embeddings).
+3. **Group the fingerprints by speaker** (clustering).
+4. **Score the result** against labels.
 
 I compared three embedding models, ECAPA-TDNN, Resemblyzer and wav2vec2, and
 three ways of clustering, and used silhouette and Calinski-Harabasz scores to
@@ -81,10 +83,12 @@ eight sessions, about five hours of audio, tagging noise and cross-talk as I
 went.
 
 That gave the project its first accuracy number, and showed where the errors
-were. Most were missed speech: quiet students the system never heard. And in
-some groups it found fewer speakers than were really there, which is the worst
-mistake for a participation study, because a student who isn't counted
-doesn't take part at all as far as the data knows.
+were:
+
+- **Missed speech.** Most errors were quiet students the system never heard.
+- **Missing speakers.** In some groups it found fewer speakers than were
+  really there. For a participation study that's the worst mistake: a student
+  who isn't counted doesn't take part at all, as far as the data knows.
 
 ### Tuning, and when cleaning hurts
 

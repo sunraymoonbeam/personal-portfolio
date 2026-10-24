@@ -5,7 +5,7 @@ kind: Internship
 location: Singapore
 start: 2022-07
 end: 2023-02
-title: Database migrations for legal and insurance clients
+title: Moving law firms onto a new platform
 tagline: "Worked on database maintenance and data migrations for law firms, at a legal-tech startup."
 summary: >-
   Production PostgreSQL databases for law and insurance firms, and migrations of 300,000+ records for more than ten law firms.
@@ -53,24 +53,32 @@ codes in the old books that didn't exist in the firm's new chart of accounts.
 Loading first would have scattered errors through a year of entries. Instead
 each code got a mapping or a new account, and I ran the whole batch again.
 
-<Figure src={ledger} alt="A check report for 2021 and January to June 2022: raw rows 353,848 and 253,141, cleaned lines 264,759 and 188,913, journal entries 89,089 and 64,228, debits equal credits in both years, 237 and 139 account codes missing from the new chart, 268 distinct in total." caption="The check report for the ledger, with money amounts left out." />
+<Figure src={ledger} alt="A check report for 2021 and January to June 2022: raw rows 353,848 and 253,141, cleaned lines 264,759 and 188,913, journal entries 89,089 and 64,228, debits equal credits in both years, 237 and 139 account codes missing from the new chart, 268 distinct in total." caption="The ledger's check report. Money amounts are left out." />
 
 ### A migration I could repeat
 
 Clients, cases, invoices, payments, trust money: every record type went
-through the same five steps, so I made them a routine. Extract from the old
-system, profile it, clean and map it, load it into the firm's database, then
-post and reconcile through the platform's API.
+through the same five steps, so I made them a routine:
+
+1. **Extract** from the old system.
+2. **Profile** it: row counts, empty columns, duplicates.
+3. **Clean and map** it to the platform's fields.
+4. **Load** it into the firm's database.
+5. **Post and reconcile** through the platform's API, and tie the totals back.
 
 <Figure src={pipeline} zoom alt="The migration pipeline: extract, profile, clean and map with Python and pandas, load one import sheet per record type into the firm's PostgreSQL database, then post invoices and payments by API and tie totals back. A failed check loops back to the mapping." caption="Five steps for every record type. A failed check sends the batch back to the mapping." />
 
 I built a small command-line tool for the cleaning step, with a report sheet
 of row counts, empty columns and duplicates for every table, because I was
 doing the same checks by hand for every firm. The invoice import taught me to
-read errors closely: a field called "Tax Type" that the platform knew as "Tax
-Treatment", a "Receivables" that should have been "Receivable", tax columns
-that couldn't be blank. Paid and unpaid invoices went in separate batches, and
-the totals had to match before and after.
+read errors closely:
+
+- a field called "Tax Type" that the platform knew as "Tax Treatment";
+- a "Receivables" that should have been "Receivable";
+- tax columns that couldn't be blank.
+
+Paid and unpaid invoices went in separate batches, and the totals had to match
+before and after.
 
 <Figure src={rows} alt="Rows in the final import sheets by record type: ledger lines 453,672, case updates 39,455, clients 24,218, invoice lines 3,240, trust-account records 2,532, contacts, payments and other 1,348. Total 524,465 rows." caption="Rows in the final import sheets, July 2022 to January 2023." />
 

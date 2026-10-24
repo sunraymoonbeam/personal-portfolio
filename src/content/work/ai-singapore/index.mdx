@@ -48,16 +48,18 @@ one evaluation module scores them all, and the whole thing ships as Docker
 images with the final model's weights. We ran it as Scrum, with three-week
 sprints and a review with the studio and SUTD at the end of each.
 
-<Figure src={architecture} zoom alt="The system architecture. A data pipeline turns raw SMPL motion parameters and text annotations into processed motions and annotations, versioned with DVC. A training module trains T2M and MDM models in PyTorch with hyperparameter tuning, logging to MLflow. An inference module serves a FastAPI server and batch inference. An evaluation module generates motions and computes R-precision, FID, diversity and multimodality. A CI/CD lane runs linting and unit tests, builds the Docker image on Google Cloud and builds Sphinx docs." caption="The whole system. Tap to open it full size." />
+<Figure src={architecture} zoom alt="The system architecture. A data pipeline turns raw SMPL motion parameters and text annotations into processed motions and annotations, versioned with DVC. A training module trains T2M and MDM models in PyTorch with hyperparameter tuning, logging to MLflow. An inference module serves a FastAPI server and batch inference. An evaluation module generates motions and computes R-precision, FID, diversity and multimodality. A CI/CD lane runs linting and unit tests, builds the Docker image on Google Cloud and builds Sphinx docs." caption="The whole system, from raw motion capture to a Docker image." />
 
 ## Noteworthy projects
 
 ### One pipeline for every dataset
 
-Each motion dataset stores the body its own way. HumanML3D has 14,616 motions
-with 44,970 captions at 20 frames a second. AIST++ has 1,408 dance clips at
-60, a different skeleton, no body shape and no captions at all. Motion-X
-uses SMPL-X, which adds hands and a face.
+Each motion dataset stores the body its own way:
+
+- **HumanML3D:** 14,616 motions with 44,970 captions, at 20 frames a second.
+- **AIST++:** 1,408 dance clips at 60 frames a second, a different skeleton,
+  no body shape and no captions at all.
+- **Motion-X:** SMPL-X bodies, which add hands and a face.
 
 I wrote the AIST++ conversion: fill the missing body shape with the average,
 resample, and build captions from the clip's metadata, so "break, indian step"
@@ -172,10 +174,13 @@ into one with GPT-4o. We handed it over as the next step.
 
 I set up our GitLab pipeline: lint and unit tests, build the Docker image,
 push it to Google Cloud, then a manual deploy to the GPU cluster. The first
-version took 20 minutes a run. A Micromamba image on Alpine, caching for conda
-and pip, and quieter pip flags brought it to 2.
+version took 20 minutes a run. Three changes brought it to 2:
 
-<Figure src={gitlab} alt="A GitLab pipeline: test:pytest and test:quality pass, then build:docker and deploy:docker pass, and a manual deploy:runai job waits." caption="Test, build, deploy. The last step waits for a person." />
+- a Micromamba image on Alpine instead of a full conda image;
+- caching for conda and pip between runs;
+- quieter pip flags, so the logs stayed readable.
+
+<Figure src={gitlab} alt="A GitLab pipeline: test:pytest and test:quality pass, then build:docker and deploy:docker pass, and a manual deploy:runai job waits." caption="Test, build, deploy. The last step waits for a person to press go." />
 
 The studio got the final system as a Docker Compose setup with a training
 service and an inference service, a FastAPI endpoint, the model weights, and

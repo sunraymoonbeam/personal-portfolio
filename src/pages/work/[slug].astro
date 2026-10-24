@@ -6,7 +6,7 @@ import Gallery from '~/components/article/Gallery.astro';
 import Toc from '~/components/article/Toc.astro';
 import { getWorkArticles, toArticleLinks, getAdjacent, keyOf } from '~/lib/content';
 import { formatRange, formatDuration } from '~/lib/date';
-import { TECHNOLOGIES } from '~/data/technologies';
+import TechChip from '~/components/ui/TechChip.astro';
 
 // Only entries with writeup: true get a route. Drafts and no-writeup roles
 // generate nothing — the policy lives in one place and routes obey it.
@@ -57,8 +57,8 @@ const { prev, next } = getAdjacent(links, keyOf('work', entry.id));
       <div><dt>When</dt><dd class="tabular">{formatRange(d.start, d.end)}</dd><dd class="muted tabular">{formatDuration(d.start, d.end)}</dd></div>
       <div><dt>Where</dt><dd>{d.location}</dd></div>
       {d.stack.length > 0 && (
-        <div class="stack"><dt>Built with</dt>
-          <dd class="built">{d.stack.map((id) => <span>{TECHNOLOGIES[id]?.label ?? id}</span>)}</dd></div>
+        <div class="stack"><dt>Stack</dt>
+          <dd><ul class="built">{d.stack.map((id) => <TechChip id={id} />)}</ul></dd></div>
       )}
     </dl>
   </div>
@@ -102,10 +102,9 @@ const { prev, next } = getAdjacent(links, keyOf('work', entry.id));
   .facts dd { margin: 4px 0 0; font-size: 15px; line-height: 1.45; letter-spacing: -0.012em; color: var(--ink); }
   .facts .stack { grid-column: 1 / -1; }
   @media (min-width: 900px) {
-    .facts { grid-template-columns: 1fr 1fr 0.8fr 2fr; }
+    .facts { grid-template-columns: 0.9fr 0.9fr 0.7fr 2.4fr; }
     .facts .stack { grid-column: auto; }
   }
-  .built { display: flex; flex-wrap: wrap; gap: 6px; }
-  .built span { padding: 3px 10px; border-radius: var(--radius-pill); background: var(--chip-bg); color: var(--ink-2); font-size: 14px; }
+  .built { display: flex; flex-wrap: wrap; gap: 6px; margin: 2px 0 0; padding: 0; list-style: none; }
   @media (max-width: 520px) { .facts { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 </style>

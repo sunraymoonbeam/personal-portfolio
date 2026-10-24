@@ -1,0 +1,65 @@
+---
+/**
+ * 100% stacked bars, one per row, sharing one set of bands: "the top 1% of
+ * sessions is 1% of sessions and 19% of cost". The last band is the one the
+ * story is about, so it alone takes the accent; the rest step through greys.
+ */
+interface Props {
+  bands: string[];
+  rows: { label: string; values: number[] }[];
+  caption?: string | undefined;
+}
+const { bands, rows, caption } = Astro.props;
+const tone = (i: number) => (i === bands.length - 1 ? 'hot' : `g${Math.min(i, 3)}`);
+const fmt = (v: number) => `${Number.isInteger(v) ? v : v.toFixed(1)}%`;
+---
+<figure class="chart">
+  <div class="legend t-14" aria-hidden="true">
+    {bands.map((b, i) => <span class="key"><i class={tone(i)} />{b}</span>)}
+  </div>
+  <div class="rows">
+    {rows.map((r) => (
+      <div class="row">
+        <span class="label t-14">{r.label}</span>
+        <div class="bar" role="img"
+             aria-label={`${r.label}: ${bands.map((b, i) => `${b} ${fmt(r.values[i] ?? 0)}`).join(', ')}`}>
+          {r.values.map((v, i) => (
+            <span class:list={['seg', tone(i)]} style={`flex-basis:${v}%`}>
+              {v >= 7 && <b class="tabular">{fmt(v)}</b>}
+            </span>
+          ))}
+        </div>
+        {/* The hot band is often too thin to label inside, so it is named at the end. */}
+        <span class="end tabular">{fmt(r.values[r.values.length - 1] ?? 0)}</span>
+      </div>
+    ))}
+  </div>
+  {caption && <figcaption class="t-14 small cap">{caption}</figcaption>}
+</figure>
+<style>
+  .chart {
+    margin: var(--s-8) 0; padding: var(--s-6);
+    border: 1px solid var(--border); border-radius: var(--radius-m); background: var(--subtle);
+  }
+  .legend { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 0 0 var(--s-5); color: var(--ink-2); }
+  .legend .key { display: inline-flex; align-items: center; gap: 7px; }
+  .legend i { display: block; width: 10px; height: 10px; border-radius: 3px; }
+  .rows { display: flex; flex-direction: column; gap: 14px; }
+  .row { display: grid; grid-template-columns: 96px minmax(0, 1fr) 52px; align-items: center; gap: 12px; }
+  .label { color: var(--ink); }
+  .bar { display: flex; height: 34px; border-radius: 6px; overflow: hidden; gap: 2px; }
+  .seg { display: flex; align-items: center; justify-content: center; min-width: 3px; transition: filter 160ms ease; }
+  .seg b { font-size: 13px; font-weight: 500; }
+  .end { font-size: 15px; font-weight: 600; color: var(--hue-1); text-align: right; }
+  .g0 { background: color-mix(in srgb, var(--ink) 9%, transparent); color: var(--ink-2); }
+  .g1 { background: color-mix(in srgb, var(--ink) 17%, transparent); color: var(--ink-2); }
+  .g2 { background: color-mix(in srgb, var(--ink) 30%, transparent); color: var(--ink); }
+  .g3 { background: color-mix(in srgb, var(--ink) 42%, transparent); color: var(--canvas); }
+  .hot { background: var(--hue-1); color: #fff; }
+  .cap { margin-top: var(--s-5); }
+  @media (max-width: 520px) {
+    .chart { padding: var(--s-4); }
+    .row { grid-template-columns: minmax(0, 1fr) 44px; }
+    .label { grid-column: 1 / -1; }
+  }
+</style>

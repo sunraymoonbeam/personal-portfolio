@@ -108,20 +108,17 @@ const hobbies = await getFeaturedHobbies(3);
   }
   .copy { display: flex; flex-direction: column; gap: var(--s-4); }
 
-  /* The one place a gradient is allowed: his name. */
   .name {
-    margin: 0;
+    margin: 0; color: var(--ink);
     font-size: clamp(36px, 4.4vw, 56px); line-height: 1.06;
     font-weight: 600; letter-spacing: -0.042em;
     text-wrap: balance;
-    background: linear-gradient(100deg, var(--ink) 18%, #0071e3 62%, #2997ff 96%);
-    -webkit-background-clip: text; background-clip: text; color: transparent;
   }
   .name .nick { white-space: nowrap; }
   @media (min-width: 901px) { .name { white-space: nowrap; } }
   .lede { max-width: 620px; }
-  .lede strong { color: var(--ink); font-weight: 600; }
-  .lede .hi { color: var(--link); }
+  /* Every emphasised phrase takes the accent, so the three read as one voice. */
+  .lede strong { color: var(--link); font-weight: 600; }
 
 
   .art { display: flex; flex-direction: column; align-items: center; gap: var(--s-3); }

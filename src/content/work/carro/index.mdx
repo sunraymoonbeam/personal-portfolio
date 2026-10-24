@@ -4,11 +4,11 @@ role: AI Engineer
 kind: Full-time
 location: Singapore
 start: 2025-07
-title: Ticketing agents and an agent platform at Carro
+title: Ticketing and department agents at Carro
 tagline: "Leading development of Carro's customer-facing ticketing agents. Currently working on an internal multi-agent orchestration platform for department workflows."
 summary: >-
   Ticketing agents that handle Carro's customer journey, from triage to appointment booking, for 60,000+ tickets a month across three countries, plus an internal multi-agent orchestration platform for every department.
-stack: [langgraph, litellm, langfuse, n8n, googlecloud]
+stack: [langgraph, hermes, googlecloud, n8n]
 bullets:
   - "Led development of Carro’s ticketing agents for **60,000+** monthly tickets across 3 countries. Worked with operations teams to turn their processes into agentic workflows spanning the customer journey (triage, inventory creation, appointments)."
   - "Developed an internal multi-agent orchestration platform that mirrors Carro’s departments, automating their workflows such as data retrieval and reporting, governed by role-based access controls for multiple users and roles."
@@ -17,15 +17,18 @@ bullets:
   - "Automated marketing outreach (customer engagement, follow-up) on n8n, driving **30%** revenue growth for SG workshops."
 metrics:
   - { value: "60,000+", label: "tickets a month", context: "across Singapore, Malaysia and Hong Kong" }
-  - { value: "76–80%", label: "lower LLM cost per ticket", context: "six workflows, judged trials in production" }
-  - { value: "93%", label: "SOP adherence after the switch", context: "against 92% on Claude Sonnet" }
+  - { value: "76–80%", label: "lower LLM cost per ticket", context: "harness and cost optimisations, and intelligent model routing" }
+  - { value: "0", label: "hallucinations after the switch", context: "in 118 judged replies, the same as Claude Sonnet" }
 featuredOrder: 1
 cover: ./cover.jpg
 ---
 
+
 import cover from './cover.jpg'
 import review from './carro-care-review.jpg'
-import concentration from './cost-concentration.png'
+import sell from './whatsapp-sell.png'
+import prompts from './prompt-additions.png'
+import repeat from './repeat-tool.png'
 import n8n from './n8n-workflow.png'
 
 <Figure src={cover} alt="Zack and a colleague giving a thumbs up in front of the orange Carro wall at the Singapore office." />
@@ -42,108 +45,211 @@ agents, and to make those agents cheap and safe enough to run at that volume.
 
 ### Ticketing agents
 
-We started with two agents. Today the team runs fifteen, and most of them
-were built on the new ticketing platform I led.
+Carro has many workflows, and customers come in through all of them:
 
-In the beginning we were on Google ADK. A workflow, like selling a car, has
-many stages, and each stage has its own rules. You can't fit all of that
-context into one agent, so every stage became its own sub-agent, with its own
-tools and prompts, all written by developers. When we were asked for four more
-bots, one for each stage of a workflow, I asked why every workflow needed its
-own bot.
+- **Buy:** find a car in stock, ask about it, book a viewing.
+- **Sell:** get a car qualified, then book an inspection.
+- **Workshop:** book a service, then reschedule or cancel it.
+- **Triage:** read each new ticket and send it to the right team.
 
-I compared Agno, the Claude Agent SDK and LangChain Deep Agents, built three
-proofs of concept, and pushed for skills with progressive disclosure. The
-agent sees a short list of what each skill does, and loads the full
-instructions only when it needs them. That lets one general agent handle many
-workflows. Ops can write their own policies as skills and hand them to the
-agent, instead of waiting for us to build a new bot. The team adopted this
-approach, and prompts moved into Langfuse instead of code releases. Setting up
-a new workflow went from about two weeks to about two hours.
+We build integrations that let agents do this work: look up inventory, create
+tickets, book slots, send WhatsApp messages. Put together, that's an agent
+fleet. We started with two agents. Today the team runs fifteen, and most of
+them are built on the new harness whose development I led.
+
+<Figure src={sell} zoom alt="A WhatsApp chat on a staging account. A customer says they want to sell. The agent asks for the plate, make, model, variant, year, transmission and engine size, confirms the details it found, asks for the customer's area, and lists three inspection centres in Kuala Lumpur." caption="Selling a car on WhatsApp: the agent qualifies the car, then finds an inspection centre nearby. Staging, with test data." />
+
+Before I joined, the team had tried several tools, from Google's agent builder
+to Dify. The agents hallucinated and didn't hold up, so the team settled on
+Google ADK, which performed well in production.
+
+ADK had its own limit: context. A workflow like selling a car has many stages,
+and each stage has its own rules. That's too much context for one agent, so
+every stage became its own sub-agent, with tools and prompts that developers
+wrote in code. Every new workflow meant more developer work, and we couldn't
+scale out.
+
+When we were asked to build the Malaysian sell workflow, the plan was one bot
+for each stage: qualification, scheduling, rescheduling and recovery. I asked
+why every workflow needed its own bot. Why not one bot that could do all of
+it?
+
+I reviewed the landscape, weighed the options, and built three proofs of
+concept: Agno, the Claude Agent SDK and LangChain Deep Agents. Deep Agents won,
+with skills that use progressive disclosure. The agent sees a short list of
+what each skill does, and loads the full instructions only when it needs them.
+So one general agent can run many workflows, and ops can write their own
+policies as skills instead of waiting for us to build a new bot. Setting up a
+new workflow went from about two weeks to about two hours.
 
 The one I'm proudest of is the Carro Care bot, for our workshop. It handles the
 whole customer journey on WhatsApp: it answers questions, books a servicing
 slot, reschedules or cancels it later, and keeps our systems and the ops team
 in step.
 
-<Figure src={review} alt="A WhatsApp chat in which a customer tells the Carro Care bot it is one of the more competent AIs they have used, and asks which model it is." caption="A customer, after booking, asking which model we use. Names removed." />
-
-Since then I've taken charge of eight bots end to end: scoping the
-requirements with ops, building and testing them, shipping them, and watching
-how they behave once real customers use them.
+<Figure src={review} alt="A WhatsApp chat in which a customer tells the Carro Care bot it is one of the more competent AIs they have used, and asks which model it is." caption="A rave review from a Carro Care customer, who wanted to know which model we use." />
 
 ### Department agents
 
-Internal teams wanted agents too, for investigating tickets, pulling data and
-putting reports together. We started from Nanobot, an open-source personal
-agent, and adapted it for Carro. Two things were missing for a company. It had
-little security, so I added a credential proxy that keeps secrets away from
-the bot and layered guardrails against prompt injection. And bots couldn't
-work together, so I added A2A, which lets one bot hand work to another.
+Internal teams wanted agents too, for their own workflows: investigating
+tickets, pulling data, putting reports together. We started from Nanobot, an
+open-source personal agent, and changed it to suit a company. It was built for
+one trusted person, so it had little security. I added:
 
-Nanobot also showed us its limit. It was built for one person, so when a whole
-team shared it, memory and context ran together, and it had no idea who was
-allowed to do what. So we built department agents instead, with Shannon, my
-lead, and three others. Each agent mirrors a real department: an orchestrator
-at the top, clusters of related work under it, and specialist agents under
-those. Each one owns a clear part of the work and sees only what it needs.
+- **A credential proxy,** so the agent never holds a key. A jailbroken agent
+  has no secrets to leak.
+- **Six layers of guardrails** against prompt injection and data leaks, cheap
+  filters first and an LLM judge last.
+- **Per-user sessions and sender attribution,** so people in one group chat
+  stop sharing one memory.
+- **47 native Lark tools,** for docs, Base, calendars and approvals.
+- **A2A,** so one agent can hand work to another.
 
-I work on how these agents are managed and changed: their skills, tools,
-memory and secrets, and the approval flow that lets business users propose a
-change for an admin to approve. I also built the workflow planner, which turns
-a department's SOP into steps across its agents, and an assistant that
-suggests changes to an agent.
+Even with these, Nanobot was still a personal bot. When a whole team shared
+it, memory and context ran together, and it couldn't tell who was allowed to
+do what. So my team built department agents instead. Each one mirrors a real
+department: an orchestrator at the top, clusters of related work under it, and
+specialists under those. Role-based access control decides which people can
+use which agents, tools and skills.
 
-### Optimisations
+My part is how these agents are changed safely. A business user proposes a
+change to a skill, tool, SOP or secret, and an admin approves it before any
+agent sees it. I also built the workflow planner, which turns a department's
+SOP into steps across its agents, and an assistant that suggests changes to
+an agent.
 
-At this volume, agents get expensive fast, and most of the cost wasn't the
-model. When I broke the triage agent's spend down by session, the top 1% of
-sessions used 19% of the money and 41% of the input tokens. Those were agents
-searching for something they were never given, like a link they couldn't open.
+### Harness and cost optimisations
 
-<Figure src={concentration} alt="A stacked bar chart of the triage agent's cost, tokens, tool calls and latency by session band. The top 1% of sessions take 19% of cost and 41% of input tokens." caption="Where the triage agent's spend went over 30 days, by session band." />
+Agents get expensive fast at our volume, especially in Malaysia, our largest
+market, with about three in four tickets. And volume isn't the whole story.
+The sell and buy workflows ran on Claude Sonnet and cost far more per ticket
+than the rest:
 
-I cut the tools they could reach and capped the loops, and the runaway
-sessions stopped. Separately, a clock in the system prompt changed every
-minute, so the prompt cache never held. Fixing it cut cache writes by 84% in
-testing. Then I ran judged trials in production, model against model in
-matched time windows, and moved six workflows from Claude Sonnet to DeepSeek
-at 76–80% lower cost per ticket. SOP adherence held at 93%, against 92%
-before.
+<PairBars series={['Share of tickets', 'Share of LLM cost']}
+  rows={[
+    { label: 'Sell', a: 41.2, b: 72.1 },
+    { label: 'Buy', a: 12.7, b: 19.0 },
+    { label: 'Triage', a: 46.0, b: 8.8 },
+  ]}
+  caption="Ticketing agents, June to August 2026. Sell is two fifths of the tickets and almost three quarters of the cost." />
+
+Inside one workflow, a few runaway sessions can cost as much as thousands of
+normal ones. When I broke the triage agent's spend down by session, the top
+1% took 19% of the money:
+
+<StackBars bands={['Bottom 50%', '10–50%', '1–10%', 'Top 1%']}
+  rows={[
+    { label: 'Sessions', values: [50, 40, 9, 1] },
+    { label: 'Cost', values: [22.5, 38.4, 19.8, 19.3] },
+  ]}
+  caption="The triage agent over 30 days, by session band. The top 1% of sessions took 19% of the cost, and 41% of the input tokens." />
+
+Those runaways were agents hunting for something they were never given, like
+a link they couldn't open. They grepped the disk hundreds of times.
+
+The bigger question was the model. Almost every workflow ran on Claude Sonnet,
+chosen at the start as a safe default, not because it suited each workflow.
+What we wanted was the best mix of quality, reliability, latency and cost for
+each one. Three things stood in the way:
+
+- **We didn't understand model behaviour well enough** to say which model
+  suits which workflow, or where a model breaks.
+- **Our agents weren't model-independent.** Each provider caches, batches and
+  calls tools differently, so a swap changed both behaviour and cost.
+- **We didn't evaluate our workflows well.** Without that, every model choice
+  was a guess.
+
+So the question became: how do we pick the best model for each workflow, and
+swap safely when a better one appears? The answer started with the harness,
+so that every model behaves the same way:
+
+- **Remove risky tools.** No grep, glob, sub-agents or file deletes. Ticket
+  workflows don't need them, and they cause the loops.
+- **Lock the filesystem.** Each agent reads its skills and writes only its own
+  memory, never another customer's ticket.
+- **Tell the model how to work.** Plan before acting, call independent tools
+  in parallel, act instead of promising, and ground every answer.
+
+<Figure src={prompts} zoom alt="System prompt text with four headings: Plan before you act, Parallel tool calls, Use your tools to act, and Ground your answers." caption="Prompt additions that every model gets, whatever its provider." />
+
+- **Stop the loops.** Soft caps on tool and model calls, and a reminder when
+  the agent calls the same tool again and again.
+
+<Figure src={repeat} zoom alt="A Langfuse trace. On the left, the same appointment-slot tool is called five times in a row. On the right, the harness adds a message: you have called the same tool several times in a row, try a different approach or tool." caption="Five calls to the same tool, then the harness steps in." />
+
+- **Keep the prompt cache warm.** A clock in the system prompt changed every
+  minute, so the cache never held. Fixing it cut cache writes by 84% in
+  testing.
+
+After the caps and the locked filesystem, runaways over $1 went from 3.11 per
+1,000 sessions to none, and the worst session from $10.01 to $0.66.
+
+With a harness we trusted, I ran judged trials in production, model against
+model in matched time windows. Six workflows moved from Claude Sonnet to
+DeepSeek at 76–80% lower cost per ticket. SOP adherence held at 93%, against
+92% before, with no hallucinations in 118 judged replies.
 
 ### Automations
 
-Not everything needs an agent. For fixed flows, like appointment reminders and
-outreach to Carro Care customers, I built n8n workflows that connect Lark,
-BigQuery, CAPtain and WhatsApp.
+Not everything needs an agent. I believe AI should be the last resort: a fixed
+flow with clear rules is cheaper, faster and easier to trust, and it often has
+more impact.
 
-<Figure src={n8n} alt="An n8n workflow canvas: a schedule trigger reads Lark records, checks BigQuery and CAPtain, creates a linked ticket, sends a WhatsApp intro message, and logs the result back to Lark." caption="An outreach flow: find eligible customers, open a CAPtain ticket, send the WhatsApp intro, log the result." />
+An automation is only as good as its spec. Before I build one, I pin down:
+
+- the objective, and how we'll know it worked;
+- every condition the flow has to handle, including the unhappy ones;
+- each data source, its format and how often it changes;
+- the configuration ops will want to change without me.
+
+For Carro Care I built the outreach flows on n8n, from the first message to a
+customer through to follow-up and engagement. They connect data across Lark,
+BigQuery, CAPtain and WhatsApp, and I pulled and checked the data myself
+before anything went out. Workshop revenue grew after the outreach went live.
+
+<Figure src={n8n} zoom alt="An n8n workflow canvas: a schedule trigger reads Lark records, checks BigQuery and CAPtain, creates a linked ticket, sends a WhatsApp intro message, and logs the result back to Lark." caption="One outreach flow: find eligible customers, open a CAPtain ticket, send the WhatsApp intro, log the result." />
 
 ## Reflections
 
 ### Attention to detail
 
-Shannon once told me he thinks ERDs and sequence diagrams are the pinnacle of
-software engineering. As an engineer, everything I say carries weight. Take
-"we fetch the file". What fetches it? From where? Who's allowed to? When, and
-what does each fetch cost? What happens if it isn't there? One sentence in a
-meeting can skip all of these. A diagram can't, which is why I now draw before
-I build.
+As an engineer, everything I say carries weight. Early on, I proposed a
+feature in one line: we'll build this. My senior answered with questions:
 
-### Structured thinking
+- What problem does it solve, and for whom?
+- What fetches the data, from where, and who's allowed to?
+- When does it run, and what does each run cost?
+- What happens when the data isn't there?
 
-I used to start with a fix. Now I follow the same steps every time:
+I couldn't answer most of them. Things don't happen by magic, so every
+sentence I say in a meeting has to survive those questions. Here I've been
+drilled not to assume, and to test what I believe. The habit that helps most
+is drawing. An ERD or a sequence diagram can't skip a step the way a sentence
+can, so I draw before I build.
+
+### Trade-offs
+
+There's no perfect solution, only trade-offs. Four bots or one harness, Sonnet
+or DeepSeek, ship now or test longer: each answer gives something up. An
+engineer should be able to defend how they built something: what they chose,
+what it costs, and what they gave up. My job is to see the bigger picture, say
+that plainly, and pick the option that fits where the business is going.
+
+### Experiments, not guesses
+
+AI engineering isn't like traditional software engineering. Code does what you
+write. A model does what it tends to, and a change that fixes one ticket can
+break ten others. So much of my work is experiments: a new model, a prompt
+tweak, a new harness module. Each one has to generalise, not just fix the case
+I looked at. I follow the same steps every time:
 
 1. Set the objective, and how I'll know I've met it.
 2. Get the current context: the traces, the code, the docs.
 3. Form a hypothesis.
-4. Choose the parameters to change, and hold everything else fixed.
+4. Choose what to change, and hold everything else fixed.
 5. Run it.
-6. Observe the raw results.
+6. Look at the raw results.
 7. Only then, conclude.
-
-The prompt-cache bug took two wrong guesses before a controlled test showed
-the real cause.
 
 ### Thoroughness
 
@@ -154,17 +260,11 @@ judges, matched time windows, and checked every serious finding by hand.
 
 ### Reading the room
 
-Shannon also taught me to watch people as well as systems. A manager asking
-for "a number" usually needs a decision they can defend. An ops lead asking
-for "a bot" usually needs fewer repetitive chats. Working out what my boss or
-a stakeholder really needs has saved me more time than any framework.
-
-### Big-picture judgement
-
-There's no perfect solution, only trade-offs. Four bots or one harness, Sonnet or DeepSeek, ship now or test longer: each
-answer gives something up. My job is to see the bigger picture, say plainly
-what each option costs, and pick the one that fits where the business is
-going.
+Systems aren't the only thing to read. I try to work out what my boss or a
+stakeholder really needs, and to notice how people like to work, so I can work
+better with them. A manager asking for "a number" usually needs a decision
+they can defend. An ops lead asking for "a bot" usually needs fewer repetitive
+chats.
 
 ### Engineering mindset
 

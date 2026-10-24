@@ -95,13 +95,13 @@ const label = (dir: 'Previous' | 'Next') => (noun ? `${dir} ${noun}` : dir);
   }
   .quote blockquote { margin: 0; color: var(--ink-2); font-style: italic; }
   .quote figcaption::before { content: '— '; }
-  /* The article title is the page's one display moment: a step above the
-     index pages' t-64, wide enough that most titles set in two lines. */
+  /* One line on a desktop: the title names the page, the outcomes under it
+     do the shouting. At 76px it took two or three lines and outweighed them. */
   .title {
-    font-size: clamp(36px, 7.4vw, 76px); line-height: 1.04; font-weight: 600;
-    letter-spacing: -0.045em; max-width: 16ch;
+    font-size: clamp(30px, 4.2vw, 44px); line-height: 1.1; font-weight: 600;
+    letter-spacing: -0.035em; text-wrap: balance;
   }
-  .measure-start > .title { max-width: 16ch; }
+  .measure-start > .title { max-width: none; }
   .hero-slot:empty { display: none; }
   /* Header across the nav's frame; below it one reading column, with text,
      pictures and tables sharing both edges, and a contents rail beside it. */
