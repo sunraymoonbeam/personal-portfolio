@@ -1,6 +1,11 @@
 ---
 import SiteLayout from '~/layouts/SiteLayout.astro';
 import { pages } from '~/copy/pages';
+import previewHash from '~/data/resume-preview.sha256?raw';
+
+// nginx caches images for 30 days; the PDF's hash in the URL makes a new CV
+// reach phones on the next deploy.
+const version = previewHash.trim().slice(0, 10);
 ---
 <SiteLayout title="CV — Zack Low" description={pages.cv.description}>
   <section class="wrap head">
@@ -27,8 +32,8 @@ import { pages } from '~/copy/pages';
   <section class="wrap viewer">
     {/* The <object> fallback only fires when the browser says it cannot render
         the type. Mobile Chrome says it can, then paints a black slab, so the
-        fallback never appeared where it was needed most. Hide the embed on
-        small screens and show the card unconditionally instead. */}
+        fallback never appeared where it was needed most. So small screens get
+        the page as a picture (scripts/resume-preview.sh), which opens the PDF. */}
     <object data="/resume.pdf#view=FitH" type="application/pdf" class="pdf" aria-label="CV, PDF">
       <div class="fallback">
         <p class="t-17">This browser can't preview the PDF.</p>
@@ -37,9 +42,10 @@ import { pages } from '~/copy/pages';
     </object>
 
     <div class="onsmall">
-      <p class="t-17">A PDF doesn't read well on a phone.</p>
-      <a href="/resume.pdf" class="btn" download="Ren Hwa Low resume.pdf">Download the CV</a>
-      <a href="/resume.pdf" class="open t-17" target="_blank" rel="noopener">Open it in a new tab</a>
+      <a href="/resume.pdf" class="page" target="_blank" rel="noopener" aria-label="Open the CV as a PDF">
+        <img src={`/resume.webp?v=${version}`} width="1656" height="2339" alt="Page 1 of Ren Hwa Low's CV." loading="eager" decoding="async" />
+      </a>
+      <p class="t-14 hint">Tap the page to open the PDF and zoom.</p>
     </div>
   </section>
 </SiteLayout>
@@ -65,13 +71,13 @@ import { pages } from '~/copy/pages';
   }
   .fallback { display: grid; place-items: center; gap: var(--s-4); height: 100%; padding: var(--s-7); }
 
-  .onsmall {
-    display: none; text-align: center;
-    padding: var(--s-8) var(--s-7); border: 1px solid var(--border);
-    border-radius: var(--radius-m); background: var(--surface);
+  .onsmall { display: none; }
+  .page {
+    display: block; overflow: hidden; background: #fff;
+    border: 1px solid var(--border); border-radius: var(--radius-m);
   }
-  .onsmall .btn { margin-block: var(--s-5) var(--s-4); }
-  .onsmall .open { justify-content: center; }
+  .page img { width: 100%; height: auto; }
+  .hint { margin-top: var(--s-4); text-align: center; color: var(--ink-3); }
 
   @media (max-width: 734px) {
     .pdf { display: none; }

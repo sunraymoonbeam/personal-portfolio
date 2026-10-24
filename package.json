@@ -14,6 +14,7 @@
     "check": "astro check",
     "cursors": "node scripts/generate-cursors.mjs",
     "test:routes": "node scripts/check-routes.mjs",
+    "resume:preview": "sh scripts/resume-preview.sh",
     "verify": "npm run check && npm run test && npm run test:routes && node scripts/generate-cursors.mjs --check && npm run build"
   },
   "dependencies": {
