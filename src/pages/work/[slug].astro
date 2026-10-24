@@ -34,12 +34,10 @@ const { prev, next } = getAdjacent(links, keyOf('work', entry.id));
   backHref="/work/" backLabel="Work experience"
   prev={prev} next={next} noun="role"
 >
-  {/* Outcomes get their own band between the title and the story: under the
-      sidebar's facts they were buried, and on a phone they came after the
-      whole essay. A cover, when there is one, follows. */}
-  {d.metrics && (
-    <div slot="hero" class="hero">
-      {d.metrics && (
+  {/* One column, like the hobby pages. The facts that were a sidebar sit
+      under the outcomes as one quiet row: what you'd scan for, then the story. */}
+  <div slot="hero" class="hero">
+    {d.metrics && (
         <section class="outcomes" aria-labelledby="outcomes-h">
           <h2 id="outcomes-h" class="eyebrow">Outcomes</h2>
           <dl class:list={['grid', `n-${d.metrics.length}`]}>
@@ -52,39 +50,37 @@ const { prev, next } = getAdjacent(links, keyOf('work', entry.id));
             ))}
           </dl>
         </section>
-      )}
-    </div>
-  )}
-
-  <dl slot="aside" class="facts">
-    <div><dt class="eyebrow bare">Role</dt><dd class="t-14">{d.role}, {d.kind.toLowerCase()}</dd></div>
-    <div><dt class="eyebrow bare">When</dt><dd class="t-14 tabular">{formatRange(d.start, d.end)}<span class="muted">, {formatDuration(d.start, d.end)}</span></dd></div>
-    <div><dt class="eyebrow bare">Where</dt><dd class="t-14">{d.location}</dd></div>
-    {d.stack.length > 0 && (
-      <div><dt class="eyebrow bare">Built with</dt>
-        <dd class="built t-14">{d.stack.map((id) => <span>{TECHNOLOGIES[id]?.label ?? id}</span>)}</dd></div>
     )}
-  </dl>
+    <dl class="facts">
+      <div><dt>Role</dt><dd>{d.role}, {d.kind.toLowerCase()}</dd></div>
+      <div><dt>When</dt><dd class="tabular">{formatRange(d.start, d.end)}</dd><dd class="muted tabular">{formatDuration(d.start, d.end)}</dd></div>
+      <div><dt>Where</dt><dd>{d.location}</dd></div>
+      {d.stack.length > 0 && (
+        <div class="stack"><dt>Built with</dt>
+          <dd class="built">{d.stack.map((id) => <span>{TECHNOLOGIES[id]?.label ?? id}</span>)}</dd></div>
+      )}
+    </dl>
+  </div>
 
   <Content components={articleComponents} />
   <Gallery items={d.gallery} />
 </ArticleLayout>
 <style>
-  .hero { display: flex; flex-direction: column; gap: var(--s-8); }
+  .hero { display: flex; flex-direction: column; gap: var(--s-6); }
   .outcomes {
     display: flex; flex-direction: column; gap: var(--s-5);
     padding-block: var(--s-6) var(--s-7);
     border-block: 1px solid var(--border);
   }
-  .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-6) var(--s-8); }
+  .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-6) var(--s-6); }
   .grid.n-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 640px; }
   .grid.n-1 { grid-template-columns: 1fr; }
   /* Number first visually, label first in the DOM, so a screen reader hears
      "tickets each month: 60,000+" and the eye lands on the figure. */
   .metric { display: flex; flex-direction: column; gap: 6px; }
   .value {
-    order: -1; margin: 0; color: var(--ink);
-    font-size: clamp(36px, 5vw, 52px); line-height: 1; font-weight: 600; letter-spacing: -0.04em;
+    order: -1; margin: 0; color: var(--ink); white-space: nowrap;
+    font-size: clamp(32px, 4.2vw, 44px); line-height: 1; font-weight: 600; letter-spacing: -0.04em;
   }
   .label { font-size: 17px; line-height: 1.35; letter-spacing: -0.016em; color: var(--ink); text-wrap: balance; }
   .context { margin: 0; font-size: 14px; line-height: 1.45; color: var(--ink-3); text-wrap: pretty; }
@@ -92,8 +88,17 @@ const { prev, next } = getAdjacent(links, keyOf('work', entry.id));
     .grid, .grid.n-2 { grid-template-columns: 1fr; gap: var(--s-5); }
     .value { font-size: 40px; }
   }
-  .facts { display: flex; flex-direction: column; gap: var(--s-5); }
-  .facts dd { margin: 0; margin-top: 6px; }
+  /* Facts: four short columns under the outcomes, label over value; the stack
+     takes the full row so its chips wrap instead of squeezing a column. */
+  .facts {
+    display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-5) var(--s-6);
+    margin: 0;
+  }
+  .facts dt { font-size: 14px; line-height: 1.4; letter-spacing: -0.01em; color: var(--ink-3); }
+  .facts dd + dd { margin-top: 0; }
+  .facts dd { margin: 4px 0 0; font-size: 15px; line-height: 1.45; letter-spacing: -0.012em; color: var(--ink); }
+  .facts .stack { grid-column: 1 / -1; }
   .built { display: flex; flex-wrap: wrap; gap: 6px; }
-  .built span { padding: 3px 10px; border-radius: var(--radius-pill); background: var(--chip-bg); color: var(--ink-2); }
+  .built span { padding: 3px 10px; border-radius: var(--radius-pill); background: var(--chip-bg); color: var(--ink-2); font-size: 14px; }
+  @media (max-width: 520px) { .facts { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 </style>

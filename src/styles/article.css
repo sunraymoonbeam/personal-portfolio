@@ -53,6 +53,10 @@
 .prose pre code { background: none; padding: 0; }
 
 .prose table { width: 100%; border-collapse: collapse; font-size: 15px; }
-.prose th, .prose td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--border); }
+.prose th, .prose td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: top; font-variant-numeric: tabular-nums; }
+/* Tables share the text's left edge; headers read as labels, not a second body. */
+.prose th:first-child, .prose td:first-child { padding-left: 0; }
+.prose th { font-weight: 500; color: var(--ink-2); border-bottom-color: var(--border-strong); }
+.prose td strong { color: var(--ink); }
 
 .prose hr { border: 0; border-top: 1px solid var(--border); margin-block: var(--s-7); }

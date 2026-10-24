@@ -78,8 +78,9 @@ applied in `4c0b669` and `bedeb3a`.
 - **Dense diagrams zoom.** `<Figure zoom>` links to a full-size copy that
   opens in the lightbox.
 
-Work and project articles keep the text column plus sidebar for now, without a
-cover above the text. Whether they go single-column too is still open.
+Work articles are single column too (Oct 2026): the old sidebar facts (role,
+when, where, built with) sit under the Outcomes band as one quiet row. Project
+articles still keep the text column plus sidebar.
 
 ## Type
 
