@@ -53,34 +53,32 @@ It marks structure, never a link, so blue keeps its one job.
 
 ## Articles and photos
 
-A judgement for this site, taken from devansdesign.com rather than Apple, and
-applied in `4c0b669` and `bedeb3a`.
+A judgement for this site, iterated in Oct 2026 against Linear, Stripe,
+Vercel, Rauno and Paco (one column of 620 to 710px, pictures exactly as wide as
+the text) and Josh Comeau (a sticky contents rail beside the column). An
+earlier try put pictures wider than the text, Apple Newsroom style; it looked
+off at this scale, so pictures never break out.
 
-- **One width.** An article without a sidebar (every hobby) is one centred
-  column of `--reading` (660px). Text, headings and photos share both edges.
-  `ArticleLayout` switches to this when the `aside` slot is empty.
+- **One frame, one column.** Every article (work, project, hobby) sits in the
+  nav's 980px frame. The header (title, outcomes, facts, links) spans it.
+  Below, text, photos, clips, figures and tables share one 700px column
+  (`--measure`), so their edges always agree.
+- **The rail.** Beside the column on screens over 1000px: "On this page" for
+  work and projects (`Toc.astro`, the current section marked in brand red by
+  `src/scripts/toc.ts`, counts matching the red rules in the text), the list of
+  hobbies on a hobby. Below 1000px it goes; the text takes the room.
 - **No cover above the text.** The page opens with the title and the summary
-  (or a quote, via `quoteBy`). The cover is the card image on the grids, and
-  appears in the body next to the paragraph it belongs to.
+  (or a quote, via `quoteBy`). The cover is the card image on the grids.
 - **Text first, then photos.** Each photo block sits under the paragraph that
   mentions it.
 - **One photo shape.** Every `Photos` block is two across, square, with an 8px
-  gap. A single photo spans the column at 3:2. The shape is fixed in
-  `Photos.astro`, not chosen per block, because mixing 2- and 3-across grids
-  and different crops is what made the old pages look unplanned.
-- **Few captions.** Only a joke or a place. Most photos have none.
+  gap. A single photo spans the column at 3:2.
+- **Clips, not GIFs.** Short loops are `<Clips>`/`<Clip>`: H.264 MP4 in
+  `public/`, a WebP poster beside it, one alone or two side by side. They play
+  only on screen and never with reduced motion (`src/scripts/clips.ts`).
+- **Dense diagrams zoom.** `<Figure zoom>` opens a full-size copy in the lightbox.
+- **Few captions.** Only a joke, a place, or the prompt behind a clip.
 - **Colour comes from the photos.** The page around them stays neutral.
-- **Clips, not GIFs.** Short loops (generated motion, screen recordings) are
-  `<Clips>`/`<Clip>`: H.264 MP4 in `public/`, a WebP poster beside it, one
-  alone or two side by side for a before/after. They play only on screen and
-  never with reduced motion (`src/scripts/clips.ts`). A 2 MB GIF became about
-  140 KB this way.
-- **Dense diagrams zoom.** `<Figure zoom>` links to a full-size copy that
-  opens in the lightbox.
-
-Work articles are single column too (Oct 2026): the old sidebar facts (role,
-when, where, built with) sit under the Outcomes band as one quiet row. Project
-articles still keep the text column plus sidebar.
 
 ## Type
 

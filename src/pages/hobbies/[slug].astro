@@ -25,7 +25,25 @@ const { prev, next } = getAdjacent(links, keyOf('hobbies', entry.id));
   {/* No cover above the text: the article opens with words, and the cover
       photo appears in the body next to the paragraph it belongs to. */}
 
+  {/* The rail lists every hobby, so the frame matches work and projects and
+      the space beside the text is a way to wander, not a gap. */}
+  <nav slot="aside" class="others" aria-label="Hobbies">
+    <p class="t-14 h">Hobbies</p>
+    <ol>
+      {links.map((l) => (
+        <li><a href={l.href} aria-current={l.key === keyOf('hobbies', entry.id) ? 'page' : undefined}>{l.title}</a></li>
+      ))}
+    </ol>
+  </nav>
+
   <Content components={articleComponents} />
   <Gallery items={d.gallery} />
 </ArticleLayout>
-
+<style>
+  .others { font-size: 14px; letter-spacing: -0.01em; }
+  .h { color: var(--ink-2); font-weight: 500; margin-bottom: var(--s-3); }
+  ol { list-style: none; margin: 0; padding: 0; border-left: 1px solid var(--border); display: flex; flex-direction: column; gap: 2px; }
+  a { display: block; padding: 5px 0 5px 14px; margin-left: -1px; border-left: 1px solid transparent; color: var(--ink-3); }
+  a:hover { color: var(--ink); }
+  a[aria-current='page'] { color: var(--ink); border-left-color: var(--mark); }
+</style>

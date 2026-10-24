@@ -103,13 +103,20 @@ const label = (dir: 'Previous' | 'Next') => (noun ? `${dir} ${noun}` : dir);
   }
   .measure-start > .title { max-width: 16ch; }
   .hero-slot:empty { display: none; }
+  /* Header across the nav's frame; below it one reading column, with text,
+     pictures and tables sharing both edges, and a contents rail beside it. */
   .body {
-    display: grid; grid-template-columns: minmax(0, var(--reading)) minmax(0, 1fr);
+    display: grid; grid-template-columns: minmax(0, var(--measure)) minmax(0, 1fr);
     gap: var(--s-10); align-items: start; padding-block: var(--s-8) var(--s-11);
   }
-  .side { position: sticky; top: 96px; display: flex; flex-direction: column; gap: var(--s-6); }
+  .side {
+    position: sticky; top: 96px; display: flex; flex-direction: column; gap: var(--s-6);
+    max-height: calc(100vh - 120px); overflow-y: auto; overscroll-behavior: contain;
+  }
   .side:empty { display: none; }
-  .solo .wrap { width: min(var(--reading), 100% - var(--gutter) * 2); }
+  /* One column (hobbies): text and photos share both edges, as on the reading
+     sites this copies (Linear, Stripe, Vercel all keep images at text width). */
+  .solo .wrap { width: min(var(--measure), 100% - var(--gutter) * 2); }
   .solo .body { grid-template-columns: minmax(0, 1fr); }
   .adjacent {
     display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-4);
@@ -154,8 +161,9 @@ const label = (dir: 'Previous' | 'Next') => (noun ? `${dir} ${noun}` : dir);
     .adj, .arrow { transition: border-color 200ms ease, background-color 200ms ease; }
     .prev:hover .arrow, .next:hover .arrow, .adj:active { transform: none; }
   }
-  @media (max-width: 900px) {
-    .body { grid-template-columns: 1fr; gap: var(--s-7); padding-top: var(--s-6); }
-    .side { position: static; }
+  /* The rail is navigation for a wide screen; below that the text has the room. */
+  @media (max-width: 1000px) {
+    .body { grid-template-columns: minmax(0, 1fr); padding-top: var(--s-6); }
+    .side { display: none; }
   }
 </style>

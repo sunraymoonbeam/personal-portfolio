@@ -3,6 +3,7 @@ import { render } from 'astro:content';
 import { articleComponents } from '~/components/article/mdx';
 import ArticleLayout from '~/layouts/ArticleLayout.astro';
 import Gallery from '~/components/article/Gallery.astro';
+import Toc from '~/components/article/Toc.astro';
 import TechChip from '~/components/ui/TechChip.astro';
 import { getProjectArticles, toArticleLinks, getAdjacent, keyOf } from '~/lib/content';
 import { formatMonth } from '~/lib/date';
@@ -14,7 +15,7 @@ export async function getStaticPaths() {
 
 const { entry } = Astro.props;
 const d = entry.data;
-const { Content } = await render(entry);
+const { Content, headings } = await render(entry);
 const articles = await getProjectArticles();
 const links = toArticleLinks('projects', articles).map((link, i) => ({ ...link, sub: articles[i]!.data.claim }));
 const { prev, next } = getAdjacent(links, keyOf('projects', entry.id));
@@ -41,6 +42,7 @@ const { prev, next } = getAdjacent(links, keyOf('projects', entry.id));
         {d.links?.docs && <a href={d.links.docs} class="act t-17" rel="noopener">Docs</a>}
       </div>
     )}
+    <ul class="tags" aria-label="Built with">{d.stack.map((id) => <TechChip id={id} />)}</ul>
     {d.metrics && (
       <div class="numbers">
         {d.metrics.map((m) => (
@@ -54,11 +56,10 @@ const { prev, next } = getAdjacent(links, keyOf('projects', entry.id));
   </div>
 
 
-  <div slot="aside" class="facts">
-    <div><span class="eyebrow">Built with</span>
-      <ul class="tags">{d.stack.map((id) => <TechChip id={id} />)}</ul></div>
+  <div slot="aside" class="rail">
+    <Toc headings={headings} />
     {d.cardHighlights && (
-      <div><span class="eyebrow">Highlights</span>
+      <div><p class="t-14 rail-h">Highlights</p>
         <ul class="hl">{d.cardHighlights.map((h) => <li class="t-14 muted">{h}</li>)}</ul></div>
     )}
   </div>
@@ -77,7 +78,9 @@ const { prev, next } = getAdjacent(links, keyOf('projects', entry.id));
   /* The long description opens the article rather than repeating in a box. */
   .lead { margin-bottom: var(--s-5); }
 
-  .facts { display: flex; flex-direction: column; gap: var(--s-6); }
-  .tags, .hl { display: flex; flex-wrap: wrap; gap: 6px; margin-top: var(--s-3); }
+  .rail { display: flex; flex-direction: column; gap: var(--s-7); }
+  .rail-h { color: var(--ink-2); font-weight: 500; }
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
+  .hl { display: flex; margin-top: var(--s-3); }
   .hl { flex-direction: column; gap: var(--s-2); list-style: disc; padding-left: 18px; }
 </style>

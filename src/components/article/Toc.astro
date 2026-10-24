@@ -1,0 +1,49 @@
+---
+/**
+ * "On this page": the article's sections, sticky beside the text on wide
+ * screens. Sections (##) are plain; items under them (###) carry the same
+ * count as the red rule in the text, so the two read as one system.
+ * src/scripts/toc.ts marks the section in view.
+ */
+import type { MarkdownHeading } from 'astro';
+interface Props { headings: MarkdownHeading[]; }
+const { headings } = Astro.props;
+const items: Array<MarkdownHeading & { n?: number }> = [];
+let n = 0;
+for (const h of headings) {
+  if (h.depth === 2) { n = 0; items.push(h); }
+  else if (h.depth === 3) { n += 1; items.push({ ...h, n }); }
+}
+---
+{items.length >= 3 && (
+  <nav class="toc" aria-label="On this page" data-toc>
+    <p class="t-14 head">On this page</p>
+    <ol>
+      {items.map((h) => (
+        <li class:list={[`d${h.depth}`]}>
+          <a href={`#${h.slug}`} data-toc-link={h.slug}>
+            {h.n && <span class="n">{h.n}</span>}{h.text}
+          </a>
+        </li>
+      ))}
+    </ol>
+  </nav>
+)}
+<style>
+  .toc { font-size: 14px; line-height: 1.35; letter-spacing: -0.01em; }
+  .head { color: var(--ink-2); font-weight: 500; margin-bottom: var(--s-3); }
+  ol { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px;
+       border-left: 1px solid var(--border); }
+  a {
+    display: flex; gap: 8px; padding: 5px 0 5px 14px; margin-left: -1px;
+    border-left: 1px solid transparent; color: var(--ink-3);
+    transition: color 150ms ease, border-color 150ms ease;
+  }
+  .d2 a { color: var(--ink-2); font-weight: 500; }
+  .d2:not(:first-child) a { margin-top: var(--s-2); }
+  .d3 a { padding-left: 24px; }
+  .n { color: var(--ink-3); font-variant-numeric: tabular-nums; min-width: 1ch; }
+  a:hover { color: var(--ink); }
+  a[aria-current='true'] { color: var(--ink); border-left-color: var(--mark); }
+  a[aria-current='true'] .n { color: var(--mark); }
+</style>

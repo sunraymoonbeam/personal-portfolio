@@ -3,6 +3,7 @@ import { render, getEntry } from 'astro:content';
 import { articleComponents } from '~/components/article/mdx';
 import ArticleLayout from '~/layouts/ArticleLayout.astro';
 import Gallery from '~/components/article/Gallery.astro';
+import Toc from '~/components/article/Toc.astro';
 import { getWorkArticles, toArticleLinks, getAdjacent, keyOf } from '~/lib/content';
 import { formatRange, formatDuration } from '~/lib/date';
 import { TECHNOLOGIES } from '~/data/technologies';
@@ -17,7 +18,7 @@ export async function getStaticPaths() {
 const { entry } = Astro.props;
 const d = entry.data;
 const employer = await getEntry(d.employer);
-const { Content } = await render(entry);
+const { Content, headings } = await render(entry);
 // A neighbouring role is named the way the reader knows it — "AI Engineer ·
 // AI Singapore" — not by its essay headline, which says nothing about where.
 const articles = await getWorkArticles();
@@ -62,6 +63,8 @@ const { prev, next } = getAdjacent(links, keyOf('work', entry.id));
     </dl>
   </div>
 
+  <Toc slot="aside" headings={headings} />
+
   <Content components={articleComponents} />
   <Gallery items={d.gallery} />
 </ArticleLayout>
@@ -98,6 +101,10 @@ const { prev, next } = getAdjacent(links, keyOf('work', entry.id));
   .facts dd + dd { margin-top: 0; }
   .facts dd { margin: 4px 0 0; font-size: 15px; line-height: 1.45; letter-spacing: -0.012em; color: var(--ink); }
   .facts .stack { grid-column: 1 / -1; }
+  @media (min-width: 900px) {
+    .facts { grid-template-columns: 1fr 1fr 0.8fr 2fr; }
+    .facts .stack { grid-column: auto; }
+  }
   .built { display: flex; flex-wrap: wrap; gap: 6px; }
   .built span { padding: 3px 10px; border-radius: var(--radius-pill); background: var(--chip-bg); color: var(--ink-2); font-size: 14px; }
   @media (max-width: 520px) { .facts { grid-template-columns: repeat(2, minmax(0, 1fr)); } }

@@ -8,7 +8,7 @@ interface Props {
 }
 const { src, alt, caption, dim = false, zoom = false } = Astro.props;
 const full = zoom ? await getImage({ src, width: Math.min(src.width, 2400), format: 'webp' }) : null;
-const img = { src, alt, widths: [600, 900, 1400], sizes: '(max-width: 734px) 100vw, 660px', loading: 'lazy' as const };
+const img = { src, alt, widths: [600, 980, 1400, 1960], sizes: '(max-width: 734px) 100vw, 980px', loading: 'lazy' as const };
 ---
 <figure class="fig">
   {full

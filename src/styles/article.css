@@ -1,6 +1,6 @@
 /* Article typography. Scoped to .prose because Astro's scoped styles do not
    reach MDX-rendered children. One measure; images may break out, text never. */
-.prose { max-width: var(--reading); }
+.prose { max-width: var(--measure); }
 .prose > * + * { margin-top: max(3.2vmin, 24px); }
 
 .prose h2 { font-size: 28px; line-height: 1.1429; font-weight: 600; letter-spacing: -0.026em; margin-top: 2em; }
