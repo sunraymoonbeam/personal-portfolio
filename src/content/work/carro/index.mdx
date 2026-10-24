@@ -246,13 +246,19 @@ diagram can't skip a step the way a sentence can.
 When I propose something, a colleague will usually ask: what were the
 alternatives, and what's the trade-off? There's no perfect solution. An
 engineer should be able to defend how they built something: what they chose,
-what it costs, and what they gave up. My job is to see the bigger picture, say
-that plainly, and pick the option that fits where the business is going.
+what it costs, and what they gave up.
 
-### Experiment design
+The cost isn't only today's. A shortcut that ships this week can cost months
+later, in maintenance, in lock-in to one provider, or for the next person who
+has to change it. Sometimes the shortcut is still right. My job is to see the
+bigger picture, weigh what each option costs now and later, say that plainly,
+and pick the one that fits where the business is going.
 
-AI engineering isn't like traditional software engineering. Code does what you
-write. A model does what it tends to, and a change that fixes one ticket can
+### Informed decisions
+
+I try to make decisions on evidence, not on a hunch or the loudest opinion.
+In AI engineering that takes more work than usual, because it isn't like
+traditional software engineering. Code does what you write. A model does what it tends to, and a change that fixes one ticket can
 break ten others. So much of my work is experiments: a new model, a prompt
 change, a new harness module. Each one has to hold across many tickets, and I
 follow the same steps every time:
