@@ -6,7 +6,7 @@ import type { Project } from '~/lib/content';
 interface Props { entry: Project; }
 const { entry } = Astro.props;
 const d = entry.data;
-const href = d.writeup ? `/projects/${entry.id}` : undefined;
+const href = d.writeup ? `/projects/${entry.id}/` : undefined;
 const Tag = href ? 'a' : 'div';
 ---
 {/* Home card: title, year beside it, one line. Nothing else: the detail page

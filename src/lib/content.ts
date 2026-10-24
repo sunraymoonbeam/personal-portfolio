@@ -1,5 +1,5 @@
 import { getCollection, getEntry, type CollectionEntry } from 'astro:content';
-import { isPublished, sortByMonthDesc, keyOf, type EntryKey } from './select';
+import { isPublished, sortByMonthDesc, keyOf, selectFeatured, type EntryKey } from './select';
 
 // Pure policy lives in ./select.ts so it can be unit-tested without Astro.
 export {
@@ -77,7 +77,7 @@ export async function getHobbiesIndex(): Promise<
   const [hobbies, projects] = await Promise.all([getPublishedHobbies(), getPublishedProjects()]);
   const own = hobbies.map((e) => ({
     key: keyOf('hobbies', e.id),
-    href: e.data.writeup ? `/hobbies/${e.id}` : '',
+    href: e.data.writeup ? `/hobbies/${e.id}/` : '',
     title: e.data.title,
     caption: e.data.caption,
     cover: e.data.cover,
@@ -87,13 +87,20 @@ export async function getHobbiesIndex(): Promise<
     .filter((e) => e.data.showInHobbies)
     .map((e) => ({
       key: keyOf('projects', e.id),
-      href: e.data.writeup ? `/projects/${e.id}` : '',
+      href: e.data.writeup ? `/projects/${e.id}/` : '',
       title: e.data.title,
       caption: e.data.claim,
       cover: e.data.cover,
       coverAlt: e.data.coverAlt,
     }));
   return [...own, ...crossListed];
+}
+
+/** Hobbies chosen by `featuredOrder` for the home and About previews. */
+export async function getFeaturedHobbies(limit: number) {
+  const featured = selectFeatured(await getPublishedHobbies(), limit).map((e) => keyOf('hobbies', e.id));
+  const byKey = new Map((await getHobbiesIndex()).map((h) => [h.key, h]));
+  return featured.flatMap((k) => byKey.get(k) ?? []);
 }
 
 // ── skills ──────────────────────────────────────────────────────────────────
@@ -113,13 +120,13 @@ export async function getSkillEvidence(): Promise<Record<string, SkillUse[]>> {
     const { employer } = await resolveWork(entry);
     for (const id of entry.data.stack) add(id, {
       label: `${entry.data.role} at ${employer.data.name}`,
-      href: entry.data.writeup ? `/work/${entry.id}` : undefined,
+      href: entry.data.writeup ? `/work/${entry.id}/` : undefined,
     });
   }
   for (const p of projects) {
     for (const id of p.data.stack) add(id, {
       label: p.data.shortTitle ?? p.data.title,
-      href: p.data.writeup ? `/projects/${p.id}` : undefined,
+      href: p.data.writeup ? `/projects/${p.id}/` : undefined,
     });
   }
   return out;

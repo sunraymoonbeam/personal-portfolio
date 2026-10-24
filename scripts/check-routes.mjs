@@ -71,7 +71,7 @@ try {
   assert.ok(html('work/qa-unlisted').includes('Test body.'), 'Unlisted article was not generated');
   assert.ok(html('projects/qa-shared').includes('Test body.'));
   assert.ok(html('hobbies/qa-shared').includes('Test body.'));
-  assert.ok(html('hobbies').includes('href="/projects/qa-shared"'), 'Cross-listed project lost its canonical route');
+  assert.ok(html('hobbies').includes('href="/projects/qa-shared/"'), 'Cross-listed project lost its canonical route');
   const article = html('projects/qa-gallery');
   assert.ok(article.includes('alt="First picture"'), 'Gallery image was not rendered');
   assert.ok(article.includes('With a caption'), 'Gallery caption was dropped');

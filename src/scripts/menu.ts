@@ -6,6 +6,9 @@
  * document. The layout calls this on `astro:page-load`, which fires on the
  * first load and after every swap, so the new buttons are always wired.
  */
+let wired = false;
+const wide = () => window.matchMedia('(min-width: 880px)');
+
 export function initMenu() {
   const toggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
   const sheet = document.querySelector<HTMLElement>('[data-menu]');
@@ -24,10 +27,20 @@ export function initMenu() {
   toggle.addEventListener('click', () =>
     setOpen(toggle.getAttribute('aria-expanded') !== 'true'));
 
+  if (wired) return;
+  wired = true;
+
+  // Bound once and looked up at event time, so a swap leaves no stale copies.
+  const current = () => document.querySelector<HTMLButtonElement>('[data-menu-toggle][aria-expanded="true"]');
   document.addEventListener('keydown', (e) => {
     if (e.key !== 'Escape') return;
-    if (toggle.getAttribute('aria-expanded') !== 'true') return;
-    setOpen(false);
-    toggle.focus();
+    const open = current();
+    if (!open) return;
+    open.click();
+    open.focus();
   });
+
+  // Rotating a phone or widening a window past 880px hides the sheet and the
+  // burger in CSS, which would leave the body scroll-locked with no way out.
+  wide().addEventListener('change', (e) => { if (e.matches) current()?.click(); });
 }

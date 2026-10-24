@@ -37,13 +37,19 @@ function applyFilter(query: string) {
 let wired = false;
 
 export function initSearch() {
-  const openBtn = document.querySelector<HTMLButtonElement>('[data-search-open]');
+  const openers = document.querySelectorAll<HTMLButtonElement>('[data-search-open]');
   const panel = panelOf();
   const input = document.querySelector<HTMLInputElement>('[data-search-input]');
-  if (!openBtn || !panel || !input) return;
+  if (!openers.length || !panel || !input) return;
 
-  // Per page: these three elements are new DOM after every swap.
-  openBtn.addEventListener('click', openPanel);
+  // Per page: these elements are new DOM after every swap. The header button
+  // is desktop only; phones open search from the menu sheet, which closes first.
+  openers.forEach((b) => b.addEventListener('click', () => {
+    if (b.closest('[data-menu]')) {
+      document.querySelector<HTMLButtonElement>('[data-menu-toggle][aria-expanded="true"]')?.click();
+    }
+    openPanel();
+  }));
   input.addEventListener('input', () => applyFilter(input.value));
 
   // Click the backdrop to dismiss. Escape is handled by <dialog> itself.
@@ -59,7 +65,8 @@ export function initSearch() {
       .filter((a): a is HTMLAnchorElement => a !== null);
     if (!links.length) return;
     const at = links.indexOf(document.activeElement as HTMLAnchorElement);
-    const next = e.key === 'ArrowDown' ? at + 1 : at - 1;
+    // From the input `at` is -1, so ArrowUp has to mean "the last one".
+    const next = e.key === 'ArrowDown' ? at + 1 : at === -1 ? links.length - 1 : at - 1;
     // Indexing an array is not a guarantee, even after the length check above.
     links[(next + links.length) % links.length]?.focus();
   });

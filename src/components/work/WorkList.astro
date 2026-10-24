@@ -24,7 +24,7 @@ const Heading = `h${headingLevel}` as 'h2' | 'h3';
 <ol class:list={["list", { compact }]}>
   {rows.map(({ entry, employer }) => {
     const d = entry.data;
-    const href = d.writeup ? `/work/${entry.id}` : undefined;
+    const href = d.writeup ? `/work/${entry.id}/` : undefined;
     const current = !d.end;
     return (
       <li class:list={{ linked: !!href }}>

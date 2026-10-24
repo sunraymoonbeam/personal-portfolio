@@ -20,7 +20,7 @@ const { prev, next } = getAdjacent(links, keyOf('hobbies', entry.id));
 <ArticleLayout
   title={d.title} summary={d.summary}
   quoteBy={d.quoteBy}
-  backHref="/hobbies" backLabel="All hobbies" prev={prev} next={next} noun="hobby"
+  backHref="/hobbies/" backLabel="All hobbies" prev={prev} next={next} noun="hobby"
 >
   {/* No cover above the text: the article opens with words, and the cover
       photo appears in the body next to the paragraph it belongs to. */}

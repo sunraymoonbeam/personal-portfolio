@@ -75,7 +75,9 @@ export function initLightbox() {
       // Let a modified click do what the person actually asked for.
       if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
       e.preventDefault();
-      panel ??= build();
+      // The router swaps <body> on every navigation and takes the old dialog
+      // with it; showModal() on a detached dialog throws.
+      if (!panel?.isConnected) panel = build();
       show(i);
     });
   });

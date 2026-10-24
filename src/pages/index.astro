@@ -13,12 +13,12 @@ import { pages } from '~/copy/pages';
 import { site } from '~/config/site';
 import { STACK_GROUPS } from '~/data/technologies';
 import {
-  getPublishedProjects, getWorkRows, selectFeatured, resolveWork, getHobbiesIndex,
+  getPublishedProjects, getWorkRows, selectFeatured, resolveWork, getFeaturedHobbies,
 } from '~/lib/content';
 
 const projects = selectFeatured(await getPublishedProjects(), 3);
-const roles = await Promise.all((await getWorkRows()).slice(0, 3).map(resolveWork));
-const hobbies = (await getHobbiesIndex()).slice(0, 3);
+const roles = await Promise.all(selectFeatured(await getWorkRows(), 3).map(resolveWork));
+const hobbies = await getFeaturedHobbies(3);
 ---
 <SiteLayout>
   <section class="hero wrap">
@@ -39,7 +39,7 @@ const hobbies = (await getHobbiesIndex()).slice(0, 3);
              sizes="(max-width: 900px) 70vw, 380px" loading="eager" />
       {/* The arrow points back up at the photo, so the label reads as a caption
           for it rather than as a hint to keep scrolling. */}
-      <a href="/about" class="more pop t-14">
+      <a href="/about/" class="more pop t-14">
         <svg class="bob" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
              stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <path d="M12 19V5" /><path d="M6 11l6-6 6 6" />
@@ -51,14 +51,14 @@ const hobbies = (await getHobbiesIndex()).slice(0, 3);
 
   <section class="section band">
     <div class="wrap">
-      <SectionHead {...home.sections.projects} href="/projects" linkLabel="All projects" />
+      <SectionHead {...home.sections.projects} href="/projects/" linkLabel="All projects" />
       <ProjectGrid entries={projects} />
     </div>
   </section>
 
   <section class="section">
     <div class="wrap">
-      <SectionHead {...home.sections.work} href="/work" linkLabel="All roles" />
+      <SectionHead {...home.sections.work} href="/work/" linkLabel="All roles" />
       {/* Same rows as /work, without the bullets: the shape, not the detail. */}
       <WorkList rows={roles} compact />
     </div>
@@ -66,7 +66,7 @@ const hobbies = (await getHobbiesIndex()).slice(0, 3);
 
   <section class="section band" id="skills">
     <div class="wrap">
-      <SectionHead {...home.sections.skills} href="/skills" linkLabel="All skills" />
+      <SectionHead {...home.sections.skills} href="/skills/" linkLabel="All skills" />
       <div class="groups">
         {STACK_GROUPS.map((g) => (
           <div class="group">
@@ -80,7 +80,7 @@ const hobbies = (await getHobbiesIndex()).slice(0, 3);
 
   <section class="section">
     <div class="wrap">
-      <SectionHead {...home.sections.hobbies} href="/hobbies" linkLabel="View all hobbies">
+      <SectionHead {...home.sections.hobbies} href="/hobbies/" linkLabel="View all hobbies">
         <CrayonWord slot="title" />
         <Fragment slot="sub">Because there's more to life than <code>git push</code>.</Fragment>
       </SectionHead>
@@ -94,7 +94,7 @@ const hobbies = (await getHobbiesIndex()).slice(0, 3);
       <blockquote class="pitch">
         {pages.contact.lede.map((line) => <p class="t-19">{line}</p>)}
       </blockquote>
-      <a href="/contact" class="btn">{home.cta.action}</a>
+      <a href="/contact/" class="btn">{home.cta.action}</a>
       <a href={`mailto:${site.email}`} class="t-14 small">{site.email}</a>
     </div>
   </section>

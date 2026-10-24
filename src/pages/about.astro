@@ -5,10 +5,10 @@ import SiteLayout from '~/layouts/SiteLayout.astro';
 import SectionHead from '~/components/ui/SectionHead.astro';
 import CrayonWord from '~/components/site/CrayonWord.astro';
 import HobbyGrid from '~/components/hobbies/HobbyGrid.astro';
-import { getHobbiesIndex } from '~/lib/content';
+import { getFeaturedHobbies } from '~/lib/content';
 import { pages } from '~/copy/pages';
 
-const hobbies = (await getHobbiesIndex()).slice(0, 4);
+const hobbies = await getFeaturedHobbies(4);
 const a = pages.about;
 ---
 {/* Reference shape: portrait and a facts table in a narrow left column, the
@@ -36,8 +36,8 @@ const a = pages.about;
       <div class="main">
         <h1 class="t-64">{a.title}</h1>
         <div class="actions">
-          <a href="/cv" class="btn">CV</a>
-          <a href="/contact" class="btn btn-ghost">Contact</a>
+          <a href="/cv/" class="btn">CV</a>
+          <a href="/contact/" class="btn btn-ghost">Contact</a>
         </div>
 
         <blockquote class="bio rise">
@@ -52,7 +52,7 @@ const a = pages.about;
   </section>
 
   <section class="section"><div class="wrap">
-    <SectionHead href="/hobbies" linkLabel="View all hobbies">
+    <SectionHead href="/hobbies/" linkLabel="View all hobbies">
       <CrayonWord slot="title" />
     </SectionHead>
     <HobbyGrid items={hobbies} />

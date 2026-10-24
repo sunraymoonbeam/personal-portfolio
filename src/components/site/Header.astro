@@ -5,7 +5,9 @@ import CrayonWord from './CrayonWord.astro';
 import Search from './Search.astro';
 
 const path = Astro.url.pathname;
-const active = (href: string) => path === href || path.startsWith(href + '/');
+// Links end in a slash (the canonical form); compare both sides without it.
+const bare = (p: string) => p.replace(/\/+$/, '');
+const active = (href: string) => bare(path) === bare(href) || path.startsWith(bare(href) + '/');
 ---
 {/* A 64px bar on the content column, so the wordmark shares the left edge every
     page uses. Three groups: brand, sections, actions. Every item in the bar is
@@ -25,7 +27,7 @@ const active = (href: string) => path === href || path.startsWith(href + '/');
         <li>
           <a href={l.href} class:list={['nav-link', { on: active(l.href) }]}
              aria-current={active(l.href) ? 'page' : undefined}>
-            {l.href === '/hobbies'
+            {l.href === '/hobbies/'
               ? <><CrayonWord size={16} /><span class="visually-hidden">Hobbies</span></>
               : l.label}
           </a>
@@ -35,8 +37,8 @@ const active = (href: string) => path === href || path.startsWith(href + '/');
 
     <div class="cluster">
       <Search />
-      <a href="/cv" class:list={['quiet', { on: active('/cv') }]}>CV</a>
-      <a href="/contact" class="cta">Contact</a>
+      <a href="/cv/" class:list={['quiet', { on: active('/cv') }]}>CV</a>
+      <a href="/contact/" class="cta">Contact</a>
       <button type="button" class="burger" data-menu-toggle
               aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
         <span class="bars" aria-hidden="true"><i></i><i></i><i></i></span>
@@ -51,18 +53,21 @@ const active = (href: string) => path === href || path.startsWith(href + '/');
         <li>
           <a href={l.href} class:list={['sheet-link', { on: active(l.href) }]}
              aria-current={active(l.href) ? 'page' : undefined}>
-            {l.href === '/hobbies'
+            {l.href === '/hobbies/'
               ? <><CrayonWord size={18} /><span class="visually-hidden">Hobbies</span></>
               : l.label}
           </a>
         </li>
       ))}
       <li>
-        <a href="/cv" class:list={['sheet-link', { on: active('/cv') }]}
+        <a href="/cv/" class:list={['sheet-link', { on: active('/cv') }]}
            aria-current={active('/cv') ? 'page' : undefined}>CV</a>
       </li>
+      <li>
+        <button type="button" class="sheet-link sheet-search" data-search-open>Search</button>
+      </li>
     </ul>
-    <a href="/contact" class="cta sheet-cta">Contact</a>
+    <a href="/contact/" class="cta sheet-cta">Contact</a>
   </div>
 </header>
 
@@ -179,6 +184,10 @@ const active = (href: string) => path === href || path.startsWith(href + '/');
     min-height: 48px; border-bottom: 1px solid var(--border);
   }
   .sheet li:last-child .sheet-link { border-bottom: 0; }
+  .sheet-search {
+    width: 100%; border: 0; border-bottom: 1px solid var(--border);
+    background: none; font: inherit; text-align: left; cursor: pointer;
+  }
   .sheet-link:hover, .sheet-link.on { color: var(--ink); }
   .sheet-cta { display: flex; justify-content: center; margin-top: var(--s-3); }
 

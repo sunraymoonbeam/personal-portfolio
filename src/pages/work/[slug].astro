@@ -31,7 +31,7 @@ const { prev, next } = getAdjacent(links, keyOf('work', entry.id));
 <ArticleLayout
   title={d.title} summary={d.summary}
   eyebrow={`${d.role} at ${employer.data.name}, ${formatRange(d.start, d.end)}`}
-  backHref="/work" backLabel="Work experience"
+  backHref="/work/" backLabel="Work experience"
   prev={prev} next={next} noun="role"
 >
   {/* Outcomes get their own band between the title and the story: under the

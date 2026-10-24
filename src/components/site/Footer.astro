@@ -9,9 +9,9 @@ const year = new Date().getFullYear();
   <nav aria-label="Footer" class="links">
     {/* Hobbies gets the crayon wordmark here too, so the row is not listing it twice. */}
     {site.nav.map((l) => (
-      <a href={l.href} class:list={['t-14', { muted: l.href !== '/hobbies' }]}
-         aria-label={l.href === '/hobbies' ? 'Hobbies' : undefined}>
-        {l.href === '/hobbies' ? <CrayonWord size={16} /> : l.label}
+      <a href={l.href} class:list={['t-14', { muted: l.href !== '/hobbies/' }]}
+         aria-label={l.href === '/hobbies/' ? 'Hobbies' : undefined}>
+        {l.href === '/hobbies/' ? <CrayonWord size={16} /> : l.label}
       </a>
     ))}
     <span class="sep" aria-hidden="true"></span>

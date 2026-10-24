@@ -25,7 +25,7 @@ const { prev, next } = getAdjacent(links, keyOf('projects', entry.id));
 <ArticleLayout
   title={d.title} summary={d.claim}
   eyebrow={d.status === 'Shipped' ? formatMonth(d.published) : `${formatMonth(d.published)}, ${d.status.toLowerCase()}`}
-  backHref="/projects" backLabel="All projects"
+  backHref="/projects/" backLabel="All projects"
   prev={prev} next={next} noun="project"
 >
   <div slot="head" class="head-bits">

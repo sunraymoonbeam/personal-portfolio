@@ -47,6 +47,7 @@ export function initCursor() {
   }
 
   let i = 0;
+  for (let f = 0; f < POINTER_FRAMES; f++) root.classList.remove(`pointer-${f}`);
   root.classList.add('pointer-0');
   const tick = () => {
     root.classList.remove(`pointer-${i}`);
@@ -59,11 +60,13 @@ export function initCursor() {
   if (wired) return;
   wired = true;
 
-  // Stop the timer when the tab is hidden; nothing to animate.
+  // Stop the timer when the tab is hidden, and start it again on return.
   document.addEventListener('visibilitychange', () => {
     if (document.hidden && frameTimer !== null) {
       window.clearInterval(frameTimer);
       frameTimer = null;
+    } else if (!document.hidden && frameTimer === null) {
+      initCursor();
     }
   });
 

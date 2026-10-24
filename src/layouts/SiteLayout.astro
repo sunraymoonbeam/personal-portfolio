@@ -10,11 +10,16 @@ import Footer from '~/components/site/Footer.astro';
 import { ClientRouter } from 'astro:transitions';
 import { site } from '~/config/site';
 
-interface Props { title?: string | undefined; description?: string | undefined; image?: string | undefined; }
+interface Props {
+  title?: string | undefined; description?: string | undefined; image?: string | undefined;
+  /** The 404 page: no canonical or og:url, since /404/ is not a real URL. */
+  noindex?: boolean | undefined;
+}
 const {
   title = `${site.name} — ${site.role}`,
   description = site.tagline,
   image,
+  noindex = false,
 } = Astro.props;
 const canonical = new URL(Astro.url.pathname, site.origin).href;
 ---
@@ -25,7 +30,7 @@ const canonical = new URL(Astro.url.pathname, site.origin).href;
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
-    <link rel="canonical" href={canonical} />
+    {noindex ? <meta name="robots" content="noindex" /> : <link rel="canonical" href={canonical} />}
     <meta name="color-scheme" content="light dark" />
     <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#161618" media="(prefers-color-scheme: dark)" />
@@ -33,7 +38,7 @@ const canonical = new URL(Astro.url.pathname, site.origin).href;
     <meta property="og:type" content="website" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:url" content={canonical} />
+    {!noindex && <meta property="og:url" content={canonical} />}
     {image && <meta property="og:image" content={new URL(image, site.origin).href} />}
     <meta name="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />

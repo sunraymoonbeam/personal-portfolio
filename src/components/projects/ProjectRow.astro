@@ -8,7 +8,7 @@ interface Props { entry: Project; index: number; }
 const { entry, index } = Astro.props;
 const flipped = index % 2 === 1;
 const d = entry.data;
-const href = d.writeup ? `/projects/${entry.id}` : undefined;
+const href = d.writeup ? `/projects/${entry.id}/` : undefined;
 ---
 {/* Row order: year and status, then the name, the
     one-line claim, a full paragraph, what it is built with, and finally the

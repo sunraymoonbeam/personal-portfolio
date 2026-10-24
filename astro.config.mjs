@@ -13,16 +13,18 @@ export default defineConfig({
   prerenderConflictBehavior: 'error',
 
   // The page was /resume before it was /cv. Keep the old URL working.
+  // Production answers these in nginx.conf with one 301; these pages cover
+  // `astro dev` and any host without that config.
   redirects: {
-    '/resume': '/cv',
+    '/resume': '/cv/',
     // Work slugs dropped the start year. Old links still resolve.
-    '/work/carro-2025': '/work/carro',
-    '/work/ai-singapore-2024': '/work/ai-singapore',
-    '/work/nie-2023': '/work/nie',
-    '/work/dos-2023': '/work/dos',
-    '/work/tessaract-2022': '/work/tessaract',
+    '/work/carro-2025': '/work/carro/',
+    '/work/ai-singapore-2024': '/work/ai-singapore/',
+    '/work/nie-2023': '/work/nie/',
+    '/work/dos-2023': '/work/dos/',
+    '/work/tessaract-2022': '/work/tessaract/',
     // The Linux and Git exercise was folded back into the AI Singapore story.
-    '/projects/onboarding': '/work/ai-singapore',
+    '/projects/onboarding': '/work/ai-singapore/',
   },
 
   image: {

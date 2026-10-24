@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://renhwa.com/sitemap-index.xml

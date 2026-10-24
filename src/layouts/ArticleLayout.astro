@@ -81,7 +81,10 @@ const label = (dir: 'Previous' | 'Next') => (noun ? `${dir} ${noun}` : dir);
     const link = document.querySelector<HTMLAnchorElement>(`[data-adj="${e.key === 'ArrowLeft' ? 'prev' : 'next'}"]`);
     if (link) { e.preventDefault(); link.click(); }
   };
-  document.addEventListener('keydown', onKey);
+  // The router re-runs this script on every article visit; bind only once.
+  // onKey looks the links up at press time, so the first binding stays right.
+  const w = window as Window & { __adjKeys?: boolean };
+  if (!w.__adjKeys) { w.__adjKeys = true; document.addEventListener('keydown', onKey); }
 </script>
 <style>
   .head { display: flex; flex-direction: column; gap: var(--s-4); padding-block: var(--s-10) var(--s-6); }

@@ -17,10 +17,10 @@ export const site = {
    * cluster instead, so they are not in this list.
    */
   nav: [
-    { href: '/projects', label: 'Projects' },
-    { href: '/work', label: 'Work experience' },
-    { href: '/skills', label: 'Skills' },
-    { href: '/hobbies', label: 'Hobbies' },
-    { href: '/about', label: 'About' },
+    { href: '/projects/', label: 'Projects' },
+    { href: '/work/', label: 'Work experience' },
+    { href: '/skills/', label: 'Skills' },
+    { href: '/hobbies/', label: 'Hobbies' },
+    { href: '/about/', label: 'About' },
   ],
 } as const;

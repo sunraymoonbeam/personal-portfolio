@@ -9,14 +9,14 @@ const [projects, work, hobbies] = await Promise.all([
 
 const items = [
   ...site.nav.map((n) => ({ group: 'Pages', title: n.label, sub: '', href: n.href })),
-  { group: 'Pages', title: 'CV', sub: '', href: '/cv' },
-  { group: 'Pages', title: 'Contact', sub: '', href: '/contact' },
+  { group: 'Pages', title: 'CV', sub: '', href: '/cv/' },
+  { group: 'Pages', title: 'Contact', sub: '', href: '/contact/' },
   ...projects.filter((p) => p.data.writeup).map((p) => ({
-    group: 'Projects', title: p.data.title, sub: p.data.claim, href: `/projects/${p.id}`,
+    group: 'Projects', title: p.data.title, sub: p.data.claim, href: `/projects/${p.id}/`,
   })),
   ...work.filter(({ entry }) => entry.data.writeup).map(({ entry, employer }) => ({
     // Two roles share the title "AI Engineer"; the company is what tells them apart.
-    group: 'Work experience', title: `${entry.data.role} · ${employer.data.name}`, sub: entry.data.title, href: `/work/${entry.id}`,
+    group: 'Work experience', title: `${entry.data.role} · ${employer.data.name}`, sub: entry.data.title, href: `/work/${entry.id}/`,
   })),
   ...hobbies.filter((h) => h.href).map((h) => ({
     group: 'Hobbies', title: h.title, sub: h.caption, href: h.href,
