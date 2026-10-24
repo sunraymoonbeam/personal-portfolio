@@ -1,148 +1,82 @@
 # TODO
 
-Rough order of value. Nothing here is started.
+What is still open, roughly in order of value. Finished work is in the git
+log, not here.
 
-## 0. Hobbies: done
+## 1. Questions for Zack
 
-Four essays with real photographs, rewritten 2026-10-20 in the new layout
-(text first, paired square photos). See `docs/writing.md`.
+The site cannot move on these without his answer. Ask, then record the
+answer in [`docs/interview.md`](docs/interview.md).
 
-## 1. Finish the content
-
-Rewritten 2026-10-20: home, every index page, all six roles, both projects,
-About. The rules are in [`docs/writing.md`](docs/writing.md).
-
-Still open:
-
-- **Carro "Looking back".** Needs his answers. Run the Carro section of
-  [`docs/interview.md`](docs/interview.md), then AI Singapore.
 - **Kanta's origin.** Was it built for a wedding? The cover suggests so.
-- **Echo's privacy line** ("Half of every chat is someone else's messages")
-  was added in the rewrite. Confirm he agrees.
+- **Echo's privacy line** ("Half of every chat is someone else's messages").
+  Does he agree with it?
+- **AI Singapore rig clip.** Third-party, source unknown. Keep it or swap it.
+- **Facts to confirm:** the Batu Caves caption, his water temperature and
+  brew method for the coffee table, and whether "sprint retros and spec
+  reviews" (AI Singapore) is a claim he can defend.
+- **CV claims with no source in the vault:** AI Singapore +20%, NIE ASR 30%,
+  the Tessaract title and "10+ firms", the DOS wording.
 
-## 2. Real pictures
+## 2. Put the site on LinkedIn and the CV
 
-Hobbies are done. Work and project articles no longer show a cover above the
-text; the work covers are still placeholder cats and only matter if a page
-starts using them again.
+The site is live and the share card is ready (`public/og.jpg`).
 
-- Real photos for Carro and AI Singapore first: the team, the office, a screen
-  that is safe to show.
+- LinkedIn: the **Website** field in Contact info, and a **Featured** link,
+  which shows the share card.
+- The CV header already links renhwa.com. Nothing to do there.
+- GitHub profile README and email signature.
+
+## 3. Real pictures
+
+- Carro and AI Singapore: the team, the office, a screen that is safe to show.
 - Project covers are stock. `echo/chat.jpg` is the honest one; consider it.
-- Decide whether work and project articles go single-column like the hobbies.
+- The work covers are placeholder cats. They only matter if a page starts
+  showing them again.
 
-## 3. Interactive ideas (later)
+## 4. Seed real projects
 
-His list, 2026-10-24: a personal logo of his own, the skill tree, a 3D model
-of himself, a coffee animation, a Pokédex-style design (a use case to
-explore, e.g. hobbies or skills as collectable entries), and more 3D models
-around the site.
-
-- **Personal logo.** Replace the current mark with one he designs or
-  commissions.
-- **Coffee animation.** For the coffee hobby page: something like a pour or a
-  bloom, CSS or Lottie, off under reduced motion.
-- **Pokédex design.** A card-collection layout: each entry with a sprite,
-  type and stats. Decide which collection it fits before building.
-- **3D models.** Beyond the portrait: small models for projects or hobbies,
-  lazy-loaded with still fallbacks.
-
-- **3D me on the home page.** Replace the "More about me" link under the
-  portrait with a small 3D model of Zack that pops up, invites a click (to
-  About), and can be rotated by dragging. Needs a scan or a modelled asset
-  (glTF), a lazy-loaded viewer, a still fallback and reduced-motion support.
-- **Skills as a skill tree.** See section 5: he wants it to feel like a
-  game's skill tree.
-
-## 4. A personal log
-
-New collection. The only item here that is real engineering rather than
-writing.
-
-- Decide first: is this a blog, a now page, or a changelog? They want
-  different shapes and only one of them obliges you to keep posting.
-- Needs a collection in `src/content.config.ts`, a folder, an index route and
-  an article route. Roughly a copy of the hobbies pair.
-- Add it to `src/config/site.ts` nav and to the search index.
-- Pick the URL before writing anything. Renaming it later costs a redirect.
-
-## 5. A skills graph (a game-style skill tree)
-
-Hardest to do well, easiest to do badly. He asked (2026-10-24) for an
-interactive graph like a game's skill tree: nodes per skill, edges for "built
-on", each unlocked node linking to the projects and roles that used it.
-
-- A chart of "proficiency" per technology invents numbers about yourself.
-  Decide what it actually measures before drawing anything: years used,
-  projects shipped, or where something sits in a stack.
-- If it is a relationship diagram rather than a rating, it can be a static
-  SVG and stay honest.
-- Whatever it is, it must work without JavaScript or degrade to the current
-  list.
-
-## 6. Write-ups on skills and reflections
-
-Related to 4 but separable, and more valuable.
-
-- A paragraph on why you reach for a tool beats a bar chart of how well you
-  know it.
-- Could be a `note` field per technology in `src/data/technologies.ts`, or
-  its own short article per group on `/skills`.
-
-## 7. Seed real projects
-
-- Only Kanta and Echo are real, and the Linux and Git exercise is thin.
+- Only Kanta and Echo are real.
 - Anything added needs a cover, a claim, a summary, tags and a stack, or it
   will look unfinished next to the others.
 
-## 8. Put the site on LinkedIn and the CV
+## 5. A personal log
 
-The site is live and nothing points at it.
+A new collection. The only item here that is real engineering rather than
+writing.
 
-- LinkedIn has two places: the **Website** field in Contact info, and the
-  **Featured** section, which shows a preview card. The Featured card is the
-  one people actually click, and it will look bare until the SEO item below
-  gives it an image.
-- The CV header lists GitHub and LinkedIn but not the site. Add it beside
-  them. Note the PDF at `public/cv.pdf` is the source of record and would need
-  regenerating from whatever produced it.
-- Anywhere else the same line appears: GitHub profile README, email signature.
+- Decide first: a blog, a now page or a changelog. They want different shapes,
+  and only one of them obliges you to keep posting.
+- Needs a collection in `src/content.config.ts`, a folder, an index route and
+  an article route. Roughly a copy of the hobbies pair.
+- Add it to the nav in `src/config/site.ts` and to the search index.
+- Pick the URL before writing anything. Renaming it later costs a redirect.
 
-## 9. SEO
+## 6. Write-ups on skills
 
-Audited on the built output. Four things are already right and three are
-missing.
+- A paragraph on why he reaches for a tool beats a bar chart of how well he
+  knows it.
+- Could be a `note` field per technology in `src/data/technologies.ts`, or a
+  short article per group on `/skills`.
 
-Right: a sitemap with 19 URLs, a canonical link on every page, a unique
-description per page, one `h1` per page.
+## 7. Interactive ideas (later)
 
-Missing:
+His list, 2026-10-24.
 
-- **No `robots.txt`.** The sitemap integration does not write one. Without it
-  crawlers have to guess where the sitemap is. One file in `public/`.
-- **No `og:image`.** Every link to this site, on LinkedIn, in a message, in a
-  Slack channel, renders as a bare text card. `SiteLayout` already accepts an
-  `image` prop and nothing passes one. Needs one image made, roughly
-  1200 by 630, plus a default wired into the layout.
-- **No structured data.** No `Person` or `WebSite` JSON-LD, so a search engine
-  has to infer who the site is about. This is what produces a rich result for
-  a personal name. About twenty lines in `SiteLayout`.
-
-Do the `og:image` before the LinkedIn item above, or the Featured card will
-look unfinished.
-
----
-
-## Also worth doing, not asked for
-
-- **`reference()` for technology ids.** A typo in `stack:` currently ships a
-  chip with the typo on it. See the known gap in `docs/astro-conventions.md`.
-- **The NIE logo** is the full lockup, so the small type is unreadable at
-  32px. A tighter crop would need the shield and the wordmark separated.
-- **Cover images** are up to 256 KB. Worth a look once they are real photos
-  rather than placeholders.
-- **The crayon font costs 80 KB on every page.** Shantell Sans is downloaded
-  for the Hobbies wordmark and nothing else. It is more than the HTML, the CSS
-  and the JavaScript put together. Subsetting it to the letters actually used,
-  or drawing the wordmark as an SVG, would remove it. I like the wordmark, so
-  this is a trade rather than a bug.
+- **Skills as a game-style skill tree.** Nodes per skill, edges for "built
+  on", each unlocked node linking to the roles and projects that used it.
+  Decide what it measures before drawing anything: a chart of "proficiency"
+  invents numbers. A relationship diagram can be a static SVG and stay honest.
+  It must work without JavaScript or fall back to the current list.
+- **3D model of him on the home page.** Replaces the "More about me" link under
+  the portrait: pops up, invites a click (to About), rotates on drag. Needs a
+  scan or a modelled glTF, a lazy-loaded viewer, a still fallback and
+  reduced-motion support.
+- **Personal logo.** Replace the current mark with one he designs or
+  commissions. The favicon, touch icon and share image would follow it.
+- **Coffee animation.** For the coffee page: a pour or a bloom, CSS or Lottie,
+  off under reduced motion.
+- **Pokédex-style design.** A card collection: each entry with a sprite, a type
+  and stats. Decide which collection it fits (hobbies? skills?) first.
+- **More 3D models.** Small models for projects or hobbies, lazy-loaded, with
+  still fallbacks.

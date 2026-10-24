@@ -28,3 +28,6 @@ pnpm-debug.log*
 
 # Disposable fixture checkout from scripts/check-routes.mjs
 .route-fixture-*/
+
+# Per-user agent tool config
+.codex/

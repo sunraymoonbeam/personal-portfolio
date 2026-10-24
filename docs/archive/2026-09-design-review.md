@@ -72,7 +72,7 @@ toggle only in the footer.
 - Copy rewritten site-wide against `docs/writing.md`.
 - Articles: no cover above the text; sidebar-less articles are one centred
   column; every photo block is two across and square (`4c0b669`, `bedeb3a`).
-  Rules in `docs/design/apple.md#articles-and-photos`.
+  Rules in `docs/design.md#articles-and-photos`.
 - Skills chips are plain again; the evidence dropdown is gone.
 - Gap 2 below is half closed: article pages no longer show the stock covers in
   a screenshot frame. Project cards on the home and /projects still do.
@@ -127,7 +127,7 @@ it to the cover costs one line and closes this gap outright.
 The components say so themselves: `Header.astro` "Geometry copied from the
 reference header", `WorkList.astro` "as on the reference page", `ProjectRow.astro`
 "Row order follows the reference", `contact.astro` "as on the reference contact
-page". See `docs/design/apple.md`.
+page". See `docs/design.md`.
 
 Nothing in the composition says *AI systems engineer*. There is no number at
 display size, no architecture diagram, no trace, no dashboard. The work is

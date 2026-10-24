@@ -3,7 +3,7 @@
 > **Historical. Do not edit copy from here.** This is the round 1 snapshot
 > (2026-09-28). The copy was rewritten again in October 2026 and the text
 > below is out of date. The current copy lives in `src/copy/` and
-> `src/content/`; the rules are in [`writing.md`](writing.md).
+> `src/content/`; the rules are in [`writing.md`](../writing.md).
 
 ## Prompt for the reviewer
 

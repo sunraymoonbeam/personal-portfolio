@@ -91,7 +91,7 @@ One of these alone is fine; several together are what a reader notices.
   Neither has a source doc; they are his call, like the résumé. Other prose
   numbers trace to a source doc (see each vault's `numbers.md`).
 - **Hobby articles:** text first, each photo block under the paragraph it
-  belongs to. See [`design/apple.md`](design/apple.md#articles-and-photos).
+  belongs to. See [`design.md`](design.md#articles-and-photos).
 
 ## How to change copy with him
 

@@ -6,18 +6,18 @@
 the conventions and the verification gate, and it is kept in step with the
 code.
 
-- `docs/astro-conventions.md` — why the tree is arranged this way, checked
+- `docs/astro-conventions.md`: why the tree is arranged this way, checked
   against Astro's own sites and the Google TypeScript Style Guide.
-- `docs/writing.md` — how the copy is written and why. Read it before you
+- `docs/writing.md`: how the copy is written and why. Read it before you
   change any sentence: what is verbatim from the résumé, the AI-writing
   patterns to avoid, and his voice.
-- `docs/interview.md` — questions to ask him, page by page, and the answers
+- `docs/interview.md`: questions to ask him, page by page, and the answers
   so far. Interview before writing any reflection; never invent one.
-- `docs/design/apple.md` — the design rules, and which are Apple's.
-- `docs/design-review.md` — the 2026-09-30 design audit: what was found, what
-  is already fixed and in which commit, and the gaps still open. Read this
-  before starting any design work, so you do not redo a closed finding.
-- `TODO.md` — what is unfinished.
+- `docs/design.md`: the design rules, and which are Apple's.
+- `docs/archive/`: past reviews (copy, 2026-09; design audit, 2026-09-30).
+  Read the design audit before design work, so you do not redo a closed
+  finding. Never edit copy from the copy review; it is out of date.
+- `TODO.md`: what is unfinished.
 
 ## Before you claim something works
 
