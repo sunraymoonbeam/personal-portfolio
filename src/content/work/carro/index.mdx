@@ -60,14 +60,17 @@ them are built on the new harness whose development I led.
 <Figure src={sell} zoom alt="A WhatsApp chat on a staging account. A customer says they want to sell. The agent asks for the plate, make, model, variant, year, transmission and engine size, confirms the details it found, asks for the customer's area, and lists three inspection centres in Kuala Lumpur." caption="Selling a car on WhatsApp: the agent qualifies the car, then finds an inspection centre nearby. Staging, with test data." />
 
 Before I joined, the team had tried several tools, from Google's agent builder
-to Dify. The agents hallucinated and didn't hold up, so the team settled on
-Google ADK, which performed well in production.
+to [Dify](https://github.com/langgenius/dify). The agents hallucinated and
+didn't hold up, so the team settled on
+[Google ADK](https://github.com/google/adk-python), which performed well in
+production.
 
 ADK had its own limit: context. A workflow like selling a car has many stages,
 and each stage has its own rules. That's too much context for one agent, so
 every stage became its own sub-agent, with tools and prompts that developers
-wrote in code. Every new workflow meant more developer work, and we couldn't
-scale out.
+wrote in code. Every new workflow meant more developer work. We could only
+scale vertically, by making each bot do more, and not horizontally, by adding
+workflows cheaply.
 
 When we were asked to build the Malaysian sell workflow, the plan was one bot
 for each stage: qualification, scheduling, rescheduling and recovery. I asked
@@ -75,7 +78,9 @@ why every workflow needed its own bot. Why not one bot that could do all of
 it?
 
 I reviewed the landscape, weighed the options, and built three proofs of
-concept: Agno, the Claude Agent SDK and LangChain Deep Agents. Deep Agents won,
+concept: [Agno](https://github.com/agno-agi/agno), the
+[Claude Agent SDK](https://github.com/anthropics/claude-agent-sdk-python) and
+[LangChain Deep Agents](https://github.com/langchain-ai/deepagents). Deep Agents won,
 with skills that use progressive disclosure. The agent sees a short list of
 what each skill does, and loads the full instructions only when it needs them.
 So one general agent can run many workflows, and ops can write their own
@@ -92,7 +97,7 @@ in step.
 ### Department agents
 
 Internal teams wanted agents too, for their own workflows: investigating
-tickets, pulling data, putting reports together. We started from Nanobot, an
+tickets, pulling data, putting reports together. We started from [Nanobot](https://github.com/HKUDS/nanobot), an
 open-source personal agent, and changed it to suit a company. It was built for
 one trusted person, so it had little security. I added:
 
@@ -235,7 +240,7 @@ engineer should be able to defend how they built something: what they chose,
 what it costs, and what they gave up. My job is to see the bigger picture, say
 that plainly, and pick the option that fits where the business is going.
 
-### Experiments, not guesses
+### Experimentation
 
 AI engineering isn't like traditional software engineering. Code does what you
 write. A model does what it tends to, and a change that fixes one ticket can

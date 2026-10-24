@@ -42,14 +42,18 @@ export function selectFeatured<T extends { data: { featuredOrder?: number | unde
     .slice(0, limit);
 }
 
-/** Previous/next within one collection, over entries that actually have routes. */
+/**
+ * Previous/next within one collection, over entries that actually have routes.
+ * Follows the order the index page lists them in: "next" is the card after
+ * this one. Chronological prev/next made the first hobby show only "Previous".
+ */
 export function getAdjacent(
   ordered: ArticleLink[],
   current: EntryKey,
 ): { prev?: ArticleLink | undefined; next?: ArticleLink | undefined } {
   const i = ordered.findIndex((e) => e.key === current);
   if (i === -1) return {};
-  return { prev: ordered[i + 1], next: ordered[i - 1] };
+  return { prev: ordered[i - 1], next: ordered[i + 1] };
 }
 
 export const toArticleLinks = (

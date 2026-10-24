@@ -45,18 +45,18 @@ test('selectFeatured returns nothing when nothing is featured', () => {
   assert.deepEqual(selectFeatured([entry('a'), entry('b')], 3), []);
 });
 
-test('getAdjacent walks newest-first order and stops at the ends', () => {
+test('getAdjacent follows listing order and stops at the ends', () => {
   const links: ArticleLink[] = [
     { key: keyOf('work', 'new'), href: '/work/new', title: 'New' },
     { key: keyOf('work', 'mid'), href: '/work/mid', title: 'Mid' },
     { key: keyOf('work', 'old'), href: '/work/old', title: 'Old' },
   ];
   const mid = getAdjacent(links, keyOf('work', 'mid'));
-  assert.equal(mid.next?.title, 'New');
-  assert.equal(mid.prev?.title, 'Old');
+  assert.equal(mid.prev?.title, 'New');
+  assert.equal(mid.next?.title, 'Old');
 
-  assert.equal(getAdjacent(links, keyOf('work', 'new')).next, undefined);
-  assert.equal(getAdjacent(links, keyOf('work', 'old')).prev, undefined);
+  assert.equal(getAdjacent(links, keyOf('work', 'new')).prev, undefined);
+  assert.equal(getAdjacent(links, keyOf('work', 'old')).next, undefined);
 });
 
 test('keys are collection-qualified so ids cannot collide across collections', () => {

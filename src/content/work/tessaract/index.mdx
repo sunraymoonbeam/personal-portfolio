@@ -36,11 +36,11 @@ The data came from legacy legal-practice systems and Excel files, and every
 firm kept its books a little differently. My tools were Python, pandas and
 SQL, and a lot of checking.
 
-<Figure src={tenants} zoom alt="One database per firm. The platform application talks to Firm A, Firm B and Firm C databases. A PL/pgSQL set-up function creates the company and its admin users; a Python migration cleans the source and loads one firm at a time." caption="How each firm's data stayed apart, and where my scripts and SQL came in." />
+<Figure src={tenants} zoom alt="One database per firm. The platform application talks to Firm A, Firm B and Firm C databases. A PL/pgSQL set-up function creates the company and its admin users; a Python migration cleans the source and loads one firm at a time." caption="One database per firm, with my set-up function and migration scripts." />
 
-## Noteworthy projects
+## Highlights
 
-### Moving a law firm's ledger
+### Ledger migration
 
 The biggest job was a large firm's accounts: 18 months of journal entries from
 the old system, about 600,000 rows of raw reports. Accounting data has one
@@ -55,7 +55,7 @@ each code got a mapping or a new account, and I ran the whole batch again.
 
 <Figure src={ledger} alt="A check report for 2021 and January to June 2022: raw rows 353,848 and 253,141, cleaned lines 264,759 and 188,913, journal entries 89,089 and 64,228, debits equal credits in both years, 237 and 139 account codes missing from the new chart, 268 distinct in total." caption="The ledger's check report. Money amounts are left out." />
 
-### A migration I could repeat
+### A repeatable migration
 
 Clients, cases, invoices, payments, trust money: every record type went
 through the same five steps, so I made them a routine:
@@ -66,7 +66,7 @@ through the same five steps, so I made them a routine:
 4. **Load** it into the firm's database.
 5. **Post and reconcile** through the platform's API, and tie the totals back.
 
-<Figure src={pipeline} zoom alt="The migration pipeline: extract, profile, clean and map with Python and pandas, load one import sheet per record type into the firm's PostgreSQL database, then post invoices and payments by API and tie totals back. A failed check loops back to the mapping." caption="Five steps for every record type. A failed check sends the batch back to the mapping." />
+<Figure src={pipeline} zoom alt="The migration pipeline: extract, profile, clean and map with Python and pandas, load one import sheet per record type into the firm's PostgreSQL database, then post invoices and payments by API and tie totals back. A failed check loops back to the mapping." caption="The migration pipeline. A failed check sends the batch back to the mapping step." />
 
 I built a small command-line tool for the cleaning step, with a report sheet
 of row counts, empty columns and duplicates for every table, because I was
@@ -82,7 +82,7 @@ before and after.
 
 <Figure src={rows} alt="Rows in the final import sheets by record type: ledger lines 453,672, case updates 39,455, clients 24,218, invoice lines 3,240, trust-account records 2,532, contacts, payments and other 1,348. Total 524,465 rows." caption="Rows in the final import sheets, July 2022 to January 2023." />
 
-### When the data didn't fit the model
+### An investment fund
 
 Not every client was a law firm. One was an investment fund, and its records
 had six kinds of share transactions where the platform had five, plus prices
@@ -90,7 +90,7 @@ the platform had nowhere to put. I mapped the types, added the missing fields
 and updated the screens, then imported the fund's investors and their
 transactions.
 
-### Set-up and templates
+### Set-up and document templates
 
 Each new firm needed its own company and admin users. I wrote a PL/pgSQL
 function that created both in one call. And each firm wanted its own
@@ -98,38 +98,42 @@ documents, so I rebuilt their invoices, receipts, credit notes and letters as
 Word templates filled from the platform's fields: about 180 template files
 across about 10 law firms.
 
-<Figure src={templates} zoom alt="Rebuilding a firm's documents: the firm's form, a field map from each blank to a model field, a Word template with loops and conditions, then testing against the firm's sample and shipping." caption="From a firm's own form to a template the platform fills in." />
+<Figure src={templates} zoom alt="Rebuilding a firm's documents: the firm's form, a field map from each blank to a model field, a Word template with loops and conditions, then testing against the firm's sample and shipping." caption="Rebuilding a firm's document as a template the platform fills in." />
 
 ## Reflections
 
-### Check the totals, not just the rows
+### Reconciliation
 
-Row counts tell you nothing went missing. Totals tell you nothing changed.
-Debits equal to credits caught problems a row count never would, and I still
-look for the invariant in any data I move.
+An import that succeeds can still be wrong. Row counts tell you nothing went
+missing. Totals tell you nothing changed. In accounting data, debits equal to
+credits caught problems a row count never would have. In any data I move now,
+I look for a total or a rule that must hold before and after, and I check it.
 
-### Ask for the real data early
+### Getting real data early
 
-On one migration the client kept their real data back until close to
+On one migration the client held back their real data until close to
 delivery, for confidentiality reasons. We'd written the scripts against our
-guesses about its format. The real files had inconsistent column names,
-missing values and formatting we hadn't planned for, and we had to clean and
-revalidate everything in the last few days. Now I ask for a representative
-sample at the start, even an anonymised one, and write scripts that expect the
-data to be messier than promised.
+guesses. The real files had inconsistent column names, missing values and
+formatting we hadn't planned for, and we cleaned and checked everything again
+in the last few days. Now I ask for a representative sample at the start, even
+an anonymised one, and I expect the data to be messier than promised.
 
-### Say what you can't do yet
+### Managing expectations
 
-On one onboarding, the firm's accountants were unhappy about leaving the
+The firm's accountants on one onboarding were unhappy about leaving the
 workflows they knew, and the launch date was close. Saying yes to every
-request would have sunk the launch, so I told them plainly what we could
-change before launch, what would come later, and why. I also wrote guides for
-the problems I expected them to hit, like reconciling records and handling
-missing fields. The onboarding went smoothly.
+request would have put the launch at risk. I told them plainly what we could
+change before launch, what would come later, and why, and I wrote guides for
+the problems I expected them to hit. The onboarding went smoothly.
 
-### Production deserves a safety net
+### Working on production
 
-Looking at my old SQL now, some of it changed user groups on a live database
-with no transaction around it and no backup first. It worked. Today I'd wrap
-every write in a transaction, check the count it touched, and only then
-commit.
+Some of my old SQL changed user groups on a live database with no transaction
+around it and no backup first. It worked. Now I wrap every
+write in a transaction, check how many rows it touched, and only then commit.
+
+### Automating repeat work
+
+I ran the same profiling checks by hand for every firm before I turned them
+into a small command-line tool. When I do a task a second time now, I write
+the tool before the third.

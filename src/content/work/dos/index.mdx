@@ -46,7 +46,7 @@ a deck of about 190 slides, with a roadmap at the end.
 
 ## Noteworthy projects
 
-### Classifying with 32 examples
+### Text classification
 
 Survey answers have to be coded into fine categories: about 3,000 for
 household expenses, 1,023 for industries. A big model with a prompt is slow
@@ -58,7 +58,7 @@ examples, same class or different, then trains a plain logistic regression on
 the embeddings. I built DOSetFit around it: train from a CSV of labelled
 examples, then classify one sentence or a whole file.
 
-<Figure src={setfit} zoom alt="The SetFit pipeline: 32 labelled examples become sentence pairs; phase one fine-tunes a MiniLM sentence transformer with a cosine loss; phase two trains a logistic regression head; then it predicts one sentence or a CSV in batches." caption="Two training phases, no prompts, small enough for a laptop." />
+<Figure src={setfit} zoom alt="The SetFit pipeline: 32 labelled examples become sentence pairs; phase one fine-tunes a MiniLM sentence transformer with a cosine loss; phase two trains a logistic regression head; then it predicts one sentence or a CSV in batches." caption="SetFit trains in two phases and runs on a laptop." />
 
 Survey data couldn't leave its division, so I tested on a public benchmark,
 AG News. With 8 labelled headlines per class, 32 in all, it labelled 7,600
@@ -75,7 +75,7 @@ point.
 
 <Figure src={latency} alt="One prediction on a laptop CPU, log scale: SetFit 69 ms, flan-t5-small 0.86 s, flan-t5-base 4.1 s, flan-t5-large 12.8 s, flan-t5-xl 42.5 s." caption="One timed run each, on a laptop CPU in 2023." />
 
-### Answering questions from official publications
+### Question answering
 
 A colleague told me a vague question from the public, or one raised at a
 high-profile meeting, could take two to three hours to answer properly. The
@@ -87,14 +87,14 @@ looks in that index first, then arXiv, then the web, and shows which pages or
 links each answer came from. I started from an open-source template and
 adapted it to the department's documents.
 
-<Figure src={rag} zoom alt="DOSsier architecture. Indexing: PDF upload, text extraction, cleaning, chunking at 1,000 characters with 200 overlap, OpenAI embeddings into FAISS. Answering: a ReAct agent on GPT-3.5 calls a lookup tool over FAISS, arXiv search, web search or a summariser, and returns the answer with its sources." caption="Retrieval inside a ReAct agent: the department's documents first, then arXiv, then the web." />
+<Figure src={rag} zoom alt="DOSsier architecture. Indexing: PDF upload, text extraction, cleaning, chunking at 1,000 characters with 200 overlap, OpenAI embeddings into FAISS. Answering: a ReAct agent on GPT-3.5 calls a lookup tool over FAISS, arXiv search, web search or a summariser, and returns the answer with its sources." caption="DOSsier searches the department's documents first, then arXiv, then the web." />
 
 I tested it on Input-Output Tables publications against three answers from
 the team's FAQ. The answers were right in substance. One also quoted a number
 from a worked example in the source as if it were a fact, which taught me more
 than the two good answers did.
 
-### A narrative assistant for economists
+### Report drafting
 
 Over lunch with the economists who write the industry reviews, one of them
 said: "The hardest part is to come up with a narrative." The numbers were
@@ -108,7 +108,7 @@ three industries, on public SingStat tables.
 
 <Figure src={indostry} zoom alt="inDOStry Navigator flow: pick an industry, upload tables, plot, a CSV agent writes the trend, then ask follow-ups. A PDF chat tab reuses the DOSsier agent with an economist prompt and web search." caption="From tables to a first draft of the narrative." />
 
-### Explaining it to the department
+### Sharing it with the department
 
 The deck was the main deliverable: a history of NLP, how transformers work,
 in-context learning, fine-tuning and LoRA, SetFit, LangChain, and open models.
@@ -125,28 +125,33 @@ is worth it first, then build the boring parts:
 
 ## Reflections
 
-### Start from the pain
+### Understanding the users
 
-The economists' prototype exists because of one sentence over lunch. My best
-ideas that summer came from sitting with the people who'd use the tool, not
-from the model release notes.
+My best ideas that summer came from the people who would use the tools, not
+from model release notes. The report prototype exists because an economist
+told me over lunch that the narrative was the hard part. The Q&A prototype
+exists because a colleague told me some questions took hours to answer. I now
+ask a team what is slow or painful before I decide what to build.
 
-### The small model often wins
+### Choosing the model
 
-Everyone wanted to try the biggest model. For coding survey answers, a
-118-million-parameter model trained on 32 examples was faster, cheaper and
-good enough. The lesson I kept: reach for the smallest thing that does the job.
+Everyone wanted to try the biggest model. For coding survey answers into fixed
+categories, a small model trained on 32 examples was hundreds of times faster,
+cheaper and good enough. I start with the smallest model that can do the job,
+and move up only when it can't.
 
-### Turn it off
+### Cloud costs
 
 I left a cloud endpoint for a 13-billion-parameter model running for a week,
-and the bill was not small. The lesson: every experiment gets a budget alert
-and a shutdown plan before it starts.
+and the bill was not small. Every experiment I run now has a budget alert and
+a plan to shut it down before it starts.
 
-### Know what a demo proves
+### Prototypes and production
 
 85% on a public benchmark and three good answers make a promising demo, not a
-system. The deck said so, and said what it would take to find out on real
-data. Most of this is standard now, and LangChain, the library everyone called
-bloated that summer, runs a lot of production systems, including some of the
-agents I work on at Carro.
+system. The deck said what it would take to test the ideas on real data:
+a vector database, embeddings that run offline, retrieval, and fine-tuning
+only where it pays. Most
+of that is standard now, and LangChain, which many people called bloated that
+summer, runs a lot of production systems, including some of the agents I work
+on at Carro.

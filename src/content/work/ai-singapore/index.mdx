@@ -26,7 +26,7 @@ import architecture from './architecture.png';
 import dataPipeline from './data-pipeline.png';
 import gitlab from './gitlab-pipeline.png';
 
-<Clips caption="“A woman is doing a chaînés, ballet jazz style dance”, before and after we taught the model to dance.">
+<Clips caption="“A woman is doing a chaînés, ballet jazz style dance”, before and after fine-tuning on dance.">
   <Clip label="Before fine-tuning" src="/work/ai-singapore/ballet-humanml3d.mp4" poster="/work/ai-singapore/ballet-humanml3d.webp"
         alt="A stick figure shifts its weight and lifts one arm." />
   <Clip label="After fine-tuning on dance" src="/work/ai-singapore/ballet-finetuned.mp4" poster="/work/ai-singapore/ballet-finetuned.webp"
@@ -50,9 +50,9 @@ sprints and a review with the studio and SUTD at the end of each.
 
 <Figure src={architecture} zoom alt="The system architecture. A data pipeline turns raw SMPL motion parameters and text annotations into processed motions and annotations, versioned with DVC. A training module trains T2M and MDM models in PyTorch with hyperparameter tuning, logging to MLflow. An inference module serves a FastAPI server and batch inference. An evaluation module generates motions and computes R-precision, FID, diversity and multimodality. A CI/CD lane runs linting and unit tests, builds the Docker image on Google Cloud and builds Sphinx docs." caption="The whole system, from raw motion capture to a Docker image." />
 
-## Noteworthy projects
+## Highlights
 
-### One pipeline for every dataset
+### Motion data processing
 
 Each motion dataset stores the body its own way:
 
@@ -92,9 +92,9 @@ HumanML3D:
         alt="A stick figure lifts both arms over its head, again and again." />
 </Clips>
 
-<Figure src={dataPipeline} zoom alt="The data processing pipeline. Motions go through pose extraction from SMPL parameters, mirroring, normalisation to a target skeleton facing Z+, and conversion to a 263-dimensional motion representation. Annotations go through text cleaning and part-of-speech tagging." caption="The data pipeline: motions on top, captions underneath." />
+<Figure src={dataPipeline} zoom alt="The data processing pipeline. Motions go through pose extraction from SMPL parameters, mirroring, normalisation to a target skeleton facing Z+, and conversion to a 263-dimensional motion representation. Annotations go through text cleaning and part-of-speech tagging." caption="The data pipeline for motions (top) and captions (bottom)." />
 
-### Training and an evaluation we could trust
+### Training pipeline
 
 We replicated several published models before choosing one, and I did the MDM
 (Motion Diffusion Model) replication and its training pipeline. It's a
@@ -103,12 +103,14 @@ guided by the text. On a third of an A100 it trained in 31 hours, where the
 paper used three days on a 2080 Ti. A latent-diffusion model we also tried took
 228 hours, which settled that choice.
 
-<Clips caption="Same prompt, “man jumping in excitement”. MDM is the one that looks excited.">
+<Clips caption="“Man jumping in excitement”, from the T2M baseline and from our final MDM.">
   <Clip label="T2M" src="/work/ai-singapore/jump-t2m.mp4" poster="/work/ai-singapore/jump-t2m.webp"
         alt="A 3D body makes one small jump." />
   <Clip label="Final MDM" src="/work/ai-singapore/jump-mdm.mp4" poster="/work/ai-singapore/jump-mdm.webp"
         alt="A 3D body makes a series of jumps and hops." />
 </Clips>
+
+### Evaluation pipeline
 
 I built the evaluation module. It generates a motion for each test caption,
 scores it, and logs the scores to MLflow during training:
@@ -143,7 +145,7 @@ With an evaluator we trusted, the team tuned the hyperparameters:
         alt="A 3D body takes a martial arts stance, kicks and spins." />
 </Clips>
 
-### Teaching it to dance
+### Fine-tuning on dance
 
 The studio wanted dance moves for in-game emotes, and the main dataset has
 almost none. I fine-tuned MDM on the AIST++ dance clips, and it learned the
@@ -153,7 +155,7 @@ this page is that model.
 It also forgot things. "A man walks forward, sits on the ground and crosses his legs" started
 to dance.
 
-<Clips caption="“A man walks forward, sits on the ground and crosses his legs.” The fine-tuned model would rather dance.">
+<Clips caption="“A man walks forward, sits on the ground and crosses his legs”, before and after fine-tuning on dance.">
   <Clip label="Before fine-tuning" src="/work/ai-singapore/sit-hml.mp4" poster="/work/ai-singapore/sit-hml.webp"
         alt="A stick figure lowers itself to the ground and crosses its legs." />
   <Clip label="After fine-tuning on dance" src="/work/ai-singapore/sit-ft.mp4" poster="/work/ai-singapore/sit-ft.webp"
@@ -170,7 +172,7 @@ captioning the 1,408 dance videos with a video language model, VideoLLaMA3:
 eight prompts, a Docker image to run it, and a plan to merge several captions
 into one with GPT-4o. We handed it over as the next step.
 
-### CI/CD and deployment
+### CI/CD optimisations
 
 I set up our GitLab pipeline: lint and unit tests, build the Docker image,
 push it to Google Cloud, then a manual deploy to the GPU cluster. The first
@@ -180,7 +182,7 @@ version took 20 minutes a run. Three changes brought it to 2:
 - caching for conda and pip between runs;
 - quieter pip flags, so the logs stayed readable.
 
-<Figure src={gitlab} alt="A GitLab pipeline: test:pytest and test:quality pass, then build:docker and deploy:docker pass, and a manual deploy:runai job waits." caption="Test, build, deploy. The last step waits for a person to press go." />
+<Figure src={gitlab} alt="A GitLab pipeline: test:pytest and test:quality pass, then build:docker and deploy:docker pass, and a manual deploy:runai job waits." caption="The GitLab pipeline: test, build, push, then a manual deploy to the GPU cluster." />
 
 The studio got the final system as a Docker Compose setup with a training
 service and an inference service, a FastAPI endpoint, the model weights, and
@@ -189,25 +191,29 @@ through the code.
 
 ## Reflections
 
-### Data first
+### Data quality
 
-The biggest jumps in quality came from fixing the data: one consistent format,
-statistics without the test set, captions for clips that had none. You can't
-build good AI models without good data. If I did it again, I'd start there
-before touching the model.
+The biggest gains came from the data, not the model: one consistent format
+across datasets, statistics computed without the test set, and captions for
+clips that had none. A better architecture can't make up for data the model
+learns the wrong thing from. If I did it again, I'd audit the data in the first
+sprint, before training anything.
 
-### Doubting the numbers
+### Prioritisation
 
-When the evaluation said the model was bad, the easy move was to start tuning.
-The evaluator was wrong, not the model. Now when a number surprises me, I check
-how it was measured before I act on it.
+My manager kept telling me to work in an agile way, and early on I didn't. I
+went deep on small parts and polished features the MVP didn't need yet. Each
+training run took more than a day, so every detour cost days.
 
-### Knowing what's good enough
+What I do now:
 
-Early on I spent time polishing parts of the MVP that didn't need it yet. On a
-proof of concept with a deadline, that time belongs to the riskiest part. My
-manager's advice was to know what's good enough and fail fast, and I still
-use it.
+- break the problem down and keep a priority list;
+- do the hardest or least certain task first;
+- write down what done looks like before I start;
+- get something working end to end, see where it fails, and improve that.
+
+When I catch myself polishing, I ask whether it moves the metric or the
+deliverable. If it doesn't, it waits.
 
 ### Explaining it simply
 
@@ -218,11 +224,23 @@ onboarding guides, built a small interactive repo for practising Linux commands
 and version control, and added checks to CI/CD so fewer mistakes reached
 review.
 
-### Processes, not people
+### Working with people
 
-When a teammate was frustrated and the mood dipped, I talked to him one to one
-and suggested a Thursday sync so everyone knew how their part touched the
-others. We talked about the process, never about who was slow. It didn't fix
-everything, and I learned where my job ended: keep my own work on track,
-protect my energy, and raise it with the manager when it's needed. We still
-hit our deadlines.
+People are different. They come with different motivations and different
+beliefs about how work should be done. Some want to push hard, some want to do
+their part well, and some find too much structure stressful.
+
+Under deadline pressure, one teammate got frustrated with the others' pace, and
+the mood dipped. I talked to him one to one to understand why, and I tried
+not to point fingers. Blame makes people defend themselves. A process gives
+everyone a shared problem to fix. So we leaned on process:
+
+- a Thursday sync on how each person's part connected to the others;
+- sprint retros, to raise what wasn't working without naming anyone;
+- spec reviews, so we agreed on what to build before building it;
+- a daily update from me on what I'd done and what was next, which others
+  started to post too.
+
+I also learned where my job ends. I keep my own work on track, and when a
+problem isn't mine to fix, I raise it with the manager early. We still hit our
+deadlines.
