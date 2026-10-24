@@ -12,7 +12,7 @@ and these rules are what fixed it. Read this before you touch any sentence.
 | Home lede | The résumé summary, plus "Solving problems is what I do. Writing code is only one of the ways I do it." on its own line. Change one, change the other. |
 | Metrics | Résumé numbers only. `context` says how or where (e.g. "across Singapore, Malaysia and Hong Kong"), never "reported in my résumé". |
 | Reflections ("Looking back") | His own words: interview answers, or the behavioural notes in the Google Drive `portfolio/behavioural` folder. Never invented. |
-| `public/resume.pdf` | Copied from `~/Documents/documents/portfolio/resume/resume.pdf`. |
+| `public/resume.pdf` | Copied from `~/Documents/documents/portfolio/resume/resume.pdf`, then run `npm run resume:preview` (the picture phones see on /cv; a test fails until you do). |
 
 If you need a fact you do not have, ask him. Do not guess and do not pad.
 The questions, and his answers so far, are in [`interview.md`](interview.md).
