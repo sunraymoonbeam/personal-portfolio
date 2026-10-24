@@ -41,6 +41,12 @@ One of these alone is fine; several together are what a reader notices.
    DOS I…"
 9. **Inflated words.** delve, crucial, robust, showcase, seamless, journey,
    passionate. Use the plain word.
+10. **Clever headings and captions.** "Teaching it to dance", "Label a little
+    before tuning a lot", "The fine-tuned model would rather dance". He calls
+    these slop. Name the thing: "Fine-tuning", "Evaluation pipeline",
+    "Ground truth first". A caption says what the picture shows.
+11. **"Put together, that's an agent fleet."** A sentence that sums up the
+    one before it. Cut it.
 
 ## What he wants instead
 
@@ -68,17 +74,22 @@ One of these alone is fine; several together are what a reader notices.
   eyebrow repeating the h1.
 - **Work rows on /work:** role, then the `tagline` (one line on what he did,
   in his words), then the bullets. Home rows show the longer `summary`.
-- **Work articles:** "The role" (or "The project"), "Noteworthy projects"
-  with one `###` per project, "Reflections" with one `###` per quality, named
+- **Work articles:** "The role" (or "The project"), then "Noteworthy
+  projects" when the role had separate projects (Carro, DOS) or "Highlights"
+  when it was one project (AISG, NIE, Tessaract), with one plain-named `###`
+  each. Technical roles follow the data's path: data format, data processing,
+  pipeline or training, evaluation, fine-tuning or tuning, CI/CD, "Reflections" with one `###` per quality, named
   as the quality itself ("Attention to detail", not "Every word has weight").
   Each `###` opens with a numbered red rule that restarts per section (see
   `src/styles/article.css`). The Outcomes band holds at most three numbers.
   Carro and AI Singapore are the reference pages; older roles still use "What I built" and
   "Looking back" until they are rewritten.
 - **Numbers on work pages:** the bullets follow the résumé, even where the
-  number is his call (Carro: 80% cost, 30% SOP deviations, 30% revenue). Prose
-  and the Outcomes band use numbers that trace to a source doc (76–80%, under
-  the measured 84–94%, and 93% adherence; see the Carro vault `numbers.md`).
+  number is his call (Carro: 80% cost, 30% SOP deviations, 30% revenue). He
+  also chose, on 24 Oct 2026, to show "30% fewer bot incidents and
+  hallucinations" in Carro's Outcomes band and "grew 30%" for workshop revenue.
+  Neither has a source doc; they are his call, like the résumé. Other prose
+  numbers trace to a source doc (see each vault's `numbers.md`).
 - **Hobby articles:** text first, each photo block under the paragraph it
   belongs to. See [`design/apple.md`](design/apple.md#articles-and-photos).
 

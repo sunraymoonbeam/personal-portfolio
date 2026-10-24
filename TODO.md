@@ -31,7 +31,16 @@ starts using them again.
 - Project covers are stock. `echo/chat.jpg` is the honest one; consider it.
 - Decide whether work and project articles go single-column like the hobbies.
 
-## 3. A personal log
+## 3. Interactive ideas (later)
+
+- **3D me on the home page.** Replace the "More about me" link under the
+  portrait with a small 3D model of Zack that pops up, invites a click (to
+  About), and can be rotated by dragging. Needs a scan or a modelled asset
+  (glTF), a lazy-loaded viewer, a still fallback and reduced-motion support.
+- **Skills as a skill tree.** See section 5: he wants it to feel like a
+  game's skill tree.
+
+## 4. A personal log
 
 New collection. The only item here that is real engineering rather than
 writing.
@@ -43,9 +52,11 @@ writing.
 - Add it to `src/config/site.ts` nav and to the search index.
 - Pick the URL before writing anything. Renaming it later costs a redirect.
 
-## 4. A skills graph
+## 5. A skills graph (a game-style skill tree)
 
-Hardest to do well, easiest to do badly.
+Hardest to do well, easiest to do badly. He asked (2026-10-24) for an
+interactive graph like a game's skill tree: nodes per skill, edges for "built
+on", each unlocked node linking to the projects and roles that used it.
 
 - A chart of "proficiency" per technology invents numbers about yourself.
   Decide what it actually measures before drawing anything: years used,
@@ -55,7 +66,7 @@ Hardest to do well, easiest to do badly.
 - Whatever it is, it must work without JavaScript or degrade to the current
   list.
 
-## 5. Write-ups on skills and reflections
+## 6. Write-ups on skills and reflections
 
 Related to 4 but separable, and more valuable.
 
@@ -64,13 +75,13 @@ Related to 4 but separable, and more valuable.
 - Could be a `note` field per technology in `src/data/technologies.ts`, or
   its own short article per group on `/skills`.
 
-## 6. Seed real projects
+## 7. Seed real projects
 
 - Only Kanta and Echo are real, and the Linux and Git exercise is thin.
 - Anything added needs a cover, a claim, a summary, tags and a stack, or it
   will look unfinished next to the others.
 
-## 7. Put the site on LinkedIn and the CV
+## 8. Put the site on LinkedIn and the CV
 
 The site is live and nothing points at it.
 
@@ -83,7 +94,7 @@ The site is live and nothing points at it.
   regenerating from whatever produced it.
 - Anywhere else the same line appears: GitHub profile README, email signature.
 
-## 8. SEO
+## 9. SEO
 
 Audited on the built output. Four things are already right and three are
 missing.

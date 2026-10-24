@@ -25,58 +25,107 @@ cover: ./cover.jpg
 import architecture from './architecture.png';
 import dataPipeline from './data-pipeline.png';
 import gitlab from './gitlab-pipeline.png';
+import bodies from './smpl-vs-smplx.png';
+import tree from './smpl-mesh-kinematic-tree.png';
 
 <Clips caption="“A woman is doing a chaînés, ballet jazz style dance”, before and after fine-tuning on dance.">
   <Clip label="Before fine-tuning" src="/work/ai-singapore/ballet-humanml3d.mp4" poster="/work/ai-singapore/ballet-humanml3d.webp"
         alt="A stick figure shifts its weight and lifts one arm." />
-  <Clip label="After fine-tuning on dance" src="/work/ai-singapore/ballet-finetuned.mp4" poster="/work/ai-singapore/ballet-finetuned.webp"
+  <Clip label="After fine-tuning" src="/work/ai-singapore/ballet-finetuned.mp4" poster="/work/ai-singapore/ballet-finetuned.webp"
         alt="A stick figure turns and travels across the floor." />
 </Clips>
 
 ## The project
 
-Animating a game character takes a lot of manual work. Someone designs the
-character, rigs it, then animates each movement by hand, and one character can
-take weeks. At AI Singapore I was one of five apprentices on a seven-month
-project with a game studio and SUTD: you type "a man walking" and get back a
-walking animation, joints and mesh, ready to import into Unity. Think ChatGPT,
-but for motion.
+Animating a game character takes a lot of manual work. An artist models the
+character, rigs it with a skeleton and controls, then poses each movement by
+hand. One character can take weeks.
 
-We delivered a framework, not only a model. One data pipeline takes motion
-capture from several datasets, training pipelines plug in different models,
-one evaluation module scores them all, and the whole thing ships as Docker
-images with the final model's weights. We ran it as Scrum, with three-week
-sprints and a review with the studio and SUTD at the end of each.
+<Clips caption="Rigging a character by hand: every control on the body is something an animator moves, frame by frame.">
+  <Clip wide src="/work/ai-singapore/rig.mp4" poster="/work/ai-singapore/rig.webp"
+        alt="A 3D male character in a T-pose inside an animation tool, surrounded by rig controls. The controls move and the leg lifts." />
+</Clips>
+
+At AI Singapore I was one of five apprentices on a seven-month project with a
+game studio and SUTD. The goal: type "a man walking" and get back a walking
+animation, ready to put on a game character.
+
+We delivered a framework, not only a model. A data pipeline turns motion
+capture from several datasets into one format, training pipelines plug in
+different models, one evaluation module scores them all, and the system ships
+as Docker images with the final model's weights.
 
 <Figure src={architecture} zoom alt="The system architecture. A data pipeline turns raw SMPL motion parameters and text annotations into processed motions and annotations, versioned with DVC. A training module trains T2M and MDM models in PyTorch with hyperparameter tuning, logging to MLflow. An inference module serves a FastAPI server and batch inference. An evaluation module generates motions and computes R-precision, FID, diversity and multimodality. A CI/CD lane runs linting and unit tests, builds the Docker image on Google Cloud and builds Sphinx docs." caption="The whole system, from raw motion capture to a Docker image." />
 
 ## Highlights
 
+### Motion data format
+
+There are many ways to write motion down. The simplest is keypoints: the 3D
+position of each joint, frame by frame. The other is rotations: how much each
+joint turns relative to its parent, starting from the hips. Rotations keep
+bone lengths fixed and can drive a real character, so most motion capture
+data uses them.
+
+The standard rotation-based body is [SMPL](https://smpl.is.tue.mpg.de/). It
+describes a person with three things:
+
+- **Pose:** a rotation for each of 24 joints.
+- **Shape:** 10 numbers for body build. All zeros is the average body.
+- **Translation:** where the body is in the room.
+
+From these it produces a mesh of 6,890 vertices and the joint positions.
+SMPL-X adds hands and a face.
+
+<Figure src={bodies} alt="Two body meshes in a T-pose with their joints marked: SMPL in teal, and SMPL-X in pink, which has many more joints in the hands and face." caption="SMPL and SMPL-X, with their joints marked." />
+
+Each of our three datasets used a different version:
+
+| Dataset | Body | Frame rate | Size | Captions |
+| --- | --- | --- | --- | --- |
+| [HumanML3D](https://github.com/EricGuo5513/HumanML3D) | SMPL+H, 22 joints used | 20 fps | 14,616 motions | 44,970 |
+| [AIST++](https://google.github.io/aistplusplus_dataset/) | SMPL, no shape | 60 fps | 1,408 dance clips | None |
+| [Motion-X](https://motion-x-dataset.github.io/) | SMPL-X | – | 25,865 sequences (7 subsets) | Yes |
+
+The models don't train on SMPL parameters directly. They use the HumanML3D
+representation: 263 numbers per frame, built from the 22 joint positions.
+
+| Part | Numbers | What it captures |
+| --- | --- | --- |
+| Root turning speed | 1 | How fast the body turns about the vertical axis |
+| Root speed | 2 | How fast the hips move across the floor |
+| Root height | 1 | How high the hips are |
+| Joint positions | 63 | 21 joints, relative to the root |
+| Joint rotations | 126 | 21 joints, as continuous 6D rotations |
+| Joint velocities | 66 | How fast each of the 22 joints moves |
+| Foot contacts | 4 | Whether each heel and toe touches the ground |
+
+The root is stored as speeds, not positions, so a walk looks the same wherever
+it starts. The foot contacts help the model avoid feet that slide.
+
+<Figure src={tree} alt="A wireframe SMPL body in a T-pose with its kinematic tree drawn on top: the spine in blue, the left limbs in green and the right limbs in red, with numbered joints." caption="SMPL's kinematic tree. Each joint rotates relative to its parent, out from the pelvis." />
+
 ### Motion data processing
 
-Each motion dataset stores the body its own way:
+Every dataset goes through the same eight stages, so a new dataset only needs
+a loader at the start. I split the original single script into these stages,
+each one cached and switched on in config:
 
-- **HumanML3D:** 14,616 motions with 44,970 captions, at 20 frames a second.
-- **AIST++:** 1,408 dance clips at 60 frames a second, a different skeleton,
-  no body shape and no captions at all.
-- **Motion-X:** SMPL-X bodies, which add hands and a face.
+| Stage | What it does |
+| --- | --- |
+| 1. Pose extraction | Runs the SMPL parameters through the body model to get joint positions, and resamples to 20 fps. |
+| 2. Pose processing | Trims and crops each clip, and adds a left-right mirror copy. |
+| 3. Motion representation | Moves every body onto one skeleton facing the same way, then builds the 263 numbers. |
+| 4. Train/test split | 80% train, 5% validation, 15% test. |
+| 5. Mean and variance | Statistics for normalisation, from the training set only, one file at a time with Welford's algorithm. |
+| 6. Text mapping | Matches each caption file to its renamed and mirrored motions. |
+| 7. Animate | Renders random samples, so a person can check them by eye. |
+| 8. Aggregate | Merges several processed datasets into one corpus. |
 
-I wrote the AIST++ conversion: fill the missing body shape with the average,
-resample, and build captions from the clip's metadata, so "break, indian step"
-becomes "A man is doing an indian step, Break style dance". Later I split the
-processing into eight stages, added SMPL-X support for Motion-X, and replaced
-a step that loaded every motion into memory to compute the mean and standard
-deviation. It crashed on the bigger datasets. Welford's online algorithm gives
-the same numbers one file at a time.
+<Figure src={dataPipeline} zoom alt="The data processing pipeline. Motions go through pose extraction from SMPL parameters, mirroring, normalisation to a target skeleton facing Z+, and conversion to a 263-dimensional motion representation. Annotations go through text cleaning and part-of-speech tagging." caption="The data pipeline for motions (top) and captions (bottom)." />
 
-We also found a leak. The reference code computed those statistics over the
-whole dataset, test set included. We moved to training-set statistics only, and
-I retrained our models on the fixed data. The scores went down, and they were
-honest.
-
-Motion-X was my last dataset. Much of it comes from online video, so it has
-everyday moves our main dataset lacks. The same model, trained on it instead of
-HumanML3D:
+The data decides what the model can do. The same model, trained on Motion-X,
+which includes everyday moves from online video:
 
 <Clips caption="“The person is drunk and staggers around.”">
   <Clip label="Trained on HumanML3D" src="/work/ai-singapore/drunk-hml.mp4" poster="/work/ai-singapore/drunk-hml.webp"
@@ -85,23 +134,32 @@ HumanML3D:
         alt="A stick figure stumbles, falls and ends up lying on the ground." />
 </Clips>
 
-<Clips caption="“The person is participating in the ALS Ice Bucket Challenge.”">
-  <Clip label="Trained on HumanML3D" src="/work/ai-singapore/bucket-hml.mp4" poster="/work/ai-singapore/bucket-hml.webp"
-        alt="A stick figure wanders and waves its arms." />
-  <Clip label="Trained on Motion-X" src="/work/ai-singapore/bucket-mx.mp4" poster="/work/ai-singapore/bucket-mx.webp"
-        alt="A stick figure lifts both arms over its head, again and again." />
-</Clips>
-
-<Figure src={dataPipeline} zoom alt="The data processing pipeline. Motions go through pose extraction from SMPL parameters, mirroring, normalisation to a target skeleton facing Z+, and conversion to a 263-dimensional motion representation. Annotations go through text cleaning and part-of-speech tagging." caption="The data pipeline for motions (top) and captions (bottom)." />
-
 ### Training pipeline
 
-We replicated several published models before choosing one, and I did the MDM
-(Motion Diffusion Model) replication and its training pipeline. It's a
-transformer that learns to remove noise from a motion one step at a time,
-guided by the text. On a third of an A100 it trained in 31 hours, where the
-paper used three days on a 2080 Ti. A latent-diffusion model we also tried took
-228 hours, which settled that choice.
+The team replicated four published models before choosing one. They take
+quite different routes from text to motion:
+
+| Model | How it generates | Our training time | Paper's |
+| --- | --- | --- | --- |
+| [T2M](https://github.com/EricGuo5513/text-to-motion) | A variational autoencoder, one short snippet at a time, after predicting the motion's length | 16 h, 1 A100 | – |
+| [MDM](https://github.com/GuyTevet/motion-diffusion-model) | Diffusion on the motion itself, with a transformer | 31 h, ⅓ A100 | 72 h, 1 RTX 2080 Ti |
+| [MLD](https://github.com/ChenFengYe/motion-latent-diffusion) | Diffusion in a compressed latent space, after training an autoencoder | 228 h, ⅓ A100 | 12 h, 8 V100s |
+| [T2M-GPT](https://github.com/Mael-zys/T2M-GPT) | Turns motion into tokens, then predicts the next token like a language model | about 3 days | 78 h |
+
+MDM gave the best text match and trained in a day and a half on our share of
+a GPU, so it became the base. MLD scored a little better on realism, but at
+228 hours a run we could have trained it once, and MDM we could tune many
+times.
+
+MDM learns by undoing noise. In training, it takes a real motion, adds a
+random amount of Gaussian noise, and a transformer learns to predict the
+clean motion from the noisy one and the caption. The caption goes in through
+a frozen CLIP text encoder. To generate, it starts from pure noise and cleans
+it step by step, 50 steps in our setup instead of the paper's 1,000. During
+training the caption is sometimes hidden, so the model also learns to move
+without text. At generation time, the two predictions are mixed, which pushes
+the motion to follow the text more closely. This is called classifier-free
+guidance.
 
 <Clips caption="“Man jumping in excitement”, from the T2M baseline and from our final MDM.">
   <Clip label="T2M" src="/work/ai-singapore/jump-t2m.mp4" poster="/work/ai-singapore/jump-t2m.webp"
@@ -110,10 +168,12 @@ paper used three days on a 2080 Ti. A latent-diffusion model we also tried took
         alt="A 3D body makes a series of jumps and hops." />
 </Clips>
 
-### Evaluation pipeline
+### Evaluation
 
-I built the evaluation module. It generates a motion for each test caption,
-scores it, and logs the scores to MLflow during training:
+I built the evaluation module, which generates a motion for each test caption
+and scores it during training, logging to MLflow. Every score comes from a
+pretrained pair of text and motion encoders that place captions and motions in
+the same space:
 
 | Metric | What it asks | Better |
 | --- | --- | --- |
@@ -123,71 +183,59 @@ scores it, and logs the scores to MLflow during training:
 | Diversity | How different are motions for different captions? | Close to real data |
 | Multimodality | How different are motions for the same caption? | Higher, within reason |
 
-Its first numbers inside
-training were much worse than the standalone evaluator's. The model was fine.
-My evaluator was sampling without classifier-free guidance, the setting that
-makes the model follow the text. With it on, R-precision went from 0.523 to
-0.739, matching the standalone run. I added a warning for when it's off.
+Real motion capture scores 0.797 on R-precision. Our final model reached
+0.780.
 
-With an evaluator we trusted, the team tuned the hyperparameters:
+The scores can't see everything. Ask for something far from the training
+data and the model does its best with moves it knows:
 
-| Model | R-precision (top 3) | FID |
-| --- | --- | --- |
-| Real motion capture (the ceiling) | 0.797 | 0.002 |
-| MDM, as its authors report it (50 steps) | 0.749 | 0.489 |
-| Our replication of MDM | 0.764 | 0.581 |
-| Our final model, after tuning | **0.780** | **0.471** |
-
-<Clips caption="“A person does a karate kick, spins around and does a victory sign.” Three actions in one prompt.">
-  <Clip label="First trained model" src="/work/ai-singapore/karate-first.mp4" poster="/work/ai-singapore/karate-first.webp"
-        alt="A 3D body moves about without a clear kick or spin." />
-  <Clip label="Final model" src="/work/ai-singapore/karate-champion.mp4" poster="/work/ai-singapore/karate-champion.webp"
-        alt="A 3D body takes a martial arts stance, kicks and spins." />
+<Clips caption="Prompts far from the training data: “A man is crawling like a spider” and “Man is floating in space”.">
+  <Clip label="Crawling like a spider" src="/work/ai-singapore/spider.mp4" poster="/work/ai-singapore/spider.webp"
+        alt="A stick figure bends low and shuffles, nothing like a spider." />
+  <Clip label="Floating in space" src="/work/ai-singapore/space.mp4" poster="/work/ai-singapore/space.webp"
+        alt="A stick figure stands and drifts its arms, with no sense of floating." />
 </Clips>
 
-### Fine-tuning on dance
+### Fine-tuning
 
-The studio wanted dance moves for in-game emotes, and the main dataset has
-almost none. I fine-tuned MDM on the AIST++ dance clips, and it learned the
-genres: ask for ballet jazz and you get turns. The ballet clip at the top of
-this page is that model.
+The studio wanted dance moves for in-game emotes, and HumanML3D has almost
+none. We fine-tuned MDM on the 1,408 AIST++ dance clips, and it learned the
+genres well: ask for ballet jazz and you get turns and travelling steps
+instead of a shuffle.
 
-It also forgot things. "A man walks forward, sits on the ground and crosses his legs" started
-to dance.
+Fine-tuning is as much art as science. AIST++ is a tenth the size of
+HumanML3D, and the model began to forget what it knew. Prompts with no dance
+in them started to dance:
 
-<Clips caption="“A man walks forward, sits on the ground and crosses his legs”, before and after fine-tuning on dance.">
+<Clips caption="“A man walks forward, sits on the ground and crosses his legs”, before and after fine-tuning.">
   <Clip label="Before fine-tuning" src="/work/ai-singapore/sit-hml.mp4" poster="/work/ai-singapore/sit-hml.webp"
         alt="A stick figure lowers itself to the ground and crosses its legs." />
-  <Clip label="After fine-tuning on dance" src="/work/ai-singapore/sit-ft.mp4" poster="/work/ai-singapore/sit-ft.webp"
+  <Clip label="After fine-tuning" src="/work/ai-singapore/sit-ft.mp4" poster="/work/ai-singapore/sit-ft.webp"
         alt="A stick figure stays on its feet and moves as if dancing." />
 </Clips>
 
- That's catastrophic forgetting: train on a narrow set and the model
-drifts from what it knew. I tried freezing layers and combining the two
-datasets' statistics. The fine-tuned model is better at dance and worse at
-everything else, and that trade-off is what I presented to the studio.
-
-The captions were the other gap. AIST++ only has metadata, so I prototyped
-captioning the 1,408 dance videos with a video language model, VideoLLaMA3:
-eight prompts, a Docker image to run it, and a plan to merge several captions
-into one with GPT-4o. We handed it over as the next step.
+This is catastrophic forgetting: train on a narrow set, and the model drifts
+from what it learned before. The usual remedies are to freeze the early
+layers, so only the later ones adapt, and to mix some of the original data
+back in. We added layer freezing to the trainer, and I found that the two
+datasets need shared normalisation statistics, because the AIST++
+statistics differ from HumanML3D's. These went to the studio as next steps,
+along with a prototype that captions the dance clips with a video language
+model, [VideoLLaMA3](https://github.com/DAMO-NLP-SG/VideoLLaMA3).
 
 ### CI/CD optimisations
 
-I set up our GitLab pipeline: lint and unit tests, build the Docker image,
+I set up the GitLab pipeline: lint and unit tests, build the Docker image,
 push it to Google Cloud, then a manual deploy to the GPU cluster. The first
-version took 20 minutes a run. Three changes brought it to 2:
+version took 20 minutes a run. These changes brought it to 2:
 
-- a Micromamba image on Alpine instead of a full conda image;
-- caching for conda and pip between runs;
-- quieter pip flags, so the logs stayed readable.
+| Change | Effect |
+| --- | --- |
+| Micromamba on Alpine as the base image | A much smaller image than full conda, so it builds and pulls faster. |
+| Cache the conda environment and pip downloads | Jobs reuse packages instead of installing them again. |
+| `--disable-pip-version-check` and `--no-compile` | pip skips the version check and compiling bytecode at install time. |
 
 <Figure src={gitlab} alt="A GitLab pipeline: test:pytest and test:quality pass, then build:docker and deploy:docker pass, and a manual deploy:runai job waits." caption="The GitLab pipeline: test, build, push, then a manual deploy to the GPU cluster." />
-
-The studio got the final system as a Docker Compose setup with a training
-service and an inference service, a FastAPI endpoint, the model weights, and
-data pulled with DVC. We ran two handover sessions to walk their engineers
-through the code.
 
 ## Reflections
 

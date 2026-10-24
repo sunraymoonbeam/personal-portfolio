@@ -16,10 +16,12 @@ interface Props {
   alt: string;
   /** A short label above the clip, e.g. the model that made it. */
   label?: string | undefined;
+  /** A 16:9 screen recording instead of a square render. */
+  wide?: boolean | undefined;
 }
-const { src, poster, alt, label } = Astro.props;
+const { src, poster, alt, label, wide } = Astro.props;
 ---
-<figure class="clip">
+<figure class:list={['clip', { wide }]}>
   {label && <figcaption class="t-14 label">{label}</figcaption>}
   <video src={src} poster={poster} muted loop playsinline preload="metadata"
          aria-label={alt} data-clip></video>
@@ -32,4 +34,5 @@ const { src, poster, alt, label } = Astro.props;
     display: block; width: 100%; height: auto; aspect-ratio: 1 / 1;
     background: #fff; border-radius: var(--radius-m); border: 1px solid var(--border);
   }
+  .wide video { aspect-ratio: 16 / 9; background: #555; }
 </style>

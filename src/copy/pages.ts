@@ -6,6 +6,12 @@ export const pages = {
       "Things I've built when I should probably be sleeping. My interests " +
       'usually lean towards automations and computer vision, especially ' +
       'segmentation and object detection.',
+    /** The lede is also the meta description; on the page it splits in two. */
+    ledeLines: [
+      "Things I've built when I should probably be sleeping.",
+      'My interests usually lean towards automations and computer vision, ' +
+        'especially segmentation and object detection.',
+    ],
   },
   work: {
     title: 'Work experience',
