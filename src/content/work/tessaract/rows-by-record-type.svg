@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 470" width="960" height="470" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" role="img" aria-labelledby="t d">
+<title id="t">Rows migrated, by record type</title>
+<desc id="d">About 524,000 import rows in total. Ledger lines are 453,672 of them. Case updates 39,455, clients 24,218, invoice lines 3,240, trust records 2,532, other 1,348.</desc>
+<rect width="960" height="470" fill="#ffffff"/>
+<text x="40" y="44" font-size="22" font-weight="600" fill="#1d1d1f">Rows in the final import sheets, by record type</text>
+<text x="40" y="70" font-size="14" fill="#6e6e73">Counted from the cleaned import files in my archive (Jul 2022 to Jan 2023). Total: 524,465 rows.</text>
+<text x="256" y="132.0" font-size="14" fill="#1d1d1f" text-anchor="end">Ledger (journal-entry) lines</text>
+<rect x="270" y="110" width="520" height="34" rx="6" fill="#0066cc"/>
+<text x="800" y="132.0" font-size="14" font-weight="600" fill="#1d1d1f">453,672</text>
+<text x="256" y="184.0" font-size="14" fill="#1d1d1f" text-anchor="end">Case updates</text>
+<rect x="270" y="162" width="45" height="34" rx="6" fill="#7fb2e5"/>
+<text x="325" y="184.0" font-size="14" font-weight="600" fill="#1d1d1f">39,455</text>
+<text x="256" y="236.0" font-size="14" fill="#1d1d1f" text-anchor="end">Clients</text>
+<rect x="270" y="214" width="28" height="34" rx="6" fill="#7fb2e5"/>
+<text x="308" y="236.0" font-size="14" font-weight="600" fill="#1d1d1f">24,218</text>
+<text x="256" y="288.0" font-size="14" fill="#1d1d1f" text-anchor="end">Invoice lines</text>
+<rect x="270" y="266" width="4" height="34" rx="6" fill="#7fb2e5"/>
+<text x="284" y="288.0" font-size="14" font-weight="600" fill="#1d1d1f">3,240</text>
+<text x="256" y="340.0" font-size="14" fill="#1d1d1f" text-anchor="end">Trust-account records</text>
+<rect x="270" y="318" width="3" height="34" rx="6" fill="#7fb2e5"/>
+<text x="283" y="340.0" font-size="14" font-weight="600" fill="#1d1d1f">2,532</text>
+<text x="256" y="392.0" font-size="14" fill="#1d1d1f" text-anchor="end">Contacts, payments, other</text>
+<rect x="270" y="370" width="3" height="34" rx="6" fill="#7fb2e5"/>
+<text x="283" y="392.0" font-size="14" font-weight="600" fill="#1d1d1f">1,348</text>
+<line x1="270" y1="102" x2="270" y2="412" stroke="#d2d2d7"/>
+<text x="40" y="440" font-size="13" fill="#6e6e73">A ledger line is one debit or credit row. 453,672 lines make up 153,317 journal entries over 18 months of one firm's books.</text>
+</svg>

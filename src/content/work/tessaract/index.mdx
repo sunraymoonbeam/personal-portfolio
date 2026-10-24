@@ -9,38 +9,119 @@ title: Database migrations for legal and insurance clients
 tagline: "Worked on database maintenance and data migrations for law firms, at a legal-tech startup."
 summary: >-
   Production PostgreSQL databases for law and insurance firms, and migrations of 300,000+ records for more than ten law firms.
-stack: [postgresql, python]
+stack: [postgresql, python, azure]
 bullets:
   - "Maintained production PostgreSQL databases with PL/pgSQL and Python, migrating **300,000+** records for 10+ law firms."
 metrics:
-  - { value: "300,000+", label: "records migrated" }
-  - { value: "10+", label: "law firms onboarded" }
+  - { value: "453,672", label: "ledger lines migrated", context: "18 months of one firm's books, debits equal to credits" }
+  - { value: "268", label: "missing account codes caught", context: "before any of those lines were loaded" }
+  - { value: "~180", label: "document templates", context: "invoices, receipts and letters for about 10 law firms" }
 cover: ./cover.jpg
 ---
+import tenants from './tenant-setup.svg';
+import pipeline from './migration-pipeline.svg';
+import ledger from './ledger-checks.svg';
+import rows from './rows-by-record-type.svg';
+import templates from './report-templates.svg';
 
 ## The project
 
-At Tessaract.io, a legal-tech startup, I looked after the production PostgreSQL
-databases behind its platform for law and insurance firms. I wrote PL/pgSQL and
-Python scripts to keep them fast, built reports, and migrated more than 300,000
-records from over ten law firms onto the platform.
+Tessaract sold one platform to law firms: cases, clients, documents and full
+accounting, in the cloud. Every firm got its own PostgreSQL database. I joined
+the professional services team, the people who move a new firm onto the
+platform, and spent most of my time getting each firm's old data in without
+losing or changing anything.
 
-## Working with clients
+The data came from legacy legal-practice systems and Excel files, and every
+firm kept its books a little differently. My tools were Python, pandas and
+SQL, and a lot of checking.
 
-The work was client-facing too. On one onboarding, a large law firm's
-accountants were unhappy about leaving the workflows they knew, and the launch
-date was close. Saying yes to every request would have sunk the launch, so I
-told them plainly what we could change before launch, what would come later,
-and why. I also wrote guides for the problems I expected them to hit, like
-reconciling records and handling missing fields. The onboarding went smoothly.
+<Figure src={tenants} zoom alt="One database per firm. The platform application talks to Firm A, Firm B and Firm C databases. A PL/pgSQL set-up function creates the company and its admin users; a Python migration cleans the source and loads one firm at a time." caption="How each firm's data stayed apart, and where my scripts and SQL came in." />
 
-## Looking back
+## Noteworthy projects
 
-On another migration, the client kept their real data back until close to
+### Moving a law firm's ledger
+
+The biggest job was a large firm's accounts: 18 months of journal entries from
+the old system, about 600,000 rows of raw reports. Accounting data has one
+rule that makes it checkable. Every entry's debits equal its credits, so the
+totals have to tie before and after.
+
+I cleaned the reports into 453,672 import lines, 153,317 journal entries, and
+checked each year balanced. The check that mattered most found 268 account
+codes in the old books that didn't exist in the firm's new chart of accounts.
+Loading first would have scattered errors through a year of entries. Instead
+each code got a mapping or a new account, and I ran the whole batch again.
+
+<Figure src={ledger} alt="A check report for 2021 and January to June 2022: raw rows 353,848 and 253,141, cleaned lines 264,759 and 188,913, journal entries 89,089 and 64,228, debits equal credits in both years, 237 and 139 account codes missing from the new chart, 268 distinct in total." caption="The check report for the ledger, with money amounts left out." />
+
+### A migration I could repeat
+
+Clients, cases, invoices, payments, trust money: every record type went
+through the same five steps, so I made them a routine. Extract from the old
+system, profile it, clean and map it, load it into the firm's database, then
+post and reconcile through the platform's API.
+
+<Figure src={pipeline} zoom alt="The migration pipeline: extract, profile, clean and map with Python and pandas, load one import sheet per record type into the firm's PostgreSQL database, then post invoices and payments by API and tie totals back. A failed check loops back to the mapping." caption="Five steps for every record type. A failed check sends the batch back to the mapping." />
+
+I built a small command-line tool for the cleaning step, with a report sheet
+of row counts, empty columns and duplicates for every table, because I was
+doing the same checks by hand for every firm. The invoice import taught me to
+read errors closely: a field called "Tax Type" that the platform knew as "Tax
+Treatment", a "Receivables" that should have been "Receivable", tax columns
+that couldn't be blank. Paid and unpaid invoices went in separate batches, and
+the totals had to match before and after.
+
+<Figure src={rows} alt="Rows in the final import sheets by record type: ledger lines 453,672, case updates 39,455, clients 24,218, invoice lines 3,240, trust-account records 2,532, contacts, payments and other 1,348. Total 524,465 rows." caption="Rows in the final import sheets, July 2022 to January 2023." />
+
+### When the data didn't fit the model
+
+Not every client was a law firm. One was an investment fund, and its records
+had six kinds of share transactions where the platform had five, plus prices
+the platform had nowhere to put. I mapped the types, added the missing fields
+and updated the screens, then imported the fund's investors and their
+transactions.
+
+### Set-up and templates
+
+Each new firm needed its own company and admin users. I wrote a PL/pgSQL
+function that created both in one call. And each firm wanted its own
+documents, so I rebuilt their invoices, receipts, credit notes and letters as
+Word templates filled from the platform's fields: about 180 template files
+across about 10 law firms.
+
+<Figure src={templates} zoom alt="Rebuilding a firm's documents: the firm's form, a field map from each blank to a model field, a Word template with loops and conditions, then testing against the firm's sample and shipping." caption="From a firm's own form to a template the platform fills in." />
+
+## Reflections
+
+### Check the totals, not just the rows
+
+Row counts tell you nothing went missing. Totals tell you nothing changed.
+Debits equal to credits caught problems a row count never would, and I still
+look for the invariant in any data I move.
+
+### Ask for the real data early
+
+On one migration the client kept their real data back until close to
 delivery, for confidentiality reasons. We'd written the scripts against our
-guesses about its format. The real files had inconsistent column names, missing
-values and formatting we hadn't planned for, and we had to clean and revalidate
-everything in the last few days.
+guesses about its format. The real files had inconsistent column names,
+missing values and formatting we hadn't planned for, and we had to clean and
+revalidate everything in the last few days. Now I ask for a representative
+sample at the start, even an anonymised one, and write scripts that expect the
+data to be messier than promised.
 
-Now I ask for a representative sample at the start, even an anonymised one,
-and write scripts that expect the data to be messier than promised.
+### Say what you can't do yet
+
+On one onboarding, the firm's accountants were unhappy about leaving the
+workflows they knew, and the launch date was close. Saying yes to every
+request would have sunk the launch, so I told them plainly what we could
+change before launch, what would come later, and why. I also wrote guides for
+the problems I expected them to hit, like reconciling records and handling
+missing fields. The onboarding went smoothly.
+
+### Production deserves a safety net
+
+Looking at my old SQL now, some of it changed user groups on a live database
+with no transaction around it and no backup first. It worked. Today I'd wrap
+every write in a transaction, check the count it touched, and only then
+commit.

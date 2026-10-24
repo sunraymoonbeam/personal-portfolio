@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 420" width="960" height="420" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" role="img" aria-labelledby="t d">
+  <title id="t">Checking 18 months of ledger entries</title>
+  <desc id="d">Raw journal reports of 353,848 and 253,141 rows were cleaned to 264,759 and 188,913 import lines, or 89,089 and 64,228 journal entries. Debits equalled credits in both years. 268 account codes were missing from the new chart of accounts and had to be mapped.</desc>
+  <rect width="960" height="420" fill="#ffffff"/>
+  <text x="40" y="44" font-size="22" font-weight="600" fill="#1d1d1f">Checking 18 months of a firm's ledger before import</text>
+  <text x="40" y="70" font-size="14" fill="#6e6e73">Counts from the migration check report (V2). Money amounts left out on purpose.</text>
+  <g font-size="14" fill="#1d1d1f">
+    <text x="300" y="112" font-size="13" fill="#6e6e73" font-weight="600">2021</text>
+    <text x="560" y="112" font-size="13" fill="#6e6e73" font-weight="600">Jan to Jun 2022</text>
+    <text x="40" y="150">Rows in the raw journal report</text>
+    <text x="300" y="150" font-weight="600">353,848</text><text x="560" y="150" font-weight="600">253,141</text>
+    <text x="40" y="190">Lines in the cleaned import sheet</text>
+    <text x="300" y="190" font-weight="600">264,759</text><text x="560" y="190" font-weight="600">188,913</text>
+    <text x="40" y="230">Journal entries</text>
+    <text x="300" y="230" font-weight="600">89,089</text><text x="560" y="230" font-weight="600">64,228</text>
+    <text x="40" y="270">Total debits = total credits</text>
+    <rect x="300" y="252" width="64" height="26" rx="13" fill="#e8f1fb" stroke="#0066cc"/><text x="332" y="270" text-anchor="middle" fill="#0066cc" font-weight="600">Yes</text>
+    <rect x="560" y="252" width="64" height="26" rx="13" fill="#e8f1fb" stroke="#0066cc"/><text x="592" y="270" text-anchor="middle" fill="#0066cc" font-weight="600">Yes</text>
+    <text x="40" y="310">Account codes not in the new chart</text>
+    <text x="300" y="310" font-weight="600">237</text><text x="560" y="310" font-weight="600">139</text>
+    <line x1="40" y1="128" x2="920" y2="128" stroke="#e5e5ea"/>
+    <line x1="40" y1="166" x2="920" y2="166" stroke="#e5e5ea"/><line x1="40" y1="206" x2="920" y2="206" stroke="#e5e5ea"/>
+    <line x1="40" y1="246" x2="920" y2="246" stroke="#e5e5ea"/><line x1="40" y1="286" x2="920" y2="286" stroke="#e5e5ea"/>
+  </g>
+  <rect x="40" y="340" width="880" height="56" rx="14" fill="#f5f5f7" stroke="#d2d2d7"/>
+  <text x="60" y="374" font-size="14" fill="#1d1d1f">268 distinct missing account codes in total. Each one needed a mapping or a new account before its lines could load.</text>
+</svg>

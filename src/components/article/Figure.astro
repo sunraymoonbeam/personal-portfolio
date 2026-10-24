@@ -7,21 +7,27 @@ interface Props {
   zoom?: boolean;
 }
 const { src, alt, caption, dim = false, zoom = false } = Astro.props;
-const full = zoom ? await getImage({ src, width: Math.min(src.width, 2400), format: 'webp' }) : null;
+// A diagram drawn as SVG is already sharp at any size: serve it as is.
+const svg = src.format === 'svg';
+const full = zoom ? (svg ? { src: src.src } : await getImage({ src, width: Math.min(src.width, 2400), format: 'webp' })) : null;
 const img = { src, alt, widths: [600, 980, 1400, 1960], sizes: '(max-width: 734px) 100vw, 980px', loading: 'lazy' as const };
 ---
 <figure class="fig">
   {full
     ? <a href={full.src} data-lightbox data-alt={alt} {...(caption ? { 'data-caption': caption } : {})} class="zoom">
-        <Image {...img} class:list={['img', { dim }]} />
+        {svg ? <img src={src.src} alt={alt} width={src.width} height={src.height} class="img diagram" loading="lazy" /> : <Image {...img} class:list={['img', { dim }]} />}
       </a>
-    : <Image {...img} class:list={['img', { dim }]} />}
+    : svg
+      ? <img src={src.src} alt={alt} width={src.width} height={src.height} class="img diagram" loading="lazy" />
+      : <Image {...img} class:list={['img', { dim }]} />}
   {caption && <figcaption class="t-14 small">{caption}</figcaption>}
 </figure>
 <style>
   .fig { margin: var(--s-8) 0; display: flex; flex-direction: column; gap: var(--s-3); }
   .img { width: 100%; height: auto; border-radius: var(--radius-m); }
   .zoom { display: block; cursor: zoom-in; }
+  /* Diagrams are drawn on white; keep them on white, framed, in dark mode too. */
+  .diagram { background: #fff; border: 1px solid var(--border); }
   /* The sidebar shares this grid row; figures stay in the reading column. */
   .fig { max-width: 100%; min-width: 0; }
   :root[data-theme='dark'] .img.dim { filter: brightness(0.92); }

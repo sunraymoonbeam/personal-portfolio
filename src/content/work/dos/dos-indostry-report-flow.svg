@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 400" width="1000" height="400" role="img" aria-labelledby="t d">
+<title id="t">inDOStry Navigator flow</title><desc id="d">Five steps from picking an industry to a written trend analysis, plus a PDF chat tab and the two CSV agent modes.</desc>
+<defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#6e6e73"/></marker></defs>
+<rect width="1000" height="400" fill="#ffffff"/>
+<g font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" fill="#1d1d1f">
+<text x="40" y="46" font-size="22" font-weight="700" fill="#1d1d1f" text-anchor="start">inDOStry Navigator: from industry tables to a draft narrative</text>
+<text x="40" y="72" font-size="14" font-weight="400" fill="#6e6e73" text-anchor="start">“The hardest part is to come up with a narrative.” An economist on the industry-review team</text>
+<rect x="40" y="105" width="166" height="86" rx="12" fill="#f5f5f7" stroke="#d2d2d7" stroke-width="1.5"/>
+<text x="123.0" y="131" font-size="15" font-weight="600" fill="#1d1d1f" text-anchor="middle">1. Pick industry</text>
+<text x="123.0" y="150" font-size="12.5" font-weight="400" fill="#6e6e73" text-anchor="middle">16 industries,</text>
+<text x="123.0" y="169" font-size="12.5" font-weight="400" fill="#6e6e73" text-anchor="middle">sub-industries</text>
+<line x1="206" y1="148" x2="230" y2="148" stroke="#6e6e73" stroke-width="1.6" marker-end="url(#ar)"/>
+<rect x="230" y="105" width="166" height="86" rx="12" fill="#f5f5f7" stroke="#d2d2d7" stroke-width="1.5"/>
+<text x="313.0" y="131" font-size="15" font-weight="600" fill="#1d1d1f" text-anchor="middle">2. Upload tables</text>
+<text x="313.0" y="150" font-size="12.5" font-weight="400" fill="#6e6e73" text-anchor="middle">GDP by industry CSV,</text>
+<text x="313.0" y="169" font-size="12.5" font-weight="400" fill="#6e6e73" text-anchor="middle">sub-industry CSVs</text>
+<line x1="396" y1="148" x2="420" y2="148" stroke="#6e6e73" stroke-width="1.6" marker-end="url(#ar)"/>
+<rect x="420" y="105" width="166" height="86" rx="12" fill="#f5f5f7" stroke="#d2d2d7" stroke-width="1.5"/>
+<text x="503.0" y="131" font-size="15" font-weight="600" fill="#1d1d1f" text-anchor="middle">3. Plot</text>
+<text x="503.0" y="150" font-size="12.5" font-weight="400" fill="#6e6e73" text-anchor="middle">table + bar chart</text>
+<text x="503.0" y="169" font-size="12.5" font-weight="400" fill="#6e6e73" text-anchor="middle">per file</text>
+<line x1="586" y1="148" x2="610" y2="148" stroke="#6e6e73" stroke-width="1.6" marker-end="url(#ar)"/>
+<rect x="610" y="105" width="166" height="86" rx="12" fill="#eef5fc" stroke="#0066cc" stroke-width="1.5"/>
+<text x="693.0" y="131" font-size="15" font-weight="600" fill="#0066cc" text-anchor="middle">4. CSV agent</text>
+<text x="693.0" y="150" font-size="12.5" font-weight="400" fill="#6e6e73" text-anchor="middle">LLM runs pandas,</text>
+<text x="693.0" y="169" font-size="12.5" font-weight="400" fill="#6e6e73" text-anchor="middle">writes the trend</text>
+<line x1="776" y1="148" x2="800" y2="148" stroke="#6e6e73" stroke-width="1.6" marker-end="url(#ar)"/>
+<rect x="800" y="105" width="166" height="86" rx="12" fill="#f5f5f7" stroke="#d2d2d7" stroke-width="1.5"/>
+<text x="883.0" y="131" font-size="15" font-weight="600" fill="#1d1d1f" text-anchor="middle">5. Ask follow-ups</text>
+<text x="883.0" y="150" font-size="12.5" font-weight="400" fill="#6e6e73" text-anchor="middle">chat with the CSVs</text>
+<rect x="40" y="240" width="420" height="110" rx="12" fill="#f5f5f7" stroke="#d2d2d7" stroke-width="1.5"/>
+<text x="250.0" y="266" font-size="15" font-weight="600" fill="#1d1d1f" text-anchor="middle">PDF chat tab</text>
+<text x="250.0" y="285" font-size="12.5" font-weight="400" fill="#6e6e73" text-anchor="middle">Outlook PDFs into the DOSsier agent (economist prompt)</text>
+<text x="250.0" y="304" font-size="12.5" font-weight="400" fill="#6e6e73" text-anchor="middle">Web search for current events, e.g. travel demand</text>
+<text x="250.0" y="323" font-size="12.5" font-weight="400" fill="#6e6e73" text-anchor="middle">Answers show their document and web sources</text>
+<rect x="520" y="240" width="440" height="110" rx="12" fill="#eef5fc" stroke="#0066cc" stroke-width="1.5"/>
+<text x="740.0" y="266" font-size="15" font-weight="600" fill="#0066cc" text-anchor="middle">Two agent modes (LangChain)</text>
+<text x="740.0" y="285" font-size="12.5" font-weight="400" fill="#6e6e73" text-anchor="middle">One file: ReAct CSV agent</text>
+<text x="740.0" y="304" font-size="12.5" font-weight="400" fill="#6e6e73" text-anchor="middle">Many files: OpenAI function-calling CSV agent</text>
+<text x="740.0" y="323" font-size="12.5" font-weight="400" fill="#6e6e73" text-anchor="middle">OpenAI models, temperature 0</text>
+<text x="40" y="382" font-size="13" font-weight="400" fill="#6e6e73" text-anchor="start">Demo data: public SingStat tables for 3 industries (infocomm, finance and insurance, accommodation).</text>
+</g></svg>

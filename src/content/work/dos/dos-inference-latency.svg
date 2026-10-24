@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 395" width="820" height="395" role="img" aria-labelledby="t d">
+<title id="t">Inference time on CPU</title><desc id="d">Log-scale bar chart: SetFit 69 milliseconds, flan-t5-small 0.86 s, base 4.1 s, large 12.8 s, xl 42.5 s.</desc>
+<defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#6e6e73"/></marker></defs>
+<rect width="820" height="395" fill="#ffffff"/>
+<g font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" fill="#1d1d1f">
+<text x="40" y="44" font-size="20" font-weight="700" fill="#1d1d1f" text-anchor="start">One prediction on a laptop CPU (log scale)</text>
+<text x="40" y="68" font-size="13" font-weight="400" fill="#6e6e73" text-anchor="start">A small classifier answers in milliseconds; seq2seq LLMs take seconds</text>
+<line x1="170.0" y1="102" x2="170.0" y2="330" stroke="#ececf0" stroke-width="1"/>
+<text x="170.0" y="348" font-size="11.5" font-weight="400" fill="#6e6e73" text-anchor="middle">10 ms</text>
+<line x1="312.5" y1="102" x2="312.5" y2="330" stroke="#ececf0" stroke-width="1"/>
+<text x="312.5" y="348" font-size="11.5" font-weight="400" fill="#6e6e73" text-anchor="middle">100 ms</text>
+<line x1="455.0" y1="102" x2="455.0" y2="330" stroke="#ececf0" stroke-width="1"/>
+<text x="455.0" y="348" font-size="11.5" font-weight="400" fill="#6e6e73" text-anchor="middle">1 s</text>
+<line x1="597.5" y1="102" x2="597.5" y2="330" stroke="#ececf0" stroke-width="1"/>
+<text x="597.5" y="348" font-size="11.5" font-weight="400" fill="#6e6e73" text-anchor="middle">10 s</text>
+<line x1="740.0" y1="102" x2="740.0" y2="330" stroke="#ececf0" stroke-width="1"/>
+<text x="740.0" y="348" font-size="11.5" font-weight="400" fill="#6e6e73" text-anchor="middle">100 s</text>
+<text x="156" y="130.0" font-size="13.5" font-weight="500" fill="#1d1d1f" text-anchor="end">SetFit (MiniLM)</text>
+<path d="M170 110 H285.8044859321825 a4 4 0 0 1 4 4 V136 a4 4 0 0 1 -4 4 H170 Z" fill="#0066cc"><title>SetFit (MiniLM): 69 ms</title></path>
+<text x="297.8044859321825" y="130.0" font-size="13" font-weight="600" fill="#1d1d1f" text-anchor="start">69 ms</text>
+<text x="156" y="176.0" font-size="13.5" font-weight="500" fill="#1d1d1f" text-anchor="end">flan-t5-small</text>
+<path d="M170 156 H441.59402584595205 a4 4 0 0 1 4 4 V182 a4 4 0 0 1 -4 4 H170 Z" fill="#8fb8e6"><title>flan-t5-small: 0.86 s</title></path>
+<text x="453.59402584595205" y="176.0" font-size="13" font-weight="600" fill="#1d1d1f" text-anchor="start">0.86 s</text>
+<text x="156" y="222.0" font-size="13.5" font-weight="500" fill="#1d1d1f" text-anchor="end">flan-t5-base</text>
+<path d="M170 202 H538.7728823610371 a4 4 0 0 1 4 4 V228 a4 4 0 0 1 -4 4 H170 Z" fill="#8fb8e6"><title>flan-t5-base: 4.1 s</title></path>
+<text x="550.7728823610371" y="222.0" font-size="13" font-weight="600" fill="#1d1d1f" text-anchor="start">4.1 s</text>
+<text x="156" y="268.0" font-size="13.5" font-weight="500" fill="#1d1d1f" text-anchor="end">flan-t5-large</text>
+<path d="M170 248 H608.7774206748213 a4 4 0 0 1 4 4 V274 a4 4 0 0 1 -4 4 H170 Z" fill="#8fb8e6"><title>flan-t5-large: 12.8 s</title></path>
+<text x="620.7774206748213" y="268.0" font-size="13" font-weight="600" fill="#1d1d1f" text-anchor="start">12.8 s</text>
+<text x="156" y="314.0" font-size="13.5" font-weight="500" fill="#1d1d1f" text-anchor="end">flan-t5-xl</text>
+<path d="M170 294 H683.0454225321694 a4 4 0 0 1 4 4 V320 a4 4 0 0 1 -4 4 H170 Z" fill="#8fb8e6"><title>flan-t5-xl: 42.5 s</title></path>
+<text x="695.0454225321694" y="314.0" font-size="13" font-weight="600" fill="#1d1d1f" text-anchor="start">42.5 s</text>
+<text x="40" y="382" font-size="11.5" font-weight="400" fill="#6e6e73" text-anchor="start">Single timed run each on an Apple laptop CPU, 2023. flan-t5 generated up to 100 tokens; SetFit classified one sentence.</text>
+</g></svg>

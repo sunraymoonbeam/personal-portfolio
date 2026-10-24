@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 390" width="960" height="390" role="img" aria-labelledby="t d">
+<title id="t">Three LLM prototypes for statistics teams</title><desc id="d">Three cards: DOSetFit for classification, DOSsier for question answering, inDOStry Navigator for report support, with stack and features.</desc>
+<defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#6e6e73"/></marker></defs>
+<rect width="960" height="390" fill="#ffffff"/>
+<g font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" fill="#1d1d1f">
+<text x="40" y="48" font-size="22" font-weight="700" fill="#1d1d1f" text-anchor="start">Three LLM prototypes for statistics teams (2023)</text>
+<text x="40" y="74" font-size="14" font-weight="400" fill="#6e6e73" text-anchor="start">Each prototype answers one DOS use case. All ran on public data and public benchmarks.</text>
+<rect x="40" y="100" width="280" height="262" rx="14" fill="#ffffff" stroke="#d2d2d7" stroke-width="1.5"/>
+<text x="60" y="130" font-size="12" font-weight="700" fill="#0066cc" text-anchor="start">CLASSIFICATION</text>
+<text x="60" y="152" font-size="13" font-weight="400" fill="#6e6e73" text-anchor="start">Label survey text with few examples</text>
+<rect x="60" y="170" width="240" height="70" rx="10" fill="#eef5fc" stroke="#0066cc" stroke-width="1.2"/>
+<text x="180.0" y="198" font-size="18" font-weight="700" fill="#1d1d1f" text-anchor="middle">DOSetFit</text>
+<text x="180.0" y="222" font-size="12" font-weight="400" fill="#6e6e73" text-anchor="middle">SetFit + MiniLM sentence transformer</text>
+<circle cx="66" cy="268" r="3" fill="#0066cc"/>
+<text x="78" y="272" font-size="13" font-weight="400" fill="#1d1d1f" text-anchor="start">Train from a CSV of labelled examples</text>
+<circle cx="66" cy="300" r="3" fill="#0066cc"/>
+<text x="78" y="304" font-size="13" font-weight="400" fill="#1d1d1f" text-anchor="start">Classify one sentence or a whole CSV</text>
+<circle cx="66" cy="332" r="3" fill="#0066cc"/>
+<text x="78" y="336" font-size="13" font-weight="400" fill="#1d1d1f" text-anchor="start">85% from 32 labels (public data)</text>
+<rect x="340" y="100" width="280" height="262" rx="14" fill="#ffffff" stroke="#d2d2d7" stroke-width="1.5"/>
+<text x="360" y="130" font-size="12" font-weight="700" fill="#0066cc" text-anchor="start">QUESTION ANSWERING</text>
+<text x="360" y="152" font-size="13" font-weight="400" fill="#6e6e73" text-anchor="start">Answer questions from official publications</text>
+<rect x="360" y="170" width="240" height="70" rx="10" fill="#eef5fc" stroke="#0066cc" stroke-width="1.2"/>
+<text x="480.0" y="198" font-size="18" font-weight="700" fill="#1d1d1f" text-anchor="middle">DOSsier</text>
+<text x="480.0" y="222" font-size="12" font-weight="400" fill="#6e6e73" text-anchor="middle">LangChain agent + GPT-3.5 + FAISS</text>
+<circle cx="366" cy="268" r="3" fill="#0066cc"/>
+<text x="378" y="272" font-size="13" font-weight="400" fill="#1d1d1f" text-anchor="start">Upload PDFs, chat, see the sources</text>
+<circle cx="366" cy="300" r="3" fill="#0066cc"/>
+<text x="378" y="304" font-size="13" font-weight="400" fill="#1d1d1f" text-anchor="start">Falls back to arXiv, then web search</text>
+<circle cx="366" cy="332" r="3" fill="#0066cc"/>
+<text x="378" y="336" font-size="13" font-weight="400" fill="#1d1d1f" text-anchor="start">Demo on public FAQ questions</text>
+<rect x="640" y="100" width="280" height="262" rx="14" fill="#ffffff" stroke="#d2d2d7" stroke-width="1.5"/>
+<text x="660" y="130" font-size="12" font-weight="700" fill="#0066cc" text-anchor="start">REPORT SUPPORT</text>
+<text x="660" y="152" font-size="13" font-weight="400" fill="#6e6e73" text-anchor="start">Draft the narrative for an industry review</text>
+<rect x="660" y="170" width="240" height="70" rx="10" fill="#eef5fc" stroke="#0066cc" stroke-width="1.2"/>
+<text x="780.0" y="198" font-size="18" font-weight="700" fill="#1d1d1f" text-anchor="middle">inDOStry Navigator</text>
+<text x="780.0" y="222" font-size="12" font-weight="400" fill="#6e6e73" text-anchor="middle">LangChain CSV agent + GPT-3.5</text>
+<circle cx="666" cy="268" r="3" fill="#0066cc"/>
+<text x="678" y="272" font-size="13" font-weight="400" fill="#1d1d1f" text-anchor="start">Charts from industry CSV tables</text>
+<circle cx="666" cy="300" r="3" fill="#0066cc"/>
+<text x="678" y="304" font-size="13" font-weight="400" fill="#1d1d1f" text-anchor="start">Written trend analysis per industry</text>
+<circle cx="666" cy="332" r="3" fill="#0066cc"/>
+<text x="678" y="336" font-size="13" font-weight="400" fill="#1d1d1f" text-anchor="start">Chat over outlook PDFs and the web</text>
+</g></svg>

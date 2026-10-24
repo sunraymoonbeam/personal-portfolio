@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 490" width="960" height="490" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" role="img" aria-labelledby="t d">
+  <title id="t">How a law firm's data moved onto the platform</title>
+  <desc id="d">Five stages: extract from the legacy system, profile, clean and map with Python, load import sheets into PostgreSQL, then post and reconcile. A failed check sends the batch back to cleaning.</desc>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#0066cc"/></marker>
+  </defs>
+  <rect width="960" height="490" fill="#ffffff"/>
+  <text x="40" y="44" font-size="22" font-weight="600" fill="#1d1d1f">Moving a law firm's records onto the platform</text>
+  <text x="40" y="70" font-size="14" fill="#6e6e73">The same five steps for each record type: clients, cases, invoices, payments, trust money, ledger entries</text>
+  <g font-size="14" fill="#1d1d1f">
+    <rect x="40" y="110" width="160" height="150" rx="14" fill="#f5f5f7" stroke="#d2d2d7"/>
+    <text x="56" y="138" font-size="15" font-weight="600">1. Extract</text>
+    <text x="56" y="164">Legacy system</text>
+    <text x="56" y="184">SQL exports and</text>
+    <text x="56" y="204">Excel reports from</text>
+    <text x="56" y="224">the firm</text>
+
+    <rect x="222" y="110" width="160" height="150" rx="14" fill="#f5f5f7" stroke="#d2d2d7"/>
+    <text x="238" y="138" font-size="15" font-weight="600">2. Profile</text>
+    <text x="238" y="164">Row counts, totals,</text>
+    <text x="238" y="184">empty columns,</text>
+    <text x="238" y="204">duplicates, odd</text>
+    <text x="238" y="224">values</text>
+
+    <rect x="404" y="110" width="160" height="150" rx="14" fill="#e8f1fb" stroke="#0066cc"/>
+    <text x="420" y="138" font-size="15" font-weight="600">3. Clean and map</text>
+    <text x="420" y="164">Python + pandas:</text>
+    <text x="420" y="184">trim, dedupe, map</text>
+    <text x="420" y="204">accounts and case</text>
+    <text x="420" y="224">types, split tax</text>
+
+    <rect x="586" y="110" width="160" height="150" rx="14" fill="#f5f5f7" stroke="#d2d2d7"/>
+    <text x="602" y="138" font-size="15" font-weight="600">4. Load</text>
+    <text x="602" y="164">One import sheet</text>
+    <text x="602" y="184">per record type into</text>
+    <text x="602" y="204">the firm's own</text>
+    <text x="602" y="224">PostgreSQL database</text>
+
+    <rect x="768" y="110" width="152" height="150" rx="14" fill="#f5f5f7" stroke="#d2d2d7"/>
+    <text x="784" y="138" font-size="15" font-weight="600">5. Post and</text>
+    <text x="784" y="158" font-size="15" font-weight="600">reconcile</text>
+    <text x="784" y="184">Post invoices and</text>
+    <text x="784" y="204">payments by API,</text>
+    <text x="784" y="224">tie totals back</text>
+  </g>
+  <g stroke="#0066cc" stroke-width="2" fill="none" marker-end="url(#a)">
+    <line x1="200" y1="185" x2="218" y2="185"/>
+    <line x1="382" y1="185" x2="400" y2="185"/>
+    <line x1="564" y1="185" x2="582" y2="185"/>
+    <line x1="746" y1="185" x2="764" y2="185"/>
+    <path d="M844,262 C844,330 484,330 484,266" stroke-dasharray="6 5"/>
+  </g>
+  <text x="664" y="346" font-size="13" fill="#0066cc" text-anchor="middle">a check fails: fix the mapping, run the batch again</text>
+  <g font-size="13" fill="#1d1d1f">
+    <rect x="40" y="370" width="880" height="84" rx="14" fill="#ffffff" stroke="#d2d2d7"/>
+    <text x="60" y="398" font-size="14" font-weight="600">Checks before a batch is accepted</text>
+    <text x="60" y="424">Debits equal credits for each year of ledger entries  ·  invoice and tax totals match the source  ·  every account code exists</text>
+    <text x="60" y="444">Test import of one row first  ·  unpaid and paid invoices go in separate batches  ·  row counts match after each step</text>
+  </g>
+</svg>

@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 360" width="1000" height="360" role="img" aria-labelledby="t d">
+<title id="t">DOSetFit SetFit pipeline</title><desc id="d">Pipeline from 32 labelled examples to sentence pairs, contrastive fine-tuning, a logistic regression head and prediction, with three result tiles.</desc>
+<defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#6e6e73"/></marker></defs>
+<rect width="1000" height="360" fill="#ffffff"/>
+<g font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" fill="#1d1d1f">
+<text x="40" y="46" font-size="22" font-weight="700" fill="#1d1d1f" text-anchor="start">DOSetFit: few-shot text classification with SetFit</text>
+<text x="40" y="72" font-size="14" font-weight="400" fill="#6e6e73" text-anchor="start">Two training phases. No prompts. Small enough to run on a laptop CPU.</text>
+<rect x="40" y="100" width="166" height="90" rx="12" fill="#f5f5f7" stroke="#d2d2d7" stroke-width="1.5"/>
+<text x="123.0" y="126" font-size="15" font-weight="600" fill="#1d1d1f" text-anchor="middle">32 labelled examples</text>
+<text x="123.0" y="145" font-size="12.5" font-weight="400" fill="#6e6e73" text-anchor="middle">8 per class</text>
+<text x="123.0" y="164" font-size="12.5" font-weight="400" fill="#6e6e73" text-anchor="middle">(AG News, public)</text>
+<line x1="206" y1="145" x2="230" y2="145" stroke="#6e6e73" stroke-width="1.6" marker-end="url(#ar)"/>
+<rect x="230" y="100" width="166" height="90" rx="12" fill="#f5f5f7" stroke="#d2d2d7" stroke-width="1.5"/>
+<text x="313.0" y="126" font-size="15" font-weight="600" fill="#1d1d1f" text-anchor="middle">Make sentence pairs</text>
+<text x="313.0" y="145" font-size="12.5" font-weight="400" fill="#6e6e73" text-anchor="middle">same class = similar</text>
+<text x="313.0" y="164" font-size="12.5" font-weight="400" fill="#6e6e73" text-anchor="middle">other class = different</text>
+<line x1="396" y1="145" x2="420" y2="145" stroke="#6e6e73" stroke-width="1.6" marker-end="url(#ar)"/>
+<rect x="420" y="100" width="166" height="90" rx="12" fill="#eef5fc" stroke="#0066cc" stroke-width="1.5"/>
+<text x="503.0" y="126" font-size="15" font-weight="600" fill="#0066cc" text-anchor="middle">Phase 1: fine-tune</text>
+<text x="503.0" y="145" font-size="12.5" font-weight="400" fill="#6e6e73" text-anchor="middle">MiniLM-L12 sentence</text>
+<text x="503.0" y="164" font-size="12.5" font-weight="400" fill="#6e6e73" text-anchor="middle">transformer, cosine loss</text>
+<line x1="586" y1="145" x2="610" y2="145" stroke="#6e6e73" stroke-width="1.6" marker-end="url(#ar)"/>
+<rect x="610" y="100" width="166" height="90" rx="12" fill="#eef5fc" stroke="#0066cc" stroke-width="1.5"/>
+<text x="693.0" y="126" font-size="15" font-weight="600" fill="#0066cc" text-anchor="middle">Phase 2: train head</text>
+<text x="693.0" y="145" font-size="12.5" font-weight="400" fill="#6e6e73" text-anchor="middle">logistic regression</text>
+<text x="693.0" y="164" font-size="12.5" font-weight="400" fill="#6e6e73" text-anchor="middle">on the embeddings</text>
+<line x1="776" y1="145" x2="800" y2="145" stroke="#6e6e73" stroke-width="1.6" marker-end="url(#ar)"/>
+<rect x="800" y="100" width="166" height="90" rx="12" fill="#f5f5f7" stroke="#d2d2d7" stroke-width="1.5"/>
+<text x="883.0" y="126" font-size="15" font-weight="600" fill="#1d1d1f" text-anchor="middle">Predict</text>
+<text x="883.0" y="145" font-size="12.5" font-weight="400" fill="#6e6e73" text-anchor="middle">one sentence or</text>
+<text x="883.0" y="164" font-size="12.5" font-weight="400" fill="#6e6e73" text-anchor="middle">a CSV in batches</text>
+<rect x="40" y="226" width="296" height="96" rx="12" fill="#ffffff" stroke="#d2d2d7" stroke-width="1.5"/>
+<text x="64" y="276" font-size="34" font-weight="700" fill="#0066cc" text-anchor="start">85.0%</text>
+<text x="64" y="302" font-size="13.5" font-weight="400" fill="#6e6e73" text-anchor="start">accuracy on 7,600 test rows</text>
+<rect x="356" y="226" width="296" height="96" rx="12" fill="#ffffff" stroke="#d2d2d7" stroke-width="1.5"/>
+<text x="380" y="276" font-size="34" font-weight="700" fill="#0066cc" text-anchor="start">32</text>
+<text x="380" y="302" font-size="13.5" font-weight="400" fill="#6e6e73" text-anchor="start">labelled training examples</text>
+<rect x="672" y="226" width="296" height="96" rx="12" fill="#ffffff" stroke="#d2d2d7" stroke-width="1.5"/>
+<text x="696" y="276" font-size="34" font-weight="700" fill="#0066cc" text-anchor="start">69 ms</text>
+<text x="696" y="302" font-size="13.5" font-weight="400" fill="#6e6e73" text-anchor="start">one prediction on CPU</text>
+<text x="40" y="348" font-size="12.5" font-weight="400" fill="#6e6e73" text-anchor="start">Measured on the public AG News benchmark (4 classes), not on DOS survey data.</text>
+</g></svg>
