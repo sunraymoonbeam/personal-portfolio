@@ -22,8 +22,11 @@ const full = await getImage({ src, width: 1800, format: 'webp' });
 <figure class="shot">
   <a href={full.src} class="frame" data-lightbox data-alt={alt}
      {...(caption ? { 'data-caption': caption } : {})}>
+    {/* `auto` lets the browser use the real layout width, so a photo in a pair
+        does not download the file sized for the whole column. The list after
+        it is the fallback for browsers without `sizes="auto"`. */}
     <Image src={src} alt={alt} widths={[400, 800, 1200]}
-           sizes="(max-width: 700px) 100vw, 980px" class="img" loading="lazy" />
+           sizes="auto, (max-width: 700px) 50vw, 350px" class="img" loading="lazy" />
   </a>
   {caption && <figcaption class="t-14 muted">{caption}</figcaption>}
 </figure>

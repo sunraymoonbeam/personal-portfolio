@@ -5,12 +5,20 @@ interface Props {
   dim?: boolean;
   /** A dense diagram: link to a full-size copy that opens in the lightbox. */
   zoom?: boolean;
+  /** The first picture on the page, in view on arrival: load it at once. */
+  priority?: boolean;
 }
-const { src, alt, caption, dim = false, zoom = false } = Astro.props;
+const { src, alt, caption, dim = false, zoom = false, priority = false } = Astro.props;
 // A diagram drawn as SVG is already sharp at any size: serve it as is.
 const svg = src.format === 'svg';
 const full = zoom ? (svg ? { src: src.src } : await getImage({ src, width: Math.min(src.width, 2400), format: 'webp' })) : null;
-const img = { src, alt, widths: [600, 980, 1400, 1960], sizes: '(max-width: 734px) 100vw, 980px', loading: 'lazy' as const };
+// The column is --measure (700px) wide, so 980px over-served every figure.
+const img = {
+  src, alt, widths: [600, 980, 1400, 1960],
+  sizes: priority ? '(max-width: 734px) 100vw, 700px' : 'auto, (max-width: 734px) 100vw, 700px',
+  loading: priority ? ('eager' as const) : ('lazy' as const),
+  ...(priority ? { fetchpriority: 'high' as const } : {}),
+};
 ---
 <figure class="fig">
   {full
