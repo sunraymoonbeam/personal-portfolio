@@ -51,6 +51,15 @@ export function initSearch() {
     openPanel();
   }));
   input.addEventListener('input', () => applyFilter(input.value));
+  // A search field spends the first Escape clearing itself; close instead.
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') { e.preventDefault(); panel.close(); }
+  });
+  // The phone opener sits in the closed menu, so return focus to the menu button.
+  panel.addEventListener('close', () => {
+    const visible = [...openers].find((b) => b.offsetParent !== null);
+    (visible ?? document.querySelector<HTMLButtonElement>('[data-menu-toggle]'))?.focus();
+  });
 
   // Click the backdrop to dismiss. Escape is handled by <dialog> itself.
   panel.addEventListener('click', (e) => { if (e.target === panel) panel.close(); });

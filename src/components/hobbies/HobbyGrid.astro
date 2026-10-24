@@ -12,7 +12,8 @@ const { items } = Astro.props;
         <Tag {...(it.href ? { href: it.href } : {})} class="cell">
           <div class="square">
             {it.cover
-              ? <Image src={it.cover} alt={it.coverAlt ?? ''} class="img" loading="lazy" />
+              ? <Image src={it.cover} alt={it.coverAlt ?? ''} class="img" loading="lazy"
+                       widths={[360, 540, 800]} sizes="(max-width: 734px) 100vw, 360px" />
               : <span class="t-28">{it.title}</span>}
           </div>
           <p class="t-17 cap">{it.title}</p>

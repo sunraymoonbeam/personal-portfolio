@@ -67,7 +67,6 @@ const active = (href: string) => bare(path) === bare(href) || path.startsWith(ba
         <button type="button" class="sheet-link sheet-search" data-search-open>Search</button>
       </li>
     </ul>
-    <a href="/contact/" class="cta sheet-cta">Contact</a>
   </div>
 </header>
 
@@ -189,7 +188,6 @@ const active = (href: string) => bare(path) === bare(href) || path.startsWith(ba
     background: none; font: inherit; text-align: left; cursor: pointer;
   }
   .sheet-link:hover, .sheet-link.on { color: var(--ink); }
-  .sheet-cta { display: flex; justify-content: center; margin-top: var(--s-3); }
 
   /* Contact is the conversion target; it used to disappear on a phone. */
   .cta { display: flex; }

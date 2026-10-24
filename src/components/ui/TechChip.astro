@@ -3,14 +3,27 @@ import { resolveTech } from '~/lib/icons';
 interface Props { id: string; }
 const { id } = Astro.props;
 const { label, path, hex } = resolveTech(id);
+
+// Some brand colours vanish on the dark chip (Django's #092E20 is about 1:1).
+// Those take the text colour in dark mode; the rest keep the brand hue.
+const lum = (h: string) => {
+  const c = [0, 2, 4].map((i) => parseInt(h.slice(i, i + 2), 16) / 255)
+    .map((v) => (v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4));
+  return 0.2126 * c[0]! + 0.7152 * c[1]! + 0.0722 * c[2]!;
+};
+const dim = hex ? lum(hex) < 0.2 : false;
 ---
 <li class="chip t-14">
   {path
-    ? <svg viewBox="0 0 24 24" aria-hidden="true"><path fill={`#${hex}`} d={path} /></svg>
+    ? <svg viewBox="0 0 24 24" aria-hidden="true" class:list={[{ dim }]}><path fill={`#${hex}`} d={path} /></svg>
     : <span class="mono" aria-hidden="true">{label.slice(0, 2)}</span>}
   {label}
 </li>
 <style>
+  :global(:root[data-theme='dark']) svg.dim path { fill: var(--ink); }
+  @media (prefers-color-scheme: dark) {
+    :global(:root:not([data-theme='light'])) svg.dim path { fill: var(--ink); }
+  }
   .mono {
     min-width: 15px; height: 15px; padding: 0 3px; border-radius: 4px; flex-shrink: 0;
     background: var(--ink); color: var(--canvas);

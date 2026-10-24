@@ -206,6 +206,7 @@ const githubHandle = site.socials.github.replace('https://', '');
   .rows svg { color: var(--ink-3); flex-shrink: 0; transition: color 200ms ease; }
   .rows a:hover svg { color: var(--link); }
   .where { color: var(--ink-2); }
+  @media (pointer: coarse) { .rows a { min-height: 44px; } }
 
   /* ── form ── */
   .form { display: flex; flex-direction: column; gap: var(--s-5); }

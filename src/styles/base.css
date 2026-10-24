@@ -127,7 +127,11 @@ a:hover { color: var(--link); }
   .act,
   .open,
   .rows a,
-  .mail {
+  .mail,
+  .cta,
+  .copy,
+  .row .name a,
+  a.small[href^="mailto:"] {
     display: inline-flex;
     align-items: center;
     min-height: 44px;

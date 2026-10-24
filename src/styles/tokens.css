@@ -34,8 +34,8 @@
   --chip-bg: rgba(29, 29, 31, 0.055);
   --mark-bg: rgba(0, 113, 227, 0.12);
 
-  /* ── the Hobbies rainbow: one hue per letter, each ≥4.5:1 on its canvas ── */
-  --hue-1: #d0342c; --hue-2: #c1620a; --hue-3: #8a7300; --hue-4: #1e7a4c;
+  /* ── the Hobbies rainbow: one hue per letter, each ≥4.6:1 on --surface and the nav ── */
+  --hue-1: #cd332b; --hue-2: #ad5809; --hue-3: #836d00; --hue-4: #1e7a4c;
   --hue-5: #0066cc; --hue-6: #4f46e5; --hue-7: #8b2fc9;
 
   /* ── nav ── */
