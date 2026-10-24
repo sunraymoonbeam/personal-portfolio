@@ -45,7 +45,7 @@ export const TECHNOLOGIES: Record<string, Tech> = {
 /** The grouped view on the home and skills pages, in résumé order. */
 export const STACK_GROUPS: Array<{ title: string; items: string[] }> = [
   { title: 'Languages',              items: ['python', 'typescript', 'postgresql'] },
-  { title: 'Backend & DevOps',       items: ['fastapi', 'django', 'n8n', 'git', 'docker', 'gitlab'] },
-  { title: 'AI & Agents',            items: ['langchain', 'langgraph', 'googleadk', 'hermes', 'litellm', 'langfuse', 'pytorch', 'huggingface', 'nvidia'] },
-  { title: 'Cloud & Infrastructure', items: ['terraform', 'googlecloud', 'azure', 'aws'] },
+  { title: 'Backend & DevOps',       items: ['git', 'gitlab', 'fastapi', 'django', 'docker', 'n8n'] },
+  { title: 'AI & Agents',            items: ['langchain', 'langgraph', 'googleadk', 'hermes', 'litellm', 'langfuse', 'pytorch'] },
+  { title: 'Cloud & Infrastructure', items: ['terraform', 'googlecloud', 'azure'] },
 ];

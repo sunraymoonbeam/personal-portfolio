@@ -62,7 +62,7 @@ export const pages = {
       "I'm open to roles where I can own a problem from the first conversation " +
         'with users through to production. If that sounds like your team, send ' +
         'me an email.',
-      "Or ask me out for coffee.",
+      "Or just ask me out for coffee.",
     ],
   },
 } as const;
