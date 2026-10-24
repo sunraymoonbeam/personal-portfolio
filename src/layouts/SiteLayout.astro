@@ -1,7 +1,6 @@
 ---
 import '@fontsource-variable/geist';
 import '@fontsource-variable/geist-mono';
-import '@fontsource-variable/shantell-sans';
 import '../styles/base.css';
 import '../styles/article.css';
 import '../styles/cursors.css';
@@ -11,17 +10,47 @@ import { ClientRouter } from 'astro:transitions';
 import { site } from '~/config/site';
 
 interface Props {
-  title?: string | undefined; description?: string | undefined; image?: string | undefined;
+  title?: string | undefined; description?: string | undefined;
+  /** A path under public/ or an absolute URL. Defaults to the shared card. */
+  image?: string | undefined; imageAlt?: string | undefined;
+  /** 'article' for the case studies and essays; everything else is a website page. */
+  type?: 'website' | 'article' | undefined;
   /** The 404 page: no canonical or og:url, since /404/ is not a real URL. */
   noindex?: boolean | undefined;
 }
 const {
-  title = `${site.name} — ${site.role}`,
-  description = site.tagline,
-  image,
+  title = `${site.fullName} — ${site.role}`,
+  description = site.description,
+  image = '/og.jpg',
+  imageAlt = `${site.fullName}, ${site.tagline}`,
+  type = 'website',
   noindex = false,
 } = Astro.props;
 const canonical = new URL(Astro.url.pathname, site.origin).href;
+const isHome = Astro.url.pathname === '/';
+
+/* Structured data. The Person node is what lets a search for his name show a
+   rich result; the WebSite node names the site. Only the home page carries
+   them, which is where a search engine expects them. */
+const jsonLd = isHome && {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Person', '@id': `${site.origin}/#person`,
+      name: site.fullName, alternateName: site.name, givenName: 'Ren Hwa', familyName: 'Low',
+      jobTitle: 'AI Engineer', worksFor: { '@type': 'Organization', name: 'Carro' },
+      alumniOf: { '@type': 'CollegeOrUniversity', name: 'Nanyang Technological University' },
+      address: { '@type': 'PostalAddress', addressLocality: 'Singapore', addressCountry: 'SG' },
+      url: site.origin, image: new URL('/og.jpg', site.origin).href, email: `mailto:${site.email}`,
+      sameAs: Object.values(site.socials),
+      knowsAbout: ['AI agents', 'Large language models', 'Computer vision', 'Speech processing', 'Python', 'TypeScript'],
+    },
+    {
+      '@type': 'WebSite', '@id': `${site.origin}/#website`,
+      url: site.origin, name: site.fullName, inLanguage: 'en', publisher: { '@id': `${site.origin}/#person` },
+    },
+  ],
+};
 ---
 <!doctype html>
 <html lang="en">
@@ -35,13 +64,22 @@ const canonical = new URL(Astro.url.pathname, site.origin).href;
     <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#161618" media="(prefers-color-scheme: dark)" />
 
-    <meta property="og:type" content="website" />
+    <meta name="author" content={site.fullName} />
+    <meta property="og:type" content={type} />
+    <meta property="og:site_name" content={site.fullName} />
+    <meta property="og:locale" content="en_SG" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     {!noindex && <meta property="og:url" content={canonical} />}
-    {image && <meta property="og:image" content={new URL(image, site.origin).href} />}
-    <meta name="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
+    <meta property="og:image" content={new URL(image, site.origin).href} />
+    <meta property="og:image:alt" content={imageAlt} />
+    {image === '/og.jpg' && <meta property="og:image:width" content="1200" />}
+    {image === '/og.jpg' && <meta property="og:image:height" content="630" />}
+    <meta name="twitter:card" content="summary_large_image" />
+    {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="sitemap" href="/sitemap-index.xml" />
 
     {/* Cross-document view transitions. The router ships its own

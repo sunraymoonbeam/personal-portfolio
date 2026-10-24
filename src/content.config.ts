@@ -1,6 +1,13 @@
 import { defineCollection, reference, type SchemaContext } from 'astro:content';
 import { z } from 'astro/zod';
 import { glob } from 'astro/loaders';
+import { TECHNOLOGIES } from './data/technologies';
+
+/**
+ * A technology id must exist in the lookup table, so a typo such as `fastpi`
+ * fails the build instead of shipping a chip with the typo on it.
+ */
+const techId = z.enum(Object.keys(TECHNOLOGIES) as [string, ...string[]]);
 
 /**
  * Three collections, three strict schemas, one small shared base.
@@ -103,7 +110,7 @@ const work = defineCollection({
         end: month.optional(),
         /** Does it appear in work surfaces at all? A published article may be unlisted. */
         showInWork: z.boolean().default(true),
-        stack: z.array(z.string().min(1)).default([]),
+        stack: z.array(techId).default([]),
         /**
          * Verbatim from the résumé, in résumé order. Kept verbatim on purpose:
          * the site and the PDF must never disagree about what I did. `**…**`
@@ -132,7 +139,7 @@ const projects = defineCollection({
         published: month,
         status: z.enum(['Shipped', 'Ongoing', 'Archived']).default('Shipped'),
         tags: z.array(z.string().min(1)).min(1),
-        stack: z.array(z.string().min(1)).default([]),
+        stack: z.array(techId).default([]),
         links: links.optional(),
         cardHighlights,
         metrics: z.array(metric).max(4).optional(),

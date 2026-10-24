@@ -1,5 +1,14 @@
 @import './tokens.css';
 
+/* The crayon face draws only the words "Hobbies" and "play", at weight 600.
+   This file holds just those letters (3 KB rather than the 80 KB latin file).
+   A new crayon word needs its letters added: see `npm run font:crayon`. */
+@font-face {
+  font-family: 'Shantell Wordmark';
+  src: url('../assets/fonts/shantell-hobbies.woff2') format('woff2');
+  font-weight: 600; font-style: normal; font-display: swap;
+}
+
 /* Every size scales with the viewport rather than snapping between two values.
    The old floors were tuned for one phone width, so a 360px screen got the
    same 38px heading as a 430px one and the line broke awkwardly.

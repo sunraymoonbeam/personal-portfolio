@@ -6,6 +6,9 @@ export const site = {
   location: 'Singapore',
   wordmark: 'Zack Low',
   tagline: 'Software engineer specialising in AI, in Singapore.',
+  /** The home page's meta description: what a search result shows under the name. */
+  description:
+    'Ren Hwa (Zack) Low, a software engineer in Singapore specialising in AI: ticketing agents at Carro, text-to-motion models at AI Singapore, and speech processing at NIE.',
   origin: 'https://renhwa.com',
   email: 'zack.low.dev@gmail.com',
   socials: {

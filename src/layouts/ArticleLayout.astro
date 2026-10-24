@@ -18,7 +18,7 @@ const { title, summary, eyebrow, backHref, backLabel, prev, next, noun, quoteBy 
 const solo = !Astro.slots.has('aside');
 const label = (dir: 'Previous' | 'Next') => (noun ? `${dir} ${noun}` : dir);
 ---
-<SiteLayout title={`${title} — Zack Low`} description={summary}>
+<SiteLayout title={`${title} — Zack Low`} description={summary} type="article">
   <article class:list={{ solo }}>
     <header class="head wrap measure-start">
       <ArrowLink href={backHref} label={backLabel} back />

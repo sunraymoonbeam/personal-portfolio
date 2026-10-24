@@ -125,13 +125,9 @@ One Google rule is deliberately ignored: it asks for `snake_case` filenames.
 That is a Google-internal convention the JavaScript ecosystem never adopted,
 and Astro's own projects use PascalCase for components.
 
-## Known gap
+## Technology ids
 
-Nothing checks that a technology id in `stack:` exists in the lookup table. A
-typo passes the schema, because the schema only requires a non-empty string,
-and the icon lookup falls back to rendering the raw text. You would ship a
-chip labelled `fastpi` with a green build.
-
-The fix is Astro's `reference()`, which fails the build when the target is
-missing. The cost is moving the technology list out of TypeScript and into
-data files. Not done, because it is a trade rather than a strict improvement.
+A technology id in `stack:` must exist in `src/data/technologies.ts`. The
+schema builds a `z.enum` from the table's keys, so a typo such as `fastpi`
+fails the build with the list of valid ids. This gets what `reference()` would
+give without moving the table out of TypeScript and into data files.

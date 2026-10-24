@@ -15,14 +15,14 @@
     "cursors": "node scripts/generate-cursors.mjs",
     "test:routes": "node scripts/check-routes.mjs",
     "resume:preview": "sh scripts/resume-preview.sh",
-    "verify": "npm run check && npm run test && npm run test:routes && node scripts/generate-cursors.mjs --check && npm run build"
+    "verify": "npm run check && npm run test && npm run test:routes && node scripts/generate-cursors.mjs --check && npm run build",
+    "font:crayon": "sh scripts/subset-crayon-font.sh"
   },
   "dependencies": {
     "@astrojs/mdx": "^8.0.2",
     "@astrojs/sitemap": "^3.7.4",
     "@fontsource-variable/geist": "^5.3.0",
     "@fontsource-variable/geist-mono": "^5.3.0",
-    "@fontsource-variable/shantell-sans": "^5.3.0",
     "astro": "^7.3.5",
     "sharp": "^0.35.4",
     "simple-icons": "^16.32.0"
@@ -32,6 +32,7 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
+    "@fontsource-variable/shantell-sans": "^5.3.0",
     "typescript": "^6.0.3"
   }
 }
