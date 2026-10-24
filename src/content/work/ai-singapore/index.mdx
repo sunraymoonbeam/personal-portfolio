@@ -61,7 +61,7 @@ as Docker images with the final model's weights.
 
 ### Motion data format
 
-There are many ways to write motion down. The simplest is keypoints: the 3D
+There are many ways to represent motion. The simplest is keypoints: the 3D
 position of each joint, frame by frame. The other is rotations: how much each
 joint turns relative to its parent, starting from the hips. Rotations keep
 bone lengths fixed and can drive a real character, so most motion capture
@@ -239,14 +239,6 @@ version took 20 minutes a run. These changes brought it to 2:
 
 ## Reflections
 
-### Data quality
-
-The biggest gains came from the data, not the model: one consistent format
-across datasets, statistics computed without the test set, and captions for
-clips that had none. A better architecture can't make up for data the model
-learns the wrong thing from. If I did it again, I'd audit the data in the first
-sprint, before training anything.
-
 ### Prioritisation
 
 My manager kept telling me to work in an agile way, and early on I didn't. I
@@ -263,18 +255,9 @@ What I do now:
 When I catch myself polishing, I ask whether it moves the metric or the
 deliverable. If it doesn't, it waits.
 
-### Explaining it simply
-
-My team had a fresh graduate, an experienced engineer and two career
-switchers. Explaining Linux and Git to people from other fields took more time
-than I expected, and it showed me where my own understanding was thin. I wrote
-onboarding guides, built a small interactive repo for practising Linux commands
-and version control, and added checks to CI/CD so fewer mistakes reached
-review.
-
 ### Working with people
 
-People are different. They come with different motivations and different
+Everyone is different. People come with different motivations and different
 beliefs about how work should be done. Some want to push hard, some want to do
 their part well, and some find too much structure stressful.
 
@@ -292,3 +275,17 @@ everyone a shared problem to fix. So we leaned on process:
 I also learned where my job ends. I keep my own work on track, and when a
 problem isn't mine to fix, I raise it with the manager early. We still hit our
 deadlines.
+
+### Communication
+
+My team had a fresh graduate, an experienced engineer and two career
+switchers, so I spent a lot of time explaining things like Linux, Git and
+diffusion models to people from other fields. I realised that when I couldn't
+find an analogy, or struggled to explain something simply, it meant I didn't
+understand it well enough myself. Explaining became a test of my own
+understanding.
+
+I learned to pitch the same idea at different levels: the intuition for
+someone new, the details for someone technical. I also wrote onboarding
+guides, built a small interactive repo for practising Linux commands and
+version control, and added checks to CI/CD so fewer mistakes reached review.
