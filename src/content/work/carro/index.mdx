@@ -35,11 +35,14 @@ import n8n from './n8n-workflow.png'
 
 ## The role
 
-I joined Carro, a used-car marketplace, as an AI engineer in July 2025. Most of
-Carro's work with customers runs through tickets: a question about a car, an
-offer to sell one, a workshop booking. Ops teams in Singapore, Malaysia and
-Hong Kong work through them every day. My job is to translate their processes
-into agents, so that our people can spend their time on higher-value work.
+I joined Carro as an AI engineer in July 2025. Carro is a used-car
+marketplace in Singapore, Malaysia and Hong Kong. It buys cars from owners,
+sells them to buyers, and services them in its own workshops, and it runs all
+of that through its own CRM. Every customer request becomes a ticket there: a
+question about a car, an offer to sell one, a workshop booking.
+
+My job is mainly to translate those processes into agentic workflows, so that
+our people can spend their time on higher-value work.
 
 ## Noteworthy projects
 
@@ -47,12 +50,15 @@ into agents, so that our people can spend their time on higher-value work.
 
 Customers reach Carro through many workflows:
 
-- buying a car: finding one in stock, asking about it, booking a viewing;
-- selling a car: getting it qualified, then booking an inspection;
-- the workshop: booking a service, then rescheduling or cancelling it;
-- triage: reading each new ticket and sending it to the right team.
+- **Triage:** reading each new ticket and sending it to the right team.
+- **Buying a car:** gathering the customer's requirements, checking what's
+  available, and booking a viewing.
+- **Selling a car:** checking the car against Carro's acceptance criteria,
+  then booking an inspection.
+- **Workshop:** booking a servicing appointment, or handling a repair
+  diagnosis.
 
-These agents aren't chatbots that answer questions. We integrate them with
+These agents aren't simply chatbots that answer questions. We integrate them with
 Carro's CRM and internal systems, so they do the work across the customer's
 whole journey: they look up inventory, create and update tickets, book and move
 slots, and message customers on WhatsApp. We started with two agents. Today
@@ -237,13 +243,13 @@ diagram can't skip a step the way a sentence can.
 
 ### Trade-offs
 
-There's no perfect solution, only trade-offs. Four bots or one harness, Sonnet
-or DeepSeek, ship now or test longer: each answer gives something up. An
+When I propose something, a colleague will usually ask: what were the
+alternatives, and what's the trade-off? There's no perfect solution. An
 engineer should be able to defend how they built something: what they chose,
-what it costs, and what they gave up. My job is to see the bigger picture,
-say that plainly, and pick the option that fits where the business is going.
+what it costs, and what they gave up. My job is to see the bigger picture, say
+that plainly, and pick the option that fits where the business is going.
 
-### Experimentation
+### Experiment design
 
 AI engineering isn't like traditional software engineering. Code does what you
 write. A model does what it tends to, and a change that fixes one ticket can
@@ -262,6 +268,34 @@ follow the same steps every time:
 When we switched models, I didn't trust one score. I used three judges and
 matched time windows, and checked every serious finding by hand.
 
+### Engineering mindset
+
+A good engineer understands the parts of a system and how they behave, not
+only which one scores best. My boss put it as racing. A real race engineer
+doesn't say "the Lamborghini is the best car". The answer depends on the car,
+the road and the conditions, and the engineer understands why.
+
+It's the same in AI engineering. "Anthropic's models perform best" isn't an
+answer. The better question is why another model does worse here, and what we
+can change so that it does better. He also hates it when I call a model
+"cheap": every model has its own habits, and it's on us to build a harness
+that works with them.
+
+What we have to understand keeps moving:
+
+- **Prompt engineering.** When I started, the wording of the prompt was all
+  the rage.
+- **Context engineering.** As models got better, the wording mattered less and
+  what we fed the model mattered more: better connectors, better data.
+- **Harness engineering.** Now models take on longer and more complex tasks,
+  so the work is the loop, the tools, the memory and the limits around the
+  model. Does the agent stay on the rails after a run of errors? What happens
+  when memory is truncated, or the context is too full? Does the same harness
+  work with every model we run, not only the one we tested?
+
+So the mindset I try to keep is curious and attentive: learn how each new
+piece behaves, question what we assume, and keep learning as the ground moves.
+
 ### Reading the room
 
 Systems aren't the only thing to read. I try to work out what my boss or a
@@ -269,23 +303,3 @@ stakeholder really needs, and to notice how people like to work, so I can work
 better with them. A manager asking for "a number" usually needs a decision
 they can defend. An ops lead asking for "a bot" usually needs fewer repetitive
 chats.
-
-### Engineering mindset
-
-My boss hates it when I call a model "cheap". Every model has its own habits,
-and it's on us to build a harness that works with them.
-
-When I started, prompt engineering was all the rage. As models got better,
-the wording mattered less and what we fed the model mattered more. Better
-connectors and better data made context engineering the real work. Now models
-can take on longer and more complex tasks, so the work is the harness: the
-loop, the tools, the memory and the limits around the model. Does the agent
-stay on the rails after a run of errors? What happens when memory is
-truncated, or the context is too full? Does the same harness work well with
-every model we run, not only the one we tested?
-
-He put it as racing. A real race engineer doesn't say "the Lamborghini is the
-best car". The answer depends on the car, the road and the conditions, and
-the engineer understands why. It's the same with models. "Anthropic's models
-perform best" isn't an answer. The better question is why another model does
-worse here, and what we can change so that it does better.

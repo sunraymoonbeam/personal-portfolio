@@ -33,6 +33,20 @@ starts using them again.
 
 ## 3. Interactive ideas (later)
 
+His list, 2026-10-24: a personal logo of his own, the skill tree, a 3D model
+of himself, a coffee animation, a Pokédex-style design (a use case to
+explore, e.g. hobbies or skills as collectable entries), and more 3D models
+around the site.
+
+- **Personal logo.** Replace the current mark with one he designs or
+  commissions.
+- **Coffee animation.** For the coffee hobby page: something like a pour or a
+  bloom, CSS or Lottie, off under reduced motion.
+- **Pokédex design.** A card-collection layout: each entry with a sprite,
+  type and stats. Decide which collection it fits before building.
+- **3D models.** Beyond the portrait: small models for projects or hobbies,
+  lazy-loaded with still fallbacks.
+
 - **3D me on the home page.** Replace the "More about me" link under the
   portrait with a small 3D model of Zack that pops up, invites a click (to
   About), and can be rotated by dragging. Needs a scan or a modelled asset
