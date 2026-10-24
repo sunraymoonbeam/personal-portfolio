@@ -9,40 +9,116 @@ title: Finding who spoke when in classroom recordings
 tagline: "Worked with professors to measure student participation in classroom recordings, using speech processing and speaker diarization."
 summary: >-
   Speech processing on classroom recordings: a speaker diarization system, built with professors, to measure student participation.
-stack: [python, pytorch, nvidia]
+stack: [python, pytorch, nvidia, huggingface]
 bullets:
   - "Partnered with professors to build a speaker diarization system that measures student participation and learning outcomes."
   - "Fine-tuned NVIDIA NeMo ASR models on self-annotated transcripts, beating open-source baselines by **30%**."
 metrics:
-  - { value: "200+", label: "hours of classroom recordings" }
-  - { value: "30%", label: "better than open-source baselines", context: "after fine-tuning on transcripts I annotated" }
+  - { value: "29.6%", label: "diarization error with NeMo", context: "against 53.6% for my pyannote build, on a public benchmark clip" }
+  - { value: "8", label: "sessions labelled by hand", context: "about 5 hours of classroom audio, corrected turn by turn" }
+  - { value: "3", label: "speaker-embedding models compared", context: "ECAPA-TDNN, Resemblyzer and wav2vec2" }
 featuredOrder: 3
 cover: ./cover.jpg
 ---
+import pipeline from './diarization-pipeline.svg';
+import timeline from './diarization-timeline-voxconverse.png';
+import der from './der-pyannote-vs-nemo-voxconverse.png';
+import sweep from './vad-tuning-sweep-voxconverse.png';
 
 ## The project
 
-At the National Institute of Education, I worked with professors studying how
-students take part in group discussions. They had more than 200 hours of
-classroom recordings and wanted to know how speaking patterns, interruptions
-and turn-taking related to learning outcomes.
+At the National Institute of Education, I worked part-time with professors in
+the learning sciences group. They'd recorded students' group discussions in
+class and wanted to know how each student took part: who spoke, when, how
+often and for how long.
 
-First, someone had to work out who spoke when. That's speaker diarization, and
-classroom audio makes it hard: voices overlap, students talk over each other
-and the microphones pick up the whole room.
+Before any of that, something had to work out who spoke when. That's speaker
+diarization, and classroom audio makes it hard. A few microphones pick up the
+whole room, students talk over each other, and the quiet ones barely register.
+My brief was to review the state of the art, then build a pipeline that turns
+a recording into talk time per student.
 
-## What I built
+<Figure src={pipeline} zoom alt="The pipeline: classroom audio, optional speech enhancement, voice activity detection with MarbleNet, speaker embeddings with TitaNet, spectral clustering to pick the number of speakers, an RTTM file of turns, human correction in the Gecko tool, then participation measures: talk time, turns and share per student." caption="From a recording to talk time per student. Dashed: explored, not in the final runs." />
 
-I built an ASR and diarization pipeline on NVIDIA NeMo. I transcribed and
-labelled recordings myself, for evaluation and for fine-tuning, and the
-fine-tuned models beat the open-source baselines by 30%.
+## Noteworthy projects
 
-To clean up the audio, we used beamforming with a pair of microphones. A voice
-reaches the two microphones at slightly different times. Delay one signal by
-that gap and add the two together, and sound from the speaker's direction gets
-louder while sound from other directions partly cancels out.
+### Learning a new field, notebook by notebook
 
-## Looking back
+I came from a final-year project on animal sounds and an internship in NLP, so
+I started by teaching myself. I wrote a notebook for each stage: finding
+speech (voice activity detection), turning each stretch of speech into a voice
+fingerprint (speaker embeddings), grouping fingerprints by speaker
+(clustering), and scoring the result.
 
-Labelling the recordings myself was slow, but it gave us a test set that came
-from real classrooms, noise and all. The 30% is measured on that.
+I compared three embedding models, ECAPA-TDNN, Resemblyzer and wav2vec2, and
+three ways of clustering, and used silhouette and Calinski-Harabasz scores to
+guess how many speakers a recording held. Diarization has to answer that
+question too, and in a classroom nobody tells you.
+
+### Choosing a toolkit with a number
+
+There were two serious open-source options, pyannote and NVIDIA NeMo. I built
+a pipeline step by step from pyannote's parts and ran NeMo's clustering
+diarizer, then scored both on a labelled news clip from the public VoxConverse
+set. The score is the diarization error rate: the share of speech that's
+missed, falsely detected, or given to the wrong speaker.
+
+<Figure src={der} alt="Diarization error rate on one public clip. pyannote VAD with ECAPA embeddings and spectral clustering: 53.6%, almost all speaker confusion. NeMo with MarbleNet VAD and TitaNet multi-scale embeddings: 29.6%, split between missed speech, false alarms and confusion." caption="Same clip, two pipelines. Most of my pyannote build's error was giving speech to the wrong person." />
+
+NeMo made about half the errors. More useful was where my build failed: it
+found the speech fine and then mixed up who was talking. That pointed at the
+embeddings and clustering, which is exactly what NeMo does better, with
+TitaNet fingerprints taken at several window sizes.
+
+<Figure src={timeline} alt="Speaker turns over 170 seconds for four speakers, human labels above and NeMo's output below. The system matches most turns, and misses part of the fourth speaker's." caption="Who spoke when, on the public clip: the human labels, then NeMo's output." />
+
+### Labelling to measure
+
+On the classroom recordings there was no answer key, so there was no way to
+know how good any output was. I set up Gecko, an open-source annotation tool,
+on my own machine, loaded NeMo's output, and corrected it turn by turn for
+eight sessions, about five hours of audio, tagging noise and cross-talk as I
+went.
+
+That gave the project its first accuracy number, and showed where the errors
+were. Most were missed speech: quiet students the system never heard. And in
+some groups it found fewer speakers than were really there, which is the worst
+mistake for a participation study, because a student who isn't counted
+doesn't take part at all as far as the data knows.
+
+### Tuning, and when cleaning hurts
+
+Missed speech looked like a threshold problem, so I swept the voice-activity
+settings. On the public clip, filling short gaps cut the detection error from
+17.2% to 15.0%. On the classroom audio, the same tuning barely moved it.
+Thresholds can't recover speech the model scores low.
+
+<Figure src={sweep} alt="Detection error against the minimum gap that gets filled. It starts at 17.2% with no filling and reaches its lowest, 15.0%, at 0.5 seconds." caption="One setting swept on the public clip. Filling gaps under half a second helped most." />
+
+Cleaning the audio wasn't the fix either. I denoised a test clip and ran it
+again, and the system merged two speakers into one: the denoiser had removed
+the very differences that told their voices apart. With two microphones,
+beamforming is the better route. A voice reaches each microphone at a slightly
+different time, so delaying one signal by that gap and adding the two makes
+the speaker louder and the room quieter.
+
+## Reflections
+
+### Label a little before tuning a lot
+
+Five hours of hand-corrected audio told me more than any amount of tuning
+without it. The habit I kept: build a small answer key first, even a rough one, before
+touching a setting.
+
+### Count the quiet ones
+
+The usual error rate is weighted by speech, so a quiet student who's missed
+entirely costs almost nothing. For a study about participation, that's
+backwards. I learned to pick the measure that matches the question, not the
+one the toolkit prints.
+
+### Cleaner isn't always better
+
+The denoised clip was cleaner audio and worse input for the model. What a
+person hears as quality and what a model needs aren't the same thing, so test
+every clean-up step against the score.
