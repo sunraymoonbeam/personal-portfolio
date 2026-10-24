@@ -31,7 +31,6 @@ const { prev, next } = getAdjacent(links, keyOf('work', entry.id));
 ---
 <ArticleLayout
   title={d.title} summary={d.summary}
-  eyebrow={`${d.role} at ${employer.data.name}, ${formatRange(d.start, d.end)}`}
   backHref="/work/" backLabel="Work experience"
   prev={prev} next={next} noun="role"
 >
@@ -53,7 +52,8 @@ const { prev, next } = getAdjacent(links, keyOf('work', entry.id));
         </section>
     )}
     <dl class="facts">
-      <div><dt>Role</dt><dd>{d.role}, {d.kind.toLowerCase()}</dd></div>
+      <div><dt>Company</dt><dd>{employer.data.name}</dd></div>
+      <div><dt>Role</dt><dd>{d.role}</dd><dd class="muted">{d.kind}</dd></div>
       <div><dt>When</dt><dd class="tabular">{formatRange(d.start, d.end)}</dd><dd class="muted tabular">{formatDuration(d.start, d.end)}</dd></div>
       <div><dt>Where</dt><dd>{d.location}</dd></div>
       {d.stack.length > 0 && (
@@ -94,7 +94,7 @@ const { prev, next } = getAdjacent(links, keyOf('work', entry.id));
   /* Facts: four short columns under the outcomes, label over value; the stack
      takes the full row so its chips wrap instead of squeezing a column. */
   .facts {
-    display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-5) var(--s-6);
+    display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--s-5) var(--s-6);
     margin: 0;
   }
   .facts dt { font-size: 14px; line-height: 1.4; letter-spacing: -0.01em; color: var(--ink-3); }
@@ -102,7 +102,8 @@ const { prev, next } = getAdjacent(links, keyOf('work', entry.id));
   .facts dd { margin: 4px 0 0; font-size: 15px; line-height: 1.45; letter-spacing: -0.012em; color: var(--ink); }
   .facts .stack { grid-column: 1 / -1; }
   @media (min-width: 900px) {
-    .facts { grid-template-columns: 0.9fr 0.9fr 0.7fr 2.4fr; }
+    .facts { grid-template-columns: 0.8fr 0.9fr 1fr 0.6fr 2.1fr; }
+    .facts dd.tabular { white-space: nowrap; }
     .facts .stack { grid-column: auto; }
   }
   .built { display: flex; flex-wrap: wrap; gap: 6px; margin: 2px 0 0; padding: 0; list-style: none; }

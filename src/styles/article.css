@@ -58,5 +58,11 @@
 .prose th:first-child, .prose td:first-child { padding-left: 0; }
 .prose th { font-weight: 500; color: var(--ink-2); border-bottom-color: var(--border-strong); }
 .prose td strong { color: var(--ink); }
+/* On a phone a five-column table cannot fit, so the table scrolls inside the
+   column instead of pushing the whole page sideways. */
+@media (max-width: 734px) {
+  .prose table { display: block; overflow-x: auto; font-size: 14px; }
+  .prose th, .prose td { min-width: 96px; padding: 8px 10px; }
+}
 
 .prose hr { border: 0; border-top: 1px solid var(--border); margin-block: var(--s-7); }

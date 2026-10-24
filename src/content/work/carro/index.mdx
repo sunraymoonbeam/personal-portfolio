@@ -62,8 +62,8 @@ These agents aren't simply chatbots that answer questions. We integrate them wit
 Carro's CRM and internal systems, so they do the work across the customer's
 whole journey: they look up inventory, create and update tickets, book and move
 slots, and message customers on WhatsApp. We started with two agents. Today
-the team runs fifteen, our customer-facing agent fleet, and all of them are
-built on the new ticketing agent platform whose development I led.
+the team runs fifteen customer-facing agents, all of them on the new ticketing
+agent platform whose development I led.
 
 <Figure src={sell} zoom alt="A WhatsApp chat on a staging account. A customer says they want to sell. The agent asks for the plate, make, model, variant, year, transmission and engine size, confirms the details it found, asks for the customer's area, and lists three inspection centres in Kuala Lumpur." caption="A seller on WhatsApp. The agent checks the car's details, then finds inspection centres nearby. Staging, with test data." />
 
@@ -85,8 +85,8 @@ for each stage: qualification, scheduling, rescheduling and recovery. I asked
 why every workflow needed its own bot. Why not one bot that could do all of
 it?
 
-I surveyed the agent frameworks available, weighed the pros, cons and
-trade-offs of each, and built three proofs of concept:
+I surveyed the agent frameworks available, weighed the trade-offs of
+each, and built three proofs of concept:
 [Agno](https://github.com/agno-agi/agno), the
 [Claude Agent SDK](https://github.com/anthropics/claude-agent-sdk-python) and
 [LangChain Deep Agents](https://github.com/langchain-ai/deepagents). Deep
@@ -116,7 +116,7 @@ had little security. These are the features I added:
 | Credential proxy | The agent never holds a key. A proxy adds credentials to its requests, so a jailbroken agent has no secrets to leak. |
 | Guardrails | Six layers against prompt injection and data leaks. Cheap pattern filters run first, and an LLM judge checks what gets past them. |
 | Lark integration | 47 native tools for Lark docs, Base, calendars and approvals, so the agent works where Carro's staff already work. |
-| A2A | Agents can call each other to get the data they need, using the open Agent2Agent protocol. It's a first step towards a web of agents. |
+| A2A | Agents can call each other to get the data they need, using the open Agent2Agent protocol. |
 
 Even with these, Nanobot was still a personal bot. When a whole team shared
 it, memory and context ran together, and it couldn't tell who was allowed to
@@ -196,14 +196,10 @@ Every model also gets the same base instructions:
 
 <Figure src={prompts} zoom alt="System prompt text with four headings: Plan before you act, Parallel tool calls, Use your tools to act, and Ground your answers." caption="Base instructions that every model gets: plan first, call tools in parallel, act instead of promising, and ground every answer." />
 
-With profiles in place, a workflow can move to whichever model suits it, and
-behave the same way after the move.
-
 ### Automations
 
 Not everything needs an agent. I treat AI as the last resort: a fixed flow
-with clear rules is cheaper, faster and easier to trust, and it often does
-more for the business.
+with clear rules is cheaper, faster and easier to trust.
 
 An automation is only as good as its spec. Before I build one, I pin down:
 

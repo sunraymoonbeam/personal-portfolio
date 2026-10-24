@@ -34,14 +34,13 @@ export const pages = {
   hobbies: {
     /** The h1 is the crayon wordmark and the subtitle crayons "Play", so both
         are markup in the page. This is the plain meta description. */
-    description: 'Because play is just as important as work. Climbing, cooking, coffee and guitar.',
+    description: "Climbing, cooking, coffee and guitar: what I do when I'm not working.",
   },
   about: {
-    eyebrow: 'About',
     title: "Hi, I'm Zack.",
     /** The meta description. */
     lede:
-      'Ren Hwa Low on paper, Zack to most people. A software engineer ' +
+      "Ren Hwa Low on paper, Zack to most people. I'm a software engineer " +
       'specialising in AI, currently at Carro in Singapore.',
     /** The card beside the portrait. Every line is on the CV. */
     facts: [
@@ -53,7 +52,7 @@ export const pages = {
   },
   cv: {
     title: 'CV',
-    description: "Ren Hwa (Zack) Low's one-page résumé, as a PDF.",
+    description: "Ren Hwa (Zack) Low's one-page CV, as a PDF.",
   },
   contact: {
     title: 'Get in touch',

@@ -80,7 +80,7 @@ const hobbies = await getFeaturedHobbies(3);
 
   <section class="section">
     <div class="wrap">
-      <SectionHead {...home.sections.hobbies} href="/hobbies/" linkLabel="View all hobbies">
+      <SectionHead {...home.sections.hobbies} href="/hobbies/" linkLabel="All hobbies">
         <CrayonWord slot="title" />
         <Fragment slot="sub">Because there's more to life than <code>git push</code>.</Fragment>
       </SectionHead>
@@ -120,14 +120,12 @@ const hobbies = await getFeaturedHobbies(3);
   /* Every emphasised phrase takes the accent, so the three read as one voice. */
   .lede strong { color: var(--link); font-weight: 600; }
 
-
   .art { display: flex; flex-direction: column; align-items: center; gap: var(--s-3); }
   .art img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; border-radius: var(--radius-l); }
-  .more { display: inline-flex; align-items: center; gap: 7px; color: var(--ink-2); }
+  .more { display: inline-flex; align-items: center; gap: 9px; color: var(--ink-2); }
   .more:hover { color: var(--link); }
   /* The hover lift has to beat the idle hop, so it wins on the element. */
   .more:hover svg { animation: none; transform: translateY(-7px); transition: transform 260ms cubic-bezier(0.34, 1.56, 0.64, 1); }
-  .more { gap: 9px; }
 
   .groups { display: flex; flex-direction: column; }
   .group {
@@ -136,8 +134,6 @@ const hobbies = await getFeaturedHobbies(3);
   }
   .chips { display: flex; flex-wrap: wrap; gap: var(--s-2); }
 
-  /* The heading is centred; the quote under it keeps its own left edge, so
-     the rule down its side still reads as a rule. */
   .closing .inner {
     display: flex; flex-direction: column; align-items: center;
     gap: var(--s-6); text-align: center;

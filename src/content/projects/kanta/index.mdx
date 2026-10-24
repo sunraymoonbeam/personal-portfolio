@@ -1,6 +1,6 @@
 ---
 title: Kanta
-claim: A shared, collaborative event camera, with smart features like face detection and automatic photo sorting.
+claim: A shared event camera that sorts the photos by face, so each guest can find the shots they're in.
 summary: |-
   Basically Google Drive for photos at an event. Everyone shoots on their own phone, the photos land in one album, and face detection helps each guest find the shots they're in. The backend is FastAPI on Azure, with face clustering on AWS Lambda.
 published: 2025-05
@@ -35,8 +35,8 @@ group photo doesn't slow the app down.
 
 <Figure src={storage} alt="FastAPI on Azure Container Apps connects to Blob Storage for image files and PostgreSQL for queryable photo data." caption="Files in Blob Storage, everything you search by in PostgreSQL." />
 
-## The main decision
+## Storage design
 
 Splitting storage this way was the decision that shaped the rest. Blob storage
 is cheap for large files but can't answer "which photos is this person in?",
-and a database is the reverse. Each one holds the part it's good at.
+and a database is the reverse.

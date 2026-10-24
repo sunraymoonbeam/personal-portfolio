@@ -5,7 +5,7 @@ export const site = {
   role: 'Software engineer (AI)',
   location: 'Singapore',
   wordmark: 'Zack Low',
-  tagline: 'Software engineer specialising in AI, in Singapore.',
+  tagline: 'Software engineer in Singapore, specialising in AI.',
   /** The home page's meta description: what a search result shows under the name. */
   description:
     'Ren Hwa (Zack) Low, a software engineer in Singapore specialising in AI: ticketing agents at Carro, text-to-motion models at AI Singapore, and speech processing at NIE.',

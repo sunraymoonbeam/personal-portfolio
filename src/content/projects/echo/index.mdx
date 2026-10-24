@@ -34,26 +34,26 @@ It works, which is the funny part and the unsettling part at the same time.
 
 <Figure src={chat} alt="A chat with the fine-tuned model, which replies in Singlish about wanting to eat Kovan food." caption="It picked up the Singlish, the LOLs and the habit of suggesting food. I didn't tell it to." />
 
-## Five years of messages isn’t a dataset
+## Preparing the data
 
 A chat export is a pile of JSON with no notion of a turn, a topic or a reply.
 Most of the work was turning it into something a model could learn from:
 deciding what counts as a conversation, who said what, which messages to keep
 and how to pair a prompt with a response.
 
-<Figure src={dataprep} alt="The data preparation screen, showing statistics about the processed chat export." caption="The unglamorous half, and the half that decided how good the result was." />
+<Figure src={dataprep} alt="The data preparation screen, showing statistics about the processed chat export." caption="Statistics on the processed chat export. This step decided how good the result was." />
 
 ## How I built it
 
 I fine-tuned open-source LLaMA 3 and Gemma 3 models with Unsloth. Its
-memory-efficient training path made the experiments practical on the hardware
-available to me, which was a single T4.
+memory-efficient training let me run the experiments on a single T4, which was
+all I had.
 
 I split the application into small services: one for data preparation, one for
 training and inference, and a Streamlit front end over both. Everything runs in
 Docker on one machine.
 
-<Figure src={architecture} alt="Architecture diagram: a Streamlit frontend, a data preparation service and an Unsloth training backend, all in Docker on one EC2 instance with a Tesla T4." caption="Three containers on one GPU box. Not elegant, but every part of it was mine to debug." />
+<Figure src={architecture} alt="Architecture diagram: a Streamlit frontend, a data preparation service and an Unsloth training backend, all in Docker on one EC2 instance with a Tesla T4." caption="Three Docker containers on one GPU machine." />
 
 ## Looking back
 

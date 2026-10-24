@@ -150,7 +150,7 @@ const githubHandle = site.socials.github.replace('https://', '');
       const message = String(data.message ?? '').trim();
 
       show('name', name ? '' : 'What should I call you?');
-      show('email', /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email) ? '' : 'A valid email so I can reply.');
+      show('email', /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email) ? '' : 'Enter a valid email so I can reply.');
       show('message', message ? '' : 'Add a line or two.');
 
       const firstBad = form.querySelector('[aria-invalid="true"]');
