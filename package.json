@@ -3,7 +3,7 @@
   "type": "module",
   "version": "0.0.1",
   "engines": {
-    "node": ">=22.12.0"
+    "node": "^22.22.3 || ^24.16.0 || >=26.3.0"
   },
   "scripts": {
     "dev": "astro dev",
@@ -11,12 +11,17 @@
     "preview": "astro preview",
     "astro": "astro",
     "test": "node --experimental-strip-types --test tests/*.test.ts",
-    "check": "astro check",
+    "check": "astro check --minimumFailingSeverity hint",
     "cursors": "node scripts/generate-cursors.mjs",
     "test:routes": "node scripts/check-routes.mjs",
     "resume:preview": "sh scripts/resume-preview.sh",
-    "verify": "npm run check && npm run test && npm run test:routes && node scripts/generate-cursors.mjs --check && npm run build",
-    "font:crayon": "sh scripts/subset-crayon-font.sh"
+    "verify": "npm run lint && npm run format:check && npm run check && npm run test && npm run test:routes && node scripts/generate-cursors.mjs --check && npm run build && npm run check:budgets",
+    "font:crayon": "sh scripts/subset-crayon-font.sh",
+    "lint": "eslint . --max-warnings=0",
+    "format:check": "prettier --check package.json tsconfig.json eslint.config.mjs .prettierrc.json \".github/**/*.{yml,yaml}\"",
+    "format": "prettier --write package.json tsconfig.json eslint.config.mjs .prettierrc.json \".github/**/*.{yml,yaml}\"",
+    "format:source:check": "prettier --check src scripts tests",
+    "check:budgets": "node scripts/check-budgets.mjs"
   },
   "dependencies": {
     "@astrojs/mdx": "^8.0.2",
@@ -27,12 +32,19 @@
     "sharp": "^0.35.4",
     "simple-icons": "^16.32.0"
   },
-  "allowScripts": {
-    "esbuild": true
-  },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
+    "@eslint/js": "10.0.1",
     "@fontsource-variable/shantell-sans": "^5.3.0",
-    "typescript": "^6.0.3"
+    "eslint": "10.13.0",
+    "eslint-plugin-astro": "3.2.1",
+    "globals": "17.13.0",
+    "prettier": "3.9.10",
+    "prettier-plugin-astro": "1.1.2",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "8.72.0"
+  },
+  "allowScripts": {
+    "esbuild": true
   }
 }

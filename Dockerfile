@@ -17,7 +17,7 @@ RUN find dist -type f \( -name '*.html' -o -name '*.css' -o -name '*.js' \
       -o -name '*.svg' -o -name '*.xml' \) -exec gzip -9 -k {} \;
 
 # ---- serve ----------------------------------------------------------------
-FROM nginx:1.27-alpine
+FROM nginx:1.30.6-alpine
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=build /app/dist /usr/share/nginx/html
 EXPOSE 80

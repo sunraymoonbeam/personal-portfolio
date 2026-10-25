@@ -1,0 +1,13 @@
+node_modules/
+dist/
+.astro/
+.route-fixture-*/
+package-lock.json
+src/content/
+src/styles/cursors.css
+src/assets/
+public/
+docs/archive/
+.impeccable/
+AGENTS.md
+CLAUDE.md
