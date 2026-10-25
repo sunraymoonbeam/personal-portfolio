@@ -1,0 +1,45 @@
+---
+/**
+ * A short vertical timeline: when, what, and a sentence or two. The last
+ * entry is "now", so its dot carries the brand mark; earlier ones stay grey.
+ */
+interface Props {
+  items: { when: string; title: string; text: string }[];
+}
+const { items } = Astro.props;
+---
+<ol class="timeline">
+  {items.map((item, i) => (
+    <li class:list={['entry', { now: i === items.length - 1 }]}>
+      <span class="when t-14 tabular">{item.when}</span>
+      <strong class="title">{item.title}</strong>
+      <p class="text">{item.text}</p>
+    </li>
+  ))}
+</ol>
+<style>
+  .timeline {
+    list-style: none; padding-left: 0; gap: 0;
+    display: flex; flex-direction: column;
+  }
+  .entry {
+    position: relative; padding: 0 0 var(--s-6) 28px;
+    display: flex; flex-direction: column; gap: 2px;
+  }
+  /* The rail runs from this dot to the next one; the last entry has none. */
+  .entry::before {
+    content: ''; position: absolute; left: 5px; top: 12px; bottom: -6px;
+    width: 2px; background: var(--border);
+  }
+  .entry:last-child { padding-bottom: 0; }
+  .entry:last-child::before { display: none; }
+  .entry::after {
+    content: ''; position: absolute; left: 0; top: 6px;
+    width: 12px; height: 12px; border-radius: 50%;
+    background: var(--surface); border: 2px solid var(--border-strong);
+  }
+  .now::after { background: var(--mark); border-color: var(--mark); }
+  .when { color: var(--ink-2); }
+  .title { font-weight: 600; color: var(--ink); }
+  .text { margin: 2px 0 0; }
+</style>

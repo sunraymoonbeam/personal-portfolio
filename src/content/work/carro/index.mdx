@@ -36,8 +36,9 @@ import n8n from './n8n-workflow.png'
 ## The role
 
 I joined [Carro](https://carro.co) as an AI engineer in July 2025. Carro is
-a used-car marketplace in Singapore, Malaysia and Hong Kong. It buys cars from
-owners, sells them to buyers, services them in its own workshops, and also
+a used-car marketplace in eight markets across Asia-Pacific: Singapore,
+Malaysia, Indonesia, Thailand, Japan, Taiwan, Hong Kong and Australia. Our
+agents serve Singapore, Malaysia and Hong Kong. Carro buys cars from owners, sells them to buyers, services them in its own workshops, and also
 offers car loans and insurance. Every customer request, from a question about
 a car to an offer to sell one or a workshop booking, becomes a ticket in our
 in-house CRM (customer relationship management system).
@@ -262,7 +263,7 @@ questioning me:
 **I realised that whatever I say as an engineer carries weight.** Things
 don't happen by magic. Each of those questions hides a decision. If we don't
 think through the edge cases and the flow, we end up making assumptions, and
-the code makes those decisions for us.
+some of them turn out to be wrong further down the road.
 
 So the habit that helps most is planning. Before I build, I write down what
 done looks like and which cases will break it, and I draw the design as an ERD
@@ -274,11 +275,11 @@ There's no perfect solution. An
 engineer should be able to defend how they built something: what they chose,
 what it costs, and what they gave up.
 
-The cost isn't only today's. A shortcut that ships this week can cost months
-later, in maintenance, in lock-in to one provider, or for the next person who
-has to change it. Sometimes the shortcut is still right. My job is to see the
-bigger picture, weigh what each option costs now and later, say that plainly,
-and pick the one that fits where the business is going.
+Every choice also has a cost later. A shortcut that ships this week can mean
+months of maintenance, lock-in to one provider, or a harder job for the next
+person who changes it. My job is to see the bigger picture, weigh what each
+option costs now and later, say that plainly, and pick the one that fits where
+the business is going.
 
 ### Informed decisions
 
@@ -291,40 +292,35 @@ change, a new harness module. Each one has to hold across many tickets, and I
 follow the same steps every time:
 
 1. Set the objective, and how I'll know I've met it.
-2. Get the current context: the traces, the code, the docs.
+2. Get the current context: the requirements, the modules, the traces, the
+   docs.
 3. Form a hypothesis.
-4. Choose what to change, and hold everything else fixed.
+4. Choose which parameters to change, and hold every other one fixed.
 5. Run it.
 6. Look at the raw results.
 7. Only then, conclude.
 
-When we switched models, I didn't trust one score. I used three judges and
-matched time windows, and checked every serious finding by hand.
-
 ### Engineering mindset
 
-A good engineer understands the parts of a system and how they behave, not
-only which one scores best. My boss put it as racing. A real race engineer
-doesn't say "the Lamborghini is the best car". The answer depends on the car,
-the road and the conditions, and the engineer understands why.
+A good engineer understands each part of a system on its own and how the
+parts work together: which components to tune to reach the objective, and what
+each adjustment trades away.
 
-It's the same in AI engineering. "Anthropic's models perform best" isn't an
-answer. The better question is why another model does worse here, and what we
-can change so that it does better. He also hates it when I call a model
-"cheap": every model has its own habits, and it's on us to build a harness
-that works with them.
+My boss once gave me an analogy from racing. A real race engineer doesn't say
+"the Lamborghini is the best car". The answer depends on the car, the road and
+the conditions, and the engineer understands why.
 
-What we have to understand keeps moving:
+It's the same in AI engineering. "Model X performs best" isn't an answer. The
+better question is why another model performs worse in this particular
+workflow, and what we can change so that it does better.
 
-- **Prompt engineering.** When I started, the wording of the prompt was all
-  the rage.
-- **Context engineering.** As models got better, the wording mattered less and
-  what we fed the model mattered more: better connectors, better data.
-- **Harness engineering.** Now models take on longer and more complex tasks,
-  so the work is the loop, the tools, the memory and the limits around the
-  model. Does the agent stay on the rails after a run of errors? What happens
-  when memory is truncated, or the context is too full? Does the same harness
-  work with every model we run, not only the one we tested?
+And in AI engineering, there are always new developments:
+
+<Timeline items={[
+  { when: '2022–2024', title: 'Prompt engineering', text: 'When I started, the wording of the prompt was all the rage.' },
+  { when: '2025', title: 'Context engineering', text: 'As models got better, the wording mattered less and what we fed the model mattered more: better connectors, better data.' },
+  { when: '2026', title: 'Harness engineering', text: 'Models now take on longer, more complex tasks, so the work is the loop, the tools, the memory and the limits around the model. We call that the harness: Claude Code, Codex and Hermes are examples. Does the agent stay on the rails after a run of errors? What happens when memory is truncated, or the context is too full? Does the same harness work with every model we run, not only the one we tested?' },
+]} />
 
 So the mindset I try to keep is curious and attentive: learn how each new
 piece behaves, question what we assume, and keep learning as the ground moves.
