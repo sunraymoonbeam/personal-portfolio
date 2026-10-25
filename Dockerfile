@@ -1,5 +1,5 @@
 # ---- build ----------------------------------------------------------------
-FROM node:22-alpine AS build
+FROM node:26-alpine AS build
 WORKDIR /app
 COPY package*.json ./
 # --include=dev is explicit on purpose: if the platform sets NODE_ENV=production,
