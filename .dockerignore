@@ -10,3 +10,7 @@ dist
 .route-fixture-*
 .DS_Store
 npm-debug.log
+
+# Browser test output
+test-results/
+playwright-report/

@@ -22,3 +22,8 @@ jobs:
           cache: npm
       - run: npm ci --include=dev
       - run: npm run verify
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:browser
+      - run: npm audit --audit-level=high
+      - run: docker build --tag portfolio:verify .
+      - run: docker run --rm portfolio:verify nginx -t

@@ -89,6 +89,7 @@ The reasoning is in [Astro conventions](docs/astro-conventions.md).
 | `npm run check` | `astro check`: types and templates, failing on any hint. |
 | `npm test` | Unit tests in `tests/`. |
 | `npm run test:routes` | Builds a throwaway fixture site and checks the routing rules. |
+| `npm run test:browser` | Playwright tests for behaviour after page navigation. Run after a build. |
 | `npm run build` | Builds the site into `dist/`. |
 | `npm run check:budgets` | Gzipped size of JavaScript, CSS and the home page, after a build. |
 | `npm run preview` | Serves `dist/` locally. |
@@ -98,8 +99,8 @@ The reasoning is in [Astro conventions](docs/astro-conventions.md).
 
 ## Deploy
 
-Push `main`. GitHub Actions runs `npm run verify` on every push and pull
-request. Dokploy builds the Dockerfile, which runs the same gate inside the
+Push `main`. GitHub Actions runs `npm run verify`, the browser tests, an
+audit and a Docker build on every push and pull request. Dokploy builds the Dockerfile, which runs the same gate inside the
 image, so a failing check cannot ship; nginx then serves `dist/` behind
 Traefik. Redirects, caching, SEO and the generated assets are in
 [Deployment](docs/deployment.md).

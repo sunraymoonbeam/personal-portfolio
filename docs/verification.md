@@ -48,3 +48,23 @@ at every affected route:
 
 Run `npm audit` after a dependency change. Dependabot opens weekly update
 pull requests for npm and Docker and monthly ones for GitHub Actions.
+
+## Browser regression tests
+
+After `npm run verify` builds the site:
+
+```sh
+npx playwright install chromium
+npm run test:browser
+```
+
+Playwright starts `astro preview` for the built output. The tests exercise
+Contact on two visits in the same router session, theme and search after
+navigation, the article lightbox after returning, and the direct email link
+with JavaScript disabled. Empty synthetic submit events check validation;
+they do not open a mail client or send a message.
+
+GitHub Actions installs Chromium and runs these tests after the normal gate.
+They stay out of the Docker build so deploying does not require a browser.
+For a local Chrome installation, use `PLAYWRIGHT_CHANNEL=chrome npm run test:browser`.
+These checks do not replace the phone, keyboard and visual checks above.

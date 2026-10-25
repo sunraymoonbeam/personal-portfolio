@@ -26,3 +26,7 @@ npm-debug.log*
 .codex/
 .claude/
 .impeccable/
+
+# Browser test output
+test-results/
+playwright-report/
