@@ -2,5 +2,11 @@ node_modules
 dist
 .astro
 .git
+.github
+.vscode
+.codex
+.claude
+.impeccable
+.route-fixture-*
 .DS_Store
 npm-debug.log

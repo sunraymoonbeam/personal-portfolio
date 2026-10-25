@@ -12,9 +12,8 @@ answer in [`docs/interview.md`](docs/interview.md).
 - **Echo's privacy line** ("Half of every chat is someone else's messages").
   Does he agree with it?
 - **AI Singapore rig clip.** Third-party, source unknown. Keep it or swap it.
-- **Facts to confirm:** the Batu Caves caption, his water temperature and
-  brew method for the coffee table, and whether "sprint retros and spec
-  reviews" (AI Singapore) is a claim he can defend.
+- **Facts to confirm:** the Batu Caves caption, and his water temperature
+  and brew method for the coffee table.
 - **CV claims with no source in the vault:** AI Singapore +20%, NIE ASR 30%,
   the Tessaract title and "10+ firms", the DOS wording.
 
@@ -30,7 +29,8 @@ The site is live and the share card is ready (`public/og.jpg`).
 ## 3. Real pictures
 
 - Carro and AI Singapore: the team, the office, a screen that is safe to show.
-- Project covers are stock. `echo/chat.jpg` is the honest one; consider it.
+- Project covers are stock. Echo's `chat.jpg` is the honest one; consider it
+  as the cover.
 - Work covers are real figures from each role now, except Shake Shack's, which
   is still a placeholder cat. It only matters if a page starts showing it.
 

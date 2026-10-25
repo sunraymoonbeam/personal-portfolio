@@ -5,7 +5,7 @@ using two independent assessments: a design review and a deterministic
 detector plus measured browser evidence. This file is the handoff: what was
 found, what has been fixed, and what is genuinely still open.
 
-The raw snapshot is at `.impeccable/critique/2026-09-29T19-08-12Z__src-pages-index-astro.md`.
+The raw snapshot is beside this file, in `2026-09-29-design-critique-raw.md`.
 Re-run the audit with `/impeccable critique` or `/impeccable audit`.
 
 **Score at time of review: 20/32** on Nielsen's heuristics (7 and 10 are `n/a`
