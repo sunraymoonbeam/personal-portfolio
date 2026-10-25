@@ -53,7 +53,7 @@ One of these alone is fine; several together are what a reader notices.
 - **His voice:** first person, direct, a bit dry, sometimes funny. Singaporean
   details are welcome (kopi, hawker food, Singlish).
 - **Jokes about himself stay.** "I can sing Titanium with a straight face
-  now." "I stand by the clams." Shake Shack's mock-résumé bullets ("optimal
+  now." Shake Shack's mock-résumé bullets ("optimal
   flip timing and acceptable levels of char") are a joke he chose to keep, with
   no bold.
 - **Reflections keep their spirit.** When a reflective ending was cut, he asked
