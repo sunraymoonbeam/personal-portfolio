@@ -29,6 +29,7 @@ import bodies from './smpl-vs-smplx.png';
 import tree from './smpl-mesh-kinematic-tree.png';
 import representations from './keypoints-vs-rotations.png';
 import mdm from './mdm.png';
+import diffusion from './diffusion-steps.svg';
 
 <Clips caption="“A woman is doing a chaînés, ballet jazz style dance”, before and after fine-tuning on dance.">
   <Clip label="Before fine-tuning" src="/work/ai-singapore/ballet-humanml3d.mp4" poster="/work/ai-singapore/ballet-humanml3d.webp"
@@ -50,24 +51,20 @@ hand. One character can take weeks.
 
 At AI Singapore I was one of five apprentices on a seven-month project with a
 game studio and SUTD. The goal was to generate 3D human motion from text. Type
-"a man walking", and the model gives back a walking motion that can drive a
-game character. ChatGPT for motion, if you will.
+"a man walking", and the model gives back a walking motion that can be imported
+into a game engine and put on a character. ChatGPT for motion, if you will.
 
 We delivered more than a model. We built a framework to train, evaluate and
 serve text-to-motion models, so the studio could retrain and extend it after
 we left:
 
-- **Data:** one pipeline that turns motion capture from different datasets
-  into one format, versioned with DVC.
-- **Training:** T2M and MDM behind one common interface, so a new model plugs
-  in without changes to the rest of the code. Hydra configs set up each run,
-  and MLflow tracks it.
-- **Evaluation:** one module that scores every model with the same metrics,
-  during training and after it.
-- **Inference:** batch generation, and a FastAPI web interface that turns a
-  prompt into an animation, as a stick figure or an SMPL body mesh.
-- **Delivery:** Docker images with the final model's weights, a GitLab CI/CD
-  pipeline, Sphinx docs, and two handover sessions.
+| Component | What it does | Built with |
+| --- | --- | --- |
+| Data ingestion and processing | Turns motion capture from different datasets into one format, ready for training | Python, DVC for versioning |
+| Training pipeline | Trains T2M and MDM behind one common interface, so a new model plugs in without changes to the rest of the code | PyTorch, Hydra configs, MLflow tracking |
+| Evaluation module | Scores every model with the same metrics, during training and after it | PyTorch, MLflow |
+| Inference | Batch generation, and a web interface that turns a prompt into an animation, as a stick figure or an SMPL body mesh | FastAPI |
+| Delivery | Images with the final model's weights, automated tests and builds, documentation and two handover sessions | Docker, GitLab CI/CD, Sphinx |
 
 <Figure src={architecture} zoom alt="The system architecture. A data pipeline turns raw SMPL motion parameters and text annotations into processed motions and annotations, versioned with DVC. A training module trains T2M and MDM models in PyTorch with hyperparameter tuning, logging to MLflow. An inference module serves a FastAPI server and batch inference. An evaluation module generates motions and computes R-precision, FID, diversity and multimodality. A CI/CD lane runs linting and unit tests, builds the Docker image on Google Cloud and builds Sphinx docs." caption="The whole system, from raw motion capture to a Docker image." />
 
@@ -93,7 +90,8 @@ each frame, it describes a person with three sets of numbers:
 - **Shape (β), 10 numbers:** the body's build, such as height, weight and
   proportions, as a mix of 10 basic body shapes. All zeros is the average
   body.
-- **Translation, 3 numbers:** where the pelvis is in the room.
+- **Translation, 3 numbers:** the pelvis position (x, y, z) in world
+  coordinates.
 
 From these, SMPL builds a mesh of 6,890 vertices and 13,776 triangles. Skinning
 weights tie each vertex to the joints near it: a vertex at the elbow follows
@@ -190,16 +188,15 @@ quite different routes from text to motion:
 | [MLD](https://github.com/ChenFengYe/motion-latent-diffusion) | Diffusion in a compressed latent space, after training an autoencoder | 228 h, ⅓ A100 | 12 h, 8 V100s |
 | [T2M-GPT](https://github.com/Mael-zys/T2M-GPT) | Turns motion into tokens, then predicts the next token like a language model | about 3 days | 78 h |
 
-MDM gave the best text match and trained in a day and a half on our share of
-a GPU, so it became the base. MLD scored a little better on realism, but at
-228 hours a run we could have trained it once, and MDM we could tune many
-times. I replicated MDM with a teammate, then rebuilt its training inside our
-framework, with Hydra configs, MLflow logging and unit tests.
+MDM gave the best results for its training time, so it became our base. I
+replicated it with a teammate, then rebuilt its training inside our framework.
 
 MDM, the Motion Diffusion Model, is a diffusion model: the same family as
 DALL·E 2 and Stable Diffusion, which make images. A diffusion model learns one
 skill, which is to take a noisy motion and work out the clean motion under
 the noise.
+
+<Figure src={diffusion} zoom alt="A stick-figure pose at five noise steps: t equals 0, 100, 300, 600 and 1,000. At 0 it is a clean body; by 600 it is mostly noise; at 1,000 it is pure noise. An arrow to the right is labelled training: add noise, then learn to predict the clean motion. An arrow to the left is labelled generating: start from pure noise and remove it step by step." caption="Diffusion on one frame of motion. Training adds noise from left to right; generating removes it from right to left." />
 
 **Training.** Take a real motion from the dataset, say a person walking, as
 its 263 numbers per frame. Pick a random step between 1 and 1,000, and add
@@ -217,9 +214,10 @@ with comparable results.
 
 Three choices make this work for motion:
 
-- **A transformer instead of a U-Net.** Most image models use a U-Net. MDM
+- **A transformer instead of a U-Net.** Most image models use a U-Net, but
+  transformers are built for sequences, like the words in a sentence. MDM
   treats each frame as a token, and attention lets every frame look at every
-  other frame, which suits a sequence in time.
+  other frame, so a step can depend on what came before and after it.
 - **It predicts the clean motion, not the noise.** So the output at every step
   is a real motion, and the paper can add losses on joint positions, speeds
   and foot contact, which reduce sliding feet.

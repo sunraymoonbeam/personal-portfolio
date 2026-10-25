@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 430" width="960" height="430" role="img" aria-labelledby="t d">
+<title id="t">Diffusion on one frame of motion</title>
+<desc id="d">A stick-figure pose at five noise steps: t equals 0, 100, 300, 600 and 1,000. Training adds noise from left to right. Generating starts from pure noise on the right and removes it step by step, back to a clean pose on the left.</desc>
+<defs><style>.l{font:600 15px -apple-system,BlinkMacSystemFont,&quot;SF Pro Text&quot;,&quot;Helvetica Neue&quot;,Arial,sans-serif;fill:#1d1d1f}.s{font:400 13px -apple-system,BlinkMacSystemFont,&quot;SF Pro Text&quot;,&quot;Helvetica Neue&quot;,Arial,sans-serif;fill:#6e6e73}</style>
+<marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#6e6e73"/></marker></defs>
+<rect width="960" height="430" fill="#ffffff"/>
+<polyline points="96.0,186.4 84.8,191.4 87.3,243.4 92.3,301.1 98.5,307.3" fill="none" stroke="#c0392b" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" opacity="1.00"/>
+<polyline points="96.0,186.4 107.2,191.4 110.9,245.3 114.6,298.0 120.8,303.0" fill="none" stroke="#2563eb" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" opacity="1.00"/>
+<polyline points="96.0,186.4 96.0,170.9 96.0,152.3 96.0,136.8 96.0,121.3 96.0,105.8" fill="none" stroke="#1d1d1f" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" opacity="1.00"/>
+<polyline points="96.0,136.8 86.7,127.5 72.4,129.4 61.9,167.8 71.2,197.6" fill="none" stroke="#c0392b" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" opacity="1.00"/>
+<polyline points="96.0,136.8 105.3,127.5 119.6,129.4 134.4,162.8 139.4,195.7" fill="none" stroke="#2563eb" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" opacity="1.00"/>
+<text class="l" x="96" y="360" text-anchor="middle">t = 0</text>
+<text class="s" x="96" y="380" text-anchor="middle">clean motion</text>
+<polyline points="286.2,182.8 270.5,192.8 282.2,241.3 272.6,311.6 294.1,310.1" fill="none" stroke="#c0392b" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" opacity="0.98"/>
+<polyline points="286.2,182.8 297.4,193.5 309.9,242.7 309.9,293.0 314.6,301.6" fill="none" stroke="#2563eb" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" opacity="0.98"/>
+<polyline points="286.2,182.8 295.7,168.2 276.4,146.8 281.8,140.8 290.1,119.5 283.7,112.1" fill="none" stroke="#1d1d1f" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" opacity="0.98"/>
+<polyline points="281.8,140.8 282.7,120.0 269.2,128.4 250.8,159.6 266.5,207.8" fill="none" stroke="#c0392b" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" opacity="0.98"/>
+<polyline points="281.8,140.8 292.6,116.4 308.8,130.9 322.8,169.8 325.2,193.9" fill="none" stroke="#2563eb" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" opacity="0.98"/>
+<text class="l" x="288" y="360" text-anchor="middle">t = 100</text>
+<text class="s" x="288" y="380" text-anchor="middle">a little noise</text>
+<polyline points="475.1,176.6 452.2,194.9 479.9,233.4 444.2,321.7 492.2,306.0" fill="none" stroke="#c0392b" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" opacity="0.87"/>
+<polyline points="475.1,176.6 485.6,196.9 513.1,233.9 506.2,275.8 507.9,290.7" fill="none" stroke="#2563eb" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" opacity="0.87"/>
+<polyline points="475.1,176.6 501.4,164.5 448.0,139.7 462.9,151.4 485.9,121.1 468.1,129.1" fill="none" stroke="#1d1d1f" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" opacity="0.87"/>
+<polyline points="462.9,151.4 482.5,111.1 471.3,131.0 439.7,146.4 466.2,225.0" fill="none" stroke="#c0392b" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" opacity="0.87"/>
+<polyline points="462.9,151.4 475.5,101.1 494.3,137.8 505.5,183.9 503.0,189.9" fill="none" stroke="#2563eb" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" opacity="0.87"/>
+<text class="l" x="480" y="360" text-anchor="middle">t = 300</text>
+<text class="s" x="480" y="380" text-anchor="middle">still a body</text>
+<polyline points="663.3,169.1 634.0,196.5 680.3,213.4 612.6,312.4 691.1,278.7" fill="none" stroke="#c0392b" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" opacity="0.60"/>
+<polyline points="663.3,169.1 670.9,200.0 715.8,212.4 700.0,234.7 696.8,256.0" fill="none" stroke="#2563eb" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" opacity="0.60"/>
+<polyline points="663.3,169.1 709.6,163.0 615.6,137.6 641.9,173.3 682.4,135.1 651.0,164.4" fill="none" stroke="#1d1d1f" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" opacity="0.60"/>
+<polyline points="641.9,173.3 685.4,111.5 679.6,144.7 634.5,134.2 671.9,243.3" fill="none" stroke="#c0392b" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" opacity="0.60"/>
+<polyline points="641.9,173.3 655.1,93.9 674.1,156.7 679.3,205.0 670.0,183.5" fill="none" stroke="#2563eb" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" opacity="0.60"/>
+<text class="l" x="672" y="360" text-anchor="middle">t = 600</text>
+<text class="s" x="672" y="380" text-anchor="middle">mostly noise</text>
+<polyline points="853.3,165.1 825.3,195.3 880.4,178.7 793.5,259.1 885.7,213.2" fill="none" stroke="#c0392b" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" opacity="0.40"/>
+<polyline points="853.3,165.1 854.6,199.5 907.2,176.0 885.1,165.6 876.7,188.3" fill="none" stroke="#2563eb" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" opacity="0.40"/>
+<polyline points="853.3,165.1 910.3,168.7 794.6,150.8 826.9,205.9 876.9,170.0 838.2,217.2" fill="none" stroke="#1d1d1f" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" opacity="0.40"/>
+<polyline points="826.9,205.9 887.2,136.5 890.3,176.0 842.3,135.5 881.8,248.5" fill="none" stroke="#c0392b" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" opacity="0.40"/>
+<polyline points="826.9,205.9 836.5,114.8 849.7,190.8 845.4,226.3 830.3,176.2" fill="none" stroke="#2563eb" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" opacity="0.40"/>
+<text class="l" x="864" y="360" text-anchor="middle">t = 1,000</text>
+<text class="s" x="864" y="380" text-anchor="middle">pure noise</text>
+<line x1="60" y1="34" x2="900" y2="34" stroke="#6e6e73" stroke-width="1.5" marker-end="url(#a)"/>
+<text class="s" x="480" y="22" text-anchor="middle">Training: add a random amount of noise, then learn to predict the clean motion</text>
+<line x1="900" y1="400" x2="60" y2="400" stroke="#6e6e73" stroke-width="1.5" marker-end="url(#a)"/>
+<text class="s" x="480" y="422" text-anchor="middle">Generating: start from pure noise and remove it step by step</text>
+</svg>
