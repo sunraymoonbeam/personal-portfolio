@@ -31,8 +31,8 @@ The site is live and the share card is ready (`public/og.jpg`).
 
 - Carro and AI Singapore: the team, the office, a screen that is safe to show.
 - Project covers are stock. `echo/chat.jpg` is the honest one; consider it.
-- The work covers are placeholder cats. They only matter if a page starts
-  showing them again.
+- Work covers are real figures from each role now, except Shake Shack's, which
+  is still a placeholder cat. It only matters if a page starts showing it.
 
 ## 4. Seed real projects
 

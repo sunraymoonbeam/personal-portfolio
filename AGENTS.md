@@ -2,10 +2,14 @@
 
 `CLAUDE.md` is a symlink to this file, so there is one set of instructions.
 
-**Read `README.md` first.** It is the only document describing the structure,
-the conventions and the verification gate, and it is kept in step with the
-code.
+**Read `README.md` first**, then [`docs/README.md`](docs/README.md), which
+maps every doc by task: adding content, MDX components, verification,
+deployment, writing and design.
 
+- `docs/authoring.md`: adding a role, project or hobby, step by step.
+- `docs/mdx-components.md`: the article components and their props.
+- `docs/verification.md` and `docs/deployment.md`: the gate, and how a change
+  ships.
 - `docs/astro-conventions.md`: why the tree is arranged this way, checked
   against Astro's own sites and the Google TypeScript Style Guide.
 - `docs/writing.md`: how the copy is written and why. Read it before you
@@ -21,8 +25,8 @@ code.
 
 ## Before you claim something works
 
-Run `npm run verify`. It is the same gate the Docker build runs, so a green
-local run is the real signal and a red one cannot deploy. Check the exit code,
+Run `npm run verify`. It is the same gate GitHub Actions and the Docker build
+run, so a green local run is the real signal and a red one cannot deploy. Check the exit code,
 not just the test summary: the suite has more steps than `node --test`, and
 filtering the output has hidden a failing step here before.
 
@@ -34,7 +38,10 @@ routes at phone and desktop width, in both themes.
 - A component's `<script>` runs **once per document**. The client router swaps
   the DOM on every navigation, so anything binding to elements belongs in
   `src/scripts/` and must be re-bound on `astro:page-load`. Search, the project
-  filters and the mobile menu have each died this way.
+  filters, the mobile menu and the contact page have each died this way.
+- A form whose handler never bound submits by GET and puts its fields in the
+  URL. The contact form starts `hidden` and `src/scripts/contact.ts` shows it
+  only after binding.
 - Class names in an Astro component are scoped; a class from a global
   stylesheet is not. `prose` belongs to `src/styles/article.css`.
 - A scroll animation range must be a length, not a percentage. A percentage

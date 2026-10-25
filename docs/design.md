@@ -15,8 +15,8 @@ app with many peer content categories to browse, like Mail or Music. Six pages
 is not that, so a sidebar would be chrome solving a problem the site does not
 have. Apple's own site uses one row of links and no sidebar.
 
-It is also why the hero has one button rather than three. The other two
-repeated navigation that sat forty pixels above them.
+It is also why the home page opens with text and a portrait and no button row:
+buttons there repeated navigation that sat forty pixels above them.
 
 ## Colour
 
@@ -65,8 +65,10 @@ off at this scale, so pictures never break out.
   (`--measure`), so their edges always agree.
 - **The rail.** Beside the column on screens over 1000px: "On this page" for
   work and projects (`Toc.astro`, the current section marked in brand red by
-  `src/scripts/toc.ts`, counts matching the red rules in the text), the list of
-  hobbies on a hobby. Below 1000px it goes; the text takes the room.
+  `src/scripts/toc.ts`, counts matching the red rules in the text). Hobbies
+  have no rail and use one centred column. Below 1001px the rail goes, and
+  work and project articles get the same list folded into an "On this page"
+  disclosure above the text.
 - **No cover above the text.** The page opens with the title and the summary
   (or a quote, via `quoteBy`). The cover is the card image on the grids.
 - **Text first, then photos.** Each photo block sits under the paragraph that

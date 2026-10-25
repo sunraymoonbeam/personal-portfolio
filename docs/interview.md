@@ -19,6 +19,11 @@ needs his own words. Never invent an answer.
 
 Priority: **Carro, then AI Singapore**, then the rest.
 
+> Historical note, 26 October 2026: these questions were written before the
+> reflections existed, and some numbers in them (such as 71%) are from older
+> drafts. Keep the answers as his raw source; take current figures from the
+> pages and the résumé.
+
 ---
 
 ## Carro (AI Engineer, Aug 2025 to now)

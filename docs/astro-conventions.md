@@ -87,8 +87,15 @@ inside a content directory that is not an entry.
 ## The rule that holds it together
 
 **Pages read content, components receive it.** No component calls
-`getCollection`. Publication policy lives in exactly one file,
-`src/lib/select.ts`, which has no Astro imports so it can be unit-tested.
+`getCollection`, and ESLint enforces it. `src/lib/content.ts` is the only file
+that touches the content store; it loads entries and hands every decision to
+pure functions with no Astro imports, so they can be unit-tested:
+`src/lib/select.ts` (what is published, featured and next to what) and
+`src/lib/search.ts` (the search index).
+
+One shared layout reads content: `SiteLayout` loads the search index and
+passes it to the header, because every page has the search panel. That is
+the exception, not a pattern to copy into components.
 
 If you want to know whether something is published, there is one place to
 look. That is the whole point of the arrangement.
@@ -124,6 +131,21 @@ that had been deleted.
 One Google rule is deliberately ignored: it asks for `snake_case` filenames.
 That is a Google-internal convention the JavaScript ecosystem never adopted,
 and Astro's own projects use PascalCase for components.
+
+## Small conventions worth keeping
+
+- `.wrap` owns the centred outer width. Don't also narrow that element with
+  `max-width`; use `.wrap.measure-start` to constrain its children.
+- Dates are `YYYY-MM` strings and are never parsed into a `Date`, which would
+  invent a day and shift across a timezone.
+- Scroll animations use a length range, not a percentage. A percentage of
+  `entry` scales with element height and leaves tall blocks invisible.
+- A class in a global stylesheet is not scoped. `prose` belongs to
+  `src/styles/article.css`; reusing the name on a page pulls those rules in.
+- Lint and formatting: ESLint (flat config, with the Astro and
+  typescript-eslint presets) gates every source file. Prettier gates only the
+  config files for now, so adopting it didn't reformat 70 files of approved
+  work; widen it in formatting-only commits.
 
 ## Technology ids
 
