@@ -82,8 +82,10 @@ One of these alone is fine; several together are what a reader notices.
   as the quality itself ("Attention to detail", not "Every word has weight").
   Each `###` opens with a numbered red rule that restarts per section (see
   `src/styles/article.css`). The Outcomes band holds at most three numbers.
-  Carro and AI Singapore are the reference pages; older roles still use "What I built" and
-  "Looking back" until they are rewritten.
+  Carro and AI Singapore are the reference pages; NIE, DOS and Tessaract follow
+  the same shape since the October 2026 rewrite. A table of four or more
+  columns turns into one card per row on a phone (`components/article/Table.astro`),
+  so keep its first column a short title.
 - **Numbers on work pages:** the bullets follow the résumé, even where the
   number is his call (Carro: 80% cost, 30% SOP deviations, 30% revenue). He
   also chose, on 24 Oct 2026, to show "30% fewer bot incidents and

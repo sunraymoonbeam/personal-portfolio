@@ -104,3 +104,21 @@ test('every work row child is placed explicitly, so auto-placement cannot move i
   }
 });
 
+
+// ── wide tables stack on a phone ─────────────────────────────────────────────
+
+test('a wide table is labelled for stacking; narrow tables and group rows are left alone', async () => {
+  const { labelTableHtml, STACK_FROM } = await import('../src/lib/table-labels.ts');
+  const head = (n: number) => `<thead><tr>${Array.from({ length: n }, (_, i) => `<th>H<em>${i}</em> &amp; co</th>`).join('')}</tr></thead>`;
+  const row = (n: number) => `<tr>${Array.from({ length: n }, (_, i) => `<td>v${i}</td>`).join('')}</tr>`;
+
+  const wide = labelTableHtml(`${head(STACK_FROM)}<tbody><tr><th colspan="4">Group</th></tr>${row(STACK_FROM)}</tbody>`);
+  assert.equal(wide.stack, true);
+  assert.match(wide.html, /<th colspan="4">Group<\/th>/); // group row untouched
+  assert.deepEqual([...wide.html.matchAll(/data-label="([^"]*)"/g)].map((m) => m[1]),
+    ['H0 &amp; co', 'H1 &amp; co', 'H2 &amp; co', 'H3 &amp; co']);
+
+  const narrow = labelTableHtml(`${head(STACK_FROM - 1)}<tbody>${row(STACK_FROM - 1)}</tbody>`);
+  assert.equal(narrow.stack, false);
+  assert.doesNotMatch(narrow.html, /data-label/);
+});

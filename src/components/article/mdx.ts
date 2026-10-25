@@ -6,6 +6,10 @@ import Clips from './Clips.astro';
 import StackBars from './StackBars.astro';
 import PairBars from './PairBars.astro';
 import Timeline from './Timeline.astro';
+import Table from './Table.astro';
 
-/** Components every MDX article gets, so authors do not import them by hand. */
-export const articleComponents = { Figure, Photos, Shot, Clip, Clips, StackBars, PairBars, Timeline };
+/**
+ * Components every MDX article gets, so authors do not import them by hand.
+ * `table` replaces the HTML element: every Markdown table goes through Table.
+ */
+export const articleComponents = { Figure, Photos, Shot, Clip, Clips, StackBars, PairBars, Timeline, table: Table };

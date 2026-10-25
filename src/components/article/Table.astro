@@ -1,0 +1,11 @@
+---
+/**
+ * Every Markdown table in an article. Wide tables get `stack` and labelled
+ * cells, so on a phone each row becomes a card (src/lib/table-labels.ts).
+ */
+import { labelTableHtml } from '~/lib/table-labels';
+
+const { class: className, ...rest } = Astro.props;
+const { html, stack } = labelTableHtml(await Astro.slots.render('default'));
+---
+<table class:list={[className, { stack }]} {...rest} set:html={html} />

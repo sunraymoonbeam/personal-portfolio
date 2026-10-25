@@ -75,5 +75,22 @@
   .prose table { display: block; overflow-x: auto; font-size: 14px; }
   .prose th, .prose td { min-width: 96px; padding: 8px 10px; }
 }
+/* Four or more columns of prose can't share a phone screen, so each row becomes
+   a card: the first cell is its title, and every other value carries its
+   column name (data-label, from src/lib/rehype-table-labels.ts). */
+@media (max-width: 734px) {
+  .prose table.stack { display: block; overflow: visible; font-size: 15px; }
+  .prose table.stack thead { display: none; }
+  .prose table.stack tbody, .prose table.stack tr { display: block; }
+  .prose table.stack tr { padding: 14px 0; border-bottom: 1px solid var(--border); }
+  .prose table.stack td {
+    display: block; min-width: 0; padding: 3px 0; border: 0;
+  }
+  .prose table.stack td:first-child { font-weight: 600; color: var(--ink); padding-bottom: 6px; }
+  .prose table.stack td:not(:first-child)[data-label]::before {
+    content: attr(data-label); display: block;
+    font-size: 13px; color: var(--ink-2); margin-top: 6px;
+  }
+}
 
 .prose hr { border: 0; border-top: 1px solid var(--border); margin-block: var(--s-7); }

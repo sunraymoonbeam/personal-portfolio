@@ -4,7 +4,7 @@ role: AI Engineer
 kind: Apprenticeship
 location: Singapore
 start: 2024-06
-end: 2025-04
+end: 2025-03
 title: Turning text prompts into 3D character motion
 tagline: "Trained and deployed diffusion models that turn text prompts into 3D character motion."
 summary: >-
@@ -27,6 +27,8 @@ import dataPipeline from './data-pipeline.png';
 import gitlab from './gitlab-pipeline.png';
 import bodies from './smpl-vs-smplx.png';
 import tree from './smpl-mesh-kinematic-tree.png';
+import representations from './keypoints-vs-rotations.png';
+import mdm from './mdm.png';
 
 <Clips caption="“A woman is doing a chaînés, ballet jazz style dance”, before and after fine-tuning on dance.">
   <Clip label="Before fine-tuning" src="/work/ai-singapore/ballet-humanml3d.mp4" poster="/work/ai-singapore/ballet-humanml3d.webp"
@@ -47,13 +49,25 @@ hand. One character can take weeks.
 </Clips>
 
 At AI Singapore I was one of five apprentices on a seven-month project with a
-game studio and SUTD. The goal: type "a man walking" and get back a walking
-animation, ready to put on a game character.
+game studio and SUTD. The goal was to generate 3D human motion from text. Type
+"a man walking", and the model gives back a walking motion that can drive a
+game character. ChatGPT for motion, if you will.
 
-We delivered a framework around the model. A data pipeline turns motion
-capture from several datasets into one format, training pipelines plug in
-different models, one evaluation module scores them all, and the system ships
-as Docker images with the final model's weights.
+We delivered more than a model. We built a framework to train, evaluate and
+serve text-to-motion models, so the studio could retrain and extend it after
+we left:
+
+- **Data:** one pipeline that turns motion capture from different datasets
+  into one format, versioned with DVC.
+- **Training:** T2M and MDM behind one common interface, so a new model plugs
+  in without changes to the rest of the code. Hydra configs set up each run,
+  and MLflow tracks it.
+- **Evaluation:** one module that scores every model with the same metrics,
+  during training and after it.
+- **Inference:** batch generation, and a FastAPI web interface that turns a
+  prompt into an animation, as a stick figure or an SMPL body mesh.
+- **Delivery:** Docker images with the final model's weights, a GitLab CI/CD
+  pipeline, Sphinx docs, and two handover sessions.
 
 <Figure src={architecture} zoom alt="The system architecture. A data pipeline turns raw SMPL motion parameters and text annotations into processed motions and annotations, versioned with DVC. A training module trains T2M and MDM models in PyTorch with hyperparameter tuning, logging to MLflow. An inference module serves a FastAPI server and batch inference. An evaluation module generates motions and computes R-precision, FID, diversity and multimodality. A CI/CD lane runs linting and unit tests, builds the Docker image on Google Cloud and builds Sphinx docs." caption="The whole system, from raw motion capture to a Docker image." />
 
@@ -61,31 +75,33 @@ as Docker images with the final model's weights.
 
 ### Motion data format
 
-There are many ways to represent motion. The simplest is keypoints: the 3D
+There are two main ways to represent motion. The simplest is keypoints: the 3D
 position of each joint, frame by frame. The other is rotations: how much each
 joint turns relative to its parent, starting from the hips. Rotations keep
-bone lengths fixed and can drive a real character, so most motion capture
-data uses them.
+bone lengths fixed and can drive a real character's rig, so most motion
+capture data uses them.
 
-The standard rotation-based body is [SMPL](https://smpl.is.tue.mpg.de/). It
-describes a person with three things:
+<Figure src={representations} alt="Four ways to draw the same pose. Three keypoint-based ones: a grey stick figure, a coloured stick figure and a body with marker dots. One rotation-based one: a body mesh with a skeleton and rotation axes at the shoulder." caption="Keypoint-based and rotation-based representations. From Zhu et al., Human Motion Generation: A Survey (2023)." />
 
-- **Pose:** a rotation for each of 24 joints.
-- **Shape:** 10 numbers for body build. All zeros is the average body.
-- **Translation:** where the body is in the room.
+The standard rotation-based body is [SMPL](https://smpl.is.tue.mpg.de/). For
+each frame, it describes a person with three sets of numbers:
 
-From these it produces a mesh of 6,890 vertices and the joint positions.
-SMPL-X adds hands and a face.
+- **Pose (θ), 72 numbers:** a 3D rotation for each of 24 joints. The first
+  joint is the pelvis, the root, which sets which way the whole body faces.
+  Every other joint turns relative to its parent, so when the shoulder turns,
+  the elbow and the hand go with it.
+- **Shape (β), 10 numbers:** the body's build, such as height, weight and
+  proportions, as a mix of 10 basic body shapes. All zeros is the average
+  body.
+- **Translation, 3 numbers:** where the pelvis is in the room.
+
+From these, SMPL builds a mesh of 6,890 vertices and 13,776 triangles. Skinning
+weights tie each vertex to the joints near it: a vertex at the elbow follows
+mostly the elbow, and a little of the shoulder and the wrist. So the skin bends
+smoothly when a joint turns. SMPL+H adds hands (52 joints in all), and SMPL-X
+adds hands and a face.
 
 <Figure src={bodies} alt="Two body meshes in a T-pose with their joints marked: SMPL in teal, and SMPL-X in pink, which has many more joints in the hands and face." caption="SMPL and SMPL-X, with their joints marked." />
-
-Each of our three datasets used a different version:
-
-| Dataset | Body | Frame rate | Size | Captions |
-| --- | --- | --- | --- | --- |
-| [HumanML3D](https://github.com/EricGuo5513/HumanML3D) | SMPL+H, 22 joints used | 20 fps | 14,616 motions | 44,970 |
-| [AIST++](https://google.github.io/aistplusplus_dataset/) | SMPL, no shape | 60 fps | 1,408 dance clips | None |
-| [Motion-X](https://motion-x-dataset.github.io/) | SMPL-X | – | 25,865 sequences (7 subsets) | Yes |
 
 The models don't train on SMPL parameters directly. They use the HumanML3D
 representation: 263 numbers per frame, built from the 22 joint positions.
@@ -107,25 +123,55 @@ it starts. The foot contacts help the model avoid feet that slide.
 
 ### Motion data processing
 
-Every dataset goes through the same eight stages, so a new dataset only needs
-a loader at the start. I split the original single script into these stages,
-each one cached and switched on in config:
+Raw motion capture can't go straight into a model. Every dataset records at
+its own frame rate, with its own skeleton, and people stand wherever they
+like. So motion data usually goes through a few stages before training:
 
-| Stage | What it does |
-| --- | --- |
-| 1. Pose extraction | Runs the SMPL parameters through the body model to get joint positions, and resamples to 20 fps. |
-| 2. Pose processing | Trims and crops each clip, and adds a left-right mirror copy. |
-| 3. Motion representation | Moves every body onto one skeleton facing the same way, then builds the 263 numbers. |
-| 4. Train/test split | 80% train, 5% validation, 15% test. |
-| 5. Mean and variance | Statistics for normalisation, from the training set only, one file at a time with Welford's algorithm. |
-| 6. Text mapping | Matches each caption file to its renamed and mirrored motions. |
-| 7. Animate | Renders random samples, so a person can check them by eye. |
-| 8. Aggregate | Merges several processed datasets into one corpus. |
+| S/N | Stage | What it does | Why |
+| --- | --- | --- | --- |
+| 1 | Pose extraction | Runs the SMPL parameters through the body model to get the 3D joint positions, and resamples every clip to 20 frames a second. | Our datasets recorded at different rates: AIST++ at 60 fps, HumanML3D at 20. At one rate, a frame means the same time in every dataset. The models and the evaluator we reuse were built for HumanML3D at 20 fps. |
+| 2 | Pose processing | Trims long clips, and adds a left-right mirror copy of every motion, with "left" and "right" swapped in its captions. | Dance clips run up to 48 seconds, while most HumanML3D clips last a few seconds. Mirroring doubles the data, and the model sees every move done with both sides of the body. |
+| 3 | Normalisation and motion representation | Scales every body to one skeleton, puts the feet on the floor, moves the start to the centre and turns the first frame to face the same way. Then it builds the 263 numbers per frame. | The model should learn the movement, not the person's height, where they stood in the studio or which way they faced. |
+| 4 | Train, validation and test split | 80% train, 5% validation, 15% test. | The test motions stay unseen, so the scores show how the model does on new motion, not how well it remembers. |
+| 5 | Mean and variance | Works out the average and spread of each of the 263 numbers, from the training split only. | Angles, speeds and heights have very different scales. Normalising puts them on one scale, so no feature drowns out the others. The reference code used the whole dataset, which leaks the test set into training. A teammate spotted it, and we fixed it. |
+| 6 | Text processing | Cleans each caption, tags its parts of speech, and matches it to its motion and the mirror copy. | Each motion must keep the right captions after renaming and mirroring. |
+| 7 | Animate | Renders random samples as stick figures. | Numbers can't show a body lying on its side. This check is how we found AIST++ motions that weren't upright. |
+| 8 | Aggregate | Merges several processed datasets into one. | One model can then train on more than one dataset, such as HumanML3D and AIST++ for dance. |
 
 <Figure src={dataPipeline} zoom alt="The data processing pipeline. Motions go through pose extraction from SMPL parameters, mirroring, normalisation to a target skeleton facing Z+, and conversion to a 263-dimensional motion representation. Annotations go through text cleaning and part-of-speech tagging." caption="The data pipeline for motions (top) and captions (bottom)." />
 
-The data decides what the model can do. The same model, trained on Motion-X,
-which includes everyday moves from online video:
+### Training pipeline
+
+A model can only do what its data shows it. We trained on three public
+datasets, and each one taught the model something different:
+
+| Dataset | What's in it | Size | Captions |
+| --- | --- | --- | --- |
+| [HumanML3D](https://github.com/EricGuo5513/HumanML3D) | Studio motion capture of daily activities (walking, jumping), sports (swimming, karate), acrobatics (cartwheels) and some dance. Clips last 7 seconds on average. SMPL+H body, 22 joints used. | 14,616 motions | 44,970, about 3 per motion |
+| [AIST++](https://google.github.io/aistplusplus_dataset/) | Studio dance in 10 genres, such as ballet jazz, breaking, house and hip-hop. SMPL body with no shape, at 60 fps. | 1,408 dance clips | None. We wrote template captions from each clip's genre and move. |
+| [Motion-X](https://motion-x-dataset.github.io/) | Whole-body motion with hands and face (SMPL-X), much of it taken from online video. We used 7 of its subsets: martial arts such as kung fu and tai chi, people playing instruments, acting, everyday actions and more. | 25,865 sequences, 51,370 with mirroring | Yes |
+
+HumanML3D is the standard benchmark, so every published model trains and
+scores on it. But it has little dance, and few moves outside a mocap studio.
+AIST++ has the dance the studio wanted, without a single caption. Motion-X has
+much more variety than both:
+
+<Clips caption="Ground truth after our pipeline: an AIST++ dance clip, and a Motion-X clip of a person playing a box drum (cajón).">
+  <Clip label="AIST++" src="/work/ai-singapore/aistpp-gt.mp4" poster="/work/ai-singapore/aistpp-gt.webp"
+        alt="A stick figure dances with wide arm sweeps and steps." />
+  <Clip label="Motion-X" src="/work/ai-singapore/motionx-gt-cajon.mp4" poster="/work/ai-singapore/motionx-gt-cajon.webp"
+        alt="A seated stick figure strikes a box between its knees with both hands." />
+</Clips>
+
+So the same model, trained on Motion-X, can attempt moves that HumanML3D
+never showed it:
+
+<Clips caption="“The person is performing a tai chi sequence”, from the same model trained on each dataset.">
+  <Clip label="Trained on HumanML3D" src="/work/ai-singapore/taichi-hml.mp4" poster="/work/ai-singapore/taichi-hml.webp"
+        alt="A stick figure walks forward with its arms held in one pose." />
+  <Clip label="Trained on Motion-X" src="/work/ai-singapore/taichi-mx.mp4" poster="/work/ai-singapore/taichi-mx.webp"
+        alt="A stick figure stays in place, shifts its weight and moves its arms through changing tai chi shapes." />
+</Clips>
 
 <Clips caption="“The person is drunk and staggers around.”">
   <Clip label="Trained on HumanML3D" src="/work/ai-singapore/drunk-hml.mp4" poster="/work/ai-singapore/drunk-hml.webp"
@@ -133,8 +179,6 @@ which includes everyday moves from online video:
   <Clip label="Trained on Motion-X" src="/work/ai-singapore/drunk-mx.mp4" poster="/work/ai-singapore/drunk-mx.webp"
         alt="A stick figure stumbles, falls and ends up lying on the ground." />
 </Clips>
-
-### Training pipeline
 
 The team replicated four published models before choosing one. They take
 quite different routes from text to motion:
@@ -149,23 +193,68 @@ quite different routes from text to motion:
 MDM gave the best text match and trained in a day and a half on our share of
 a GPU, so it became the base. MLD scored a little better on realism, but at
 228 hours a run we could have trained it once, and MDM we could tune many
-times.
+times. I replicated MDM with a teammate, then rebuilt its training inside our
+framework, with Hydra configs, MLflow logging and unit tests.
 
-MDM learns by undoing noise. In training, it takes a real motion, adds a
-random amount of Gaussian noise, and a transformer learns to predict the
-clean motion from the noisy one and the caption. The caption goes in through
-a frozen CLIP text encoder. To generate, it starts from pure noise and cleans
-it step by step, 50 steps in our setup instead of the paper's 1,000. During
-training the caption is sometimes hidden, so the model also learns to move
-without text. At generation time, the two predictions are mixed, which pushes
-the motion to follow the text more closely. This is called classifier-free
-guidance.
+MDM, the Motion Diffusion Model, is a diffusion model: the same family as
+DALL·E 2 and Stable Diffusion, which make images. A diffusion model learns one
+skill, which is to take a noisy motion and work out the clean motion under
+the noise.
+
+**Training.** Take a real motion from the dataset, say a person walking, as
+its 263 numbers per frame. Pick a random step between 1 and 1,000, and add
+that much Gaussian noise. At a low step the walk is still clear. At the last
+step it's pure static. The model gets the noisy motion, the step number and
+the caption, and has to predict the clean walk. Its loss is how far that
+prediction is from the real motion. Over many thousands of examples, it learns
+what real human motion looks like, and how each caption shapes it.
+
+**Generating.** Start from pure noise, as long as the motion you want. The
+model predicts a clean motion from it. We add back a little less noise, and
+ask again. Each round the motion gets cleaner, until a walk comes out. The
+paper used 1,000 rounds. We used the 50-step version, about 20 times faster
+with comparable results.
+
+Three choices make this work for motion:
+
+- **A transformer instead of a U-Net.** Most image models use a U-Net. MDM
+  treats each frame as a token, and attention lets every frame look at every
+  other frame, which suits a sequence in time.
+- **It predicts the clean motion, not the noise.** So the output at every step
+  is a real motion, and the paper can add losses on joint positions, speeds
+  and foot contact, which reduce sliding feet.
+- **The text goes through CLIP.** A frozen CLIP text encoder turns the prompt
+  into numbers. CLIP already knows many words and styles, so the model
+  doesn't have to learn language from 44,970 captions alone.
+
+<Figure src={mdm} zoom alt="Two diagrams. Left: a text prompt goes through a frozen CLIP text encoder, a random mask and a linear layer, and is added to the diffusion step t from an MLP to make one condition token. The noisy motion frames go through a linear layer, get a positional embedding, and pass with the token through a transformer encoder, which outputs a clean frame for each input frame. Right: sampling starts from Gaussian noise at step T. MDM predicts the clean motion, which is noised back to step T−1 and fed in again, until step 1 gives the final motion." caption="MDM. Left: one denoising step. Right: generating a motion, from noise to the final motion. From Tevet et al., Human Motion Diffusion Model (2023)." />
+
+One more method, classifier-free guidance, makes the motion follow the text
+more closely. In training, the caption is sometimes masked out (the "random
+mask" in the diagram), so the same model also learns to move with no text at
+all. When generating, the model runs twice at each step, with the caption and
+without it. The difference between the two is what the text adds, and we push
+the output further in that direction: 2.5 times as far in our setup. A higher
+value follows the prompt more closely, but gives less variety.
 
 <Clips caption="“Man jumping in excitement”, from the T2M baseline and from our final MDM.">
   <Clip label="T2M" src="/work/ai-singapore/jump-t2m.mp4" poster="/work/ai-singapore/jump-t2m.webp"
         alt="A 3D body makes one small jump." />
   <Clip label="Final MDM" src="/work/ai-singapore/jump-mdm.mp4" poster="/work/ai-singapore/jump-mdm.webp"
         alt="A 3D body makes a series of jumps and hops." />
+</Clips>
+
+To get the final model, the team tuned MDM one hyperparameter at a time, about
+13 runs, each one more than a day long. The best mix (a lower learning rate,
+more dropout and more attention heads) raised R-precision from 0.731 to 0.780
+and brought FID from 0.569 down to 0.471, against MDM with its default
+settings.
+
+<Clips caption="“A person does a karate kick, spins around and does a victory sign”, from our first trained model and from the tuned one.">
+  <Clip label="First model" src="/work/ai-singapore/karate-first.mp4" poster="/work/ai-singapore/karate-first.webp"
+        alt="A 3D body makes unclear, mixed movements." />
+  <Clip label="Tuned model" src="/work/ai-singapore/karate-champion.mp4" poster="/work/ai-singapore/karate-champion.webp"
+        alt="A 3D body takes a martial arts stance and spins, without the victory sign." />
 </Clips>
 
 ### Evaluation
@@ -183,18 +272,21 @@ the same space:
 | Diversity | How different are motions for different captions? | Close to real data |
 | Multimodality | How different are motions for the same caption? | Higher, within reason |
 
-Real motion capture scores 0.797 on R-precision. Our final model reached
-0.780.
+When I first connected the evaluation to training, the scores came out much
+worse than expected. The same model scored 0.523 on R-precision during
+training, and 0.739 when I evaluated it on its own. The team was about to tune
+hyperparameters on these numbers, so I had to know which one was wrong.
 
-The scores can't see everything. Ask for something far from the training
-data and the model does its best with moves it knows:
+I compared what the two paths did differently. The training-time path
+generated motions without classifier-free guidance, so the model barely
+followed the captions. I made both paths use guidance, the same as inference,
+and added a warning when it's switched off. The model had been fine all
+along. With the evaluator fixed, every tuning run after that was judged on
+numbers we could trust.
 
-<Clips caption="Prompts far from the training data: “A man is crawling like a spider” and “Man is floating in space”.">
-  <Clip label="Crawling like a spider" src="/work/ai-singapore/spider.mp4" poster="/work/ai-singapore/spider.webp"
-        alt="A stick figure bends low and shuffles, nothing like a spider." />
-  <Clip label="Floating in space" src="/work/ai-singapore/space.mp4" poster="/work/ai-singapore/space.webp"
-        alt="A stick figure stands and drifts its arms, with no sense of floating." />
-</Clips>
+The scores also move from run to run. Three evaluations of the same model gave
+FID 0.557, 0.580 and 0.653. So we read small gaps with care, and trained the
+final setup ten times to check that its result held.
 
 ### Fine-tuning
 
@@ -241,20 +333,44 @@ version took 20 minutes a run. These changes brought it to 2:
 
 ### Prioritisation
 
-My manager encouraged me to work in an agile way, and it took me some
-practice. At first I went deep on small parts and polished features the MVP
-didn't need yet. Each
-training run took more than a day, so every detour cost days.
+In software, teams are encouraged to work in an agile way. On this project,
+that meant:
+
+- three-week sprints, nine of them plus a release sprint;
+- a product backlog of user stories, ranked by our research partner at SUTD;
+- sprint planning, with every task sized as one, three or five days;
+- daily stand-ups;
+- a sprint review every three weeks, where we showed our work to the studio
+  and SUTD;
+- retrospectives, to change how we worked;
+- a minimum viable model as the target: the smallest model that proves the
+  idea works.
+
+It took me some practice to get into this mindset, because I have a
+perfectionist streak. Early on, I went deep on small parts and polished
+features the minimum viable model didn't need yet. In school, "agile" sounded like a buzzword. In
+practice it means knowing what's good enough, failing fast and iterating
+quickly. Rather than perfect one part, it matters more to understand what the
+team and the product need at that moment: a working model for the next
+review, a fix that unblocks a teammate, or numbers the studio can decide on.
+
+That wasn't easy with diffusion models. One MDM training run took more than a
+day, and MLD took more than nine. Every detour cost days, so I picked up "eat
+the frog" from Brian Tracy: do the hardest, most important task first, before
+the easy ones fill the day.
+
+When I planned captions for the dance clips, I wrote down that a second step
+with GPT would be overkill for now. I tried the video model on its own first,
+and handed the rest to the studio as next steps.
 
 What I do now:
 
 - break the problem down and keep a priority list;
-- do the hardest or least certain task first;
+- eat the frog: the hardest or least certain task goes first;
 - write down what done looks like before I start;
-- get something working end to end, see where it fails, and improve that.
-
-When I catch myself polishing, I ask whether it moves the metric or the
-deliverable. If it doesn't, it waits.
+- get something working end to end, see where it fails, and improve that;
+- when I catch myself polishing, ask whether it moves the metric or the
+  deliverable. If it doesn't, it waits.
 
 ### Working with different people
 
@@ -262,27 +378,40 @@ Everyone is different. People come with different motivations and different
 beliefs about how work should be done. Some want to push hard, some want to do
 their part well, and some find too much structure stressful.
 
-Under deadline pressure, one teammate got frustrated with the others' pace, and
-the mood dipped. I talked to him one to one to understand why, and I tried
-not to point fingers. Blame makes people defend themselves. A process gives
-everyone a shared problem to fix. So we focused on processes, not people:
+Under deadline pressure, one teammate got frustrated with the others' pace,
+and the mood dipped. I met him one to one to understand what was frustrating
+him. Then we put the focus on processes, not people. A complaint about a
+person makes them defend themselves, and a process gives everyone a shared
+problem to fix. So we added:
 
 - a Thursday sync on how each person's part connected to the others;
 - sprint retros, to raise what wasn't working without naming anyone;
-- spec reviews, so we agreed on what to build before building it;
 - a daily update from me on what I'd done and what was next, which others
   started to post too.
 
+The team delivered every
+sprint on plan, and SUTD signed off before the release sprint was over.
+
+It also changed how I lead. I used to push one way of working on everyone.
+Now I watch how a team works first, let people own their part, and help the
+team find its own balance. I step in more directly only when work stops
+moving.
+
 ### Communication
 
-My team had a fresh graduate, an experienced engineer and two career
-switchers, so I spent a lot of time explaining things like Linux, Git and
-diffusion models to people from other fields. I realised that when I couldn't
-find an analogy, or struggled to explain something simply, it meant I didn't
-understand it well enough myself. Explaining became a test of my own
+My team's backgrounds were varied: two fresh graduates (me included), an
+engineer with years of experience, and two career switchers. I spent a lot of
+time explaining core computing fundamentals, like Linux and Git, and even more
+complicated ideas, like diffusion models and how CLIP turns text into numbers.
+
+I realised that when I couldn't find an analogy, or struggled to explain
+something simply, it meant I didn't understand it well enough myself. It's
+like when a child asks you a simple "why" question, and you find your own
+understanding is being tested too. Explaining became a test of my own
 understanding.
 
-I learned to pitch the same idea at different levels: the intuition for
+So I learned to pitch the same idea at different levels: the intuition for
 someone new, the details for someone technical. I also wrote onboarding
 guides, built a small interactive repo for practising Linux commands and
-version control, and added checks to CI/CD so fewer mistakes reached review.
+version control, and added checks to CI/CD, so the common mistakes were caught
+before review instead of in it.

@@ -6,9 +6,9 @@ location: Singapore
 start: 2023-05
 end: 2023-08
 title: LLM prototypes for public-sector analysts
-tagline: "Prototyped early LLM tools for government departments."
+tagline: "Prototyped early LLM tools for teams at Singapore's Department of Statistics."
 summary: >-
-  LLM prototypes for government departments, covering text classification, Q&A and report generation, built with LangChain and GPT-3.5 in 2023.
+  LLM prototypes for Singapore's Department of Statistics in 2023: few-shot text classification with SetFit, and question answering and report drafting with LangChain and GPT-3.5.
 stack: [python, langchain, huggingface, aws]
 bullets:
   - "Prototyped NLP tools for several departments (classification, Q&A, report generation) using LangChain and GPT-3.5."
@@ -20,136 +20,260 @@ cover: ./cover.jpg
 ---
 import overview from './dos-poc-overview.svg';
 import setfit from './dos-setfit-pipeline.svg';
+import setfitApp from './dosetfit-app.png';
 import perClass from './dos-setfit-per-class-accuracy.svg';
 import latency from './dos-inference-latency.svg';
 import rag from './dos-rag-agent-architecture.svg';
 import indostry from './dos-indostry-report-flow.svg';
 
-## The project
+## The role
 
-In mid-2023 I interned in the Department of Statistics' Digital Transformation
-Unit. GPT-3.5 was new, LangChain had just come out, and a new open model
-appeared every week. The brief was a question: what can pre-trained language
-models do for statistics work, and which ideas deserve more time?
+I interned at the [Department of Statistics](https://www.singstat.gov.sg)
+(DOS) from May to August 2023, in its Digital Transformation Unit. DOS is
+Singapore's national statistics office. It runs the country's surveys and
+censuses, and publishes the official numbers on SingStat.
 
-Two things made it hard:
+GPT-3.5 was new, LangChain was a few months old, and a new open model came out
+every week. My brief was open: learn what pre-trained language models can do,
+find where they could help DOS, and say which ideas deserve more time. It
+listed about a dozen models to look at, from GPT-2 to GPT-J and flan-t5, and a
+list of tasks: classification, question answering, summarisation and entity
+extraction.
 
-- **Few labels.** Most of the department's text has none, and labelling is slow.
-- **Data stays put.** Data can't move freely between divisions, so a prototype
-  had to prove itself on public data first.
+Two limits shaped everything I built:
 
-Over twelve weeks I read through the field, built three prototypes in
-Streamlit, each aimed at a real team's problem, and presented what I found in
-a deck of about 190 slides, with a roadmap at the end.
+- **Few labels.** Most of the department's text has no labels, and labelling
+  by hand is slow and costly.
+- **Data stays put.** The data is confidential and can't move freely between
+  divisions, so every prototype had to prove itself on public data first.
 
-<Figure src={overview} zoom alt="Three prototypes. DOSetFit labels survey text from a few examples with SetFit. DOSsier answers questions from official publications with a LangChain agent, GPT-3.5 and FAISS. inDOStry Navigator drafts the narrative for an industry review from CSV tables." caption="The three prototypes, one per use case. All ran on public data." />
+I read through the field, then asked two teams what took them the most time,
+and built for that. In twelve weeks I built three prototypes in Streamlit and
+presented what I found in a deck of about 190 slides, with a roadmap at the
+end.
+
+<Figure src={overview} zoom alt="Three prototypes. DOSetFit labels survey text from a few examples with SetFit. DOSsier answers questions from official publications with a LangChain agent, GPT-3.5 and FAISS. inDOStry Navigator drafts the narrative for an industry review from CSV tables." caption="The three prototypes, one for each use case. All ran on public data." />
 
 ## Noteworthy projects
 
 ### Text classification
 
-Survey answers have to be coded into fine categories: about 3,000 for
-household expenses, 1,023 for industries. A big model with a prompt is slow
-and expensive at that scale, and fine-tuning one needs thousands of labels
-nobody has.
+Every survey answer has to be coded into a fixed category. The Household
+Expenditure Survey has about 3,000 expense categories, and the Singapore
+Standard Industrial Classification has 1,023 industry codes. Much of that
+coding is done by hand.
 
-SetFit needs a handful. It fine-tunes a small sentence transformer on pairs of
-examples, same class or different, then trains a plain logistic regression on
-the embeddings. I built DOSetFit around it: train from a CSV of labelled
-examples, then classify one sentence or a whole file.
+The brief asked how many labelled examples per class are enough. In 2023 the
+obvious answer was to prompt a large model with a few examples. I tried
+few-shot prompts on flan-t5, GPT-2 and GPT-J, and read up on fine-tuning and
+its cheaper variants such as LoRA. Prompting a large model for every one of
+thousands of answers is slow and expensive, and fine-tuning one properly needs
+thousands of labels nobody had. So I picked a small specialist model,
+[SetFit](https://github.com/huggingface/setfit).
+
+SetFit trains in two phases. First it shows a small sentence-embedding model
+pairs of examples, and teaches it to put sentences from the same class close
+together and sentences from different classes far apart. A few labelled
+examples make many pairs, so a few labels go a long way. Then it trains a plain
+logistic regression on those embeddings to pick the label. The model I used,
+a multilingual MiniLM with 12 layers, fits easily on a laptop.
 
 <Figure src={setfit} zoom alt="The SetFit pipeline: 32 labelled examples become sentence pairs; phase one fine-tunes a MiniLM sentence transformer with a cosine loss; phase two trains a logistic regression head; then it predicts one sentence or a CSV in batches." caption="SetFit trains in two phases and runs on a laptop." />
 
+I built DOSetFit around it, for people who don't code: classify one sentence,
+classify a whole CSV file in batches, or train a new model by uploading two
+CSV files of labelled examples.
+
+<Figure src={setfitApp} zoom alt="The DOSetFit app in a browser. A news headline about AMD's dual-core Opteron chips is entered, and the app returns the label Sci/Tech with a probability of 0.89. The sidebar offers a choice of CPU or Apple GPU." caption="DOSetFit classifying a public news headline. I ran the 2023 code and model again on my laptop in 2026 for this screenshot." />
+
 Survey data couldn't leave its division, so I tested on a public benchmark,
 AG News. With 8 labelled headlines per class, 32 in all, it labelled 7,600
-test headlines at 85% accuracy. Sports was easy. Business and Sci/Tech got
-mixed up most, which is fair: plenty of headlines are both.
+test headlines at 85% accuracy. Sports was easy: team names and scores give it
+away. Business and Sci/Tech got mixed up most. 360 business headlines were
+labelled Sci/Tech, and plenty of tech-company news is both.
 
 <Figure src={perClass} alt="Accuracy per class: Sports 97.1%, World 85.1%, Sci/Tech 81.7%, Business 76.2%, overall 85.0%." caption="Accuracy per class on 7,600 AG News headlines, from 32 training examples." />
 
-It's also fast. One prediction took 69 ms on my laptop's CPU. The flan-t5
-models I tried for the same job took 0.9 to 42.5 seconds. That's one run each,
-and a classifier against a text generator, so it shows the order of magnitude,
-not a benchmark. For labelling survey text, the order of magnitude was the
-point.
+The mistakes are the interesting part. Here are six test headlines, the label
+AG News gives each one, and the model's answer:
 
-<Figure src={latency} alt="One prediction on a laptop CPU, log scale: SetFit 69 ms, flan-t5-small 0.86 s, flan-t5-base 4.1 s, flan-t5-large 12.8 s, flan-t5-xl 42.5 s." caption="One timed run each, on a laptop CPU in 2023." />
+| Headline | AG News label | DOSetFit | Probability |
+| --- | --- | --- | --- |
+| AMD Sheds Light on Dual-Core Plans | Sci/Tech | Sci/Tech | 0.89 |
+| Strong Server, PC Sales Boost Microsoft Revenue | Sci/Tech | Sci/Tech | 0.71 |
+| Insurers Eye Ivan the Terrible | Business | Business | 0.88 |
+| Rivera was a corner stone for Ruiz | Sports | Sports | 0.62 |
+| Rumours surround Google browser | Business | Sci/Tech | 0.98 |
+| Show lights up Paralympics | World | Sports | 0.83 |
+
+Both errors are confident ones. Most readers would call a Google browser tech
+news and the Paralympics sport, so you could argue with the benchmark too. For
+survey coding, that means a confidence threshold alone won't catch every
+mistake, and the label definitions matter as much as the model. With 3,000
+classes instead of 4, there would be many more pairs like Business and
+Sci/Tech. In the deck I proposed class weights, more balanced sampling, and a
+hierarchy of SetFit models, one for each group of related labels.
+
+It's also fast. One prediction took 69 ms on my laptop's CPU. The flan-t5
+models took 0.9 to 42.5 seconds.
+
+<Figure src={latency} alt="One prediction on a laptop CPU, log scale: SetFit 69 ms, flan-t5-small 0.86 s, flan-t5-base 4.1 s, flan-t5-large 12.8 s, flan-t5-xl 42.5 s." caption="One timed run each, on a laptop CPU in 2023. flan-t5 generated text and SetFit classified one sentence, so read it as an order of magnitude." />
+
+The deck also made the case for using both kinds of model together: a large
+model generates training data, and the small one does the labelling at
+volume.
 
 ### Question answering
 
-A colleague told me a vague question from the public, or one raised at a
-high-profile meeting, could take two to three hours to answer properly. The
-answers were in the department's own publications, if you knew where to look.
+SingStat gets a steady stream of questions. Vague ones arrive by e-mail from
+the public. Hard ones come up at high-profile meetings such as the Committee
+of Supply debate, where every answer has to be right. A colleague on the
+Input-Output Tables team told me one of those could take two to three hours to
+answer. The answers were in the department's own publications, if you knew
+where to look.
 
-DOSsier reads those publications for you. It splits the PDFs into chunks,
-embeds them, and keeps them in a FAISS index. A LangChain agent on GPT-3.5
-looks in that index first, then arXiv, then the web, and shows which pages or
-links each answer came from. I started from an open-source template and
-adapted it to the department's documents.
+DOSsier reads those publications for you. I started from an open-source
+"chat with your PDF" app and adapted it to the department's documents. It
+splits each PDF into chunks of 1,000 characters that overlap by 200, so a
+sentence cut at one edge is still whole in the next chunk, and tags each chunk
+with its page. It embeds the chunks with OpenAI's embedding model and keeps
+them in a FAISS index, which finds the chunks closest in meaning to a
+question.
+
+A LangChain agent on GPT-3.5 answers the question. It works in a loop: think,
+pick a tool, read the result, and decide again. Its prompt sets the order:
+look in the documents first, then arXiv, then the web. The answer comes with
+the pages and links it used, because a number quoted at a ministry meeting
+has to be checked.
 
 <Figure src={rag} zoom alt="DOSsier architecture. Indexing: PDF upload, text extraction, cleaning, chunking at 1,000 characters with 200 overlap, OpenAI embeddings into FAISS. Answering: a ReAct agent on GPT-3.5 calls a lookup tool over FAISS, arXiv search, web search or a summariser, and returns the answer with its sources." caption="DOSsier searches the department's documents first, then arXiv, then the web." />
 
-I tested it on Input-Output Tables publications against three answers from
-the team's FAQ. The answers were right in substance. One also quoted a number
-from a worked example in the source as if it were a fact, which taught me more
-than the two good answers did.
+I loaded five public Input-Output Tables publications, 32 to 585 pages each,
+and asked three questions from the team's FAQ:
+
+| Question | What DOSsier did |
+| --- | --- |
+| What is the output multiplier? | Gave the right definition, then added that "the output multiplier for Industry A is $1.28 million" |
+| What are backward and forward linkages? | Right, and more detailed than the FAQ |
+| What is the Domestic Supply Table? | Right, and more detailed than the FAQ |
+
+The $1.28 million came from a worked example in the publication. Industry A
+isn't a real industry. The answer was correct for the example, but a reader
+could take it as an official figure, and for a statistics office that's worse
+than no answer. My prompt asked the model to answer "elaborately", and it did.
+Three questions showed the idea could work. A real test would need every FAQ
+item and real past questions, scored by the team, and a prompt that cites the
+page and says "I don't know" when the documents don't have the answer.
 
 ### Report drafting
 
-Over lunch with the economists who write the industry reviews, one of them
-said: "The hardest part is to come up with a narrative." The numbers were
-easy to get. Saying what they meant took the time.
+The economists who write the industry reviews analyse each industry's GDP
+every quarter. They read tables, outlooks and other agencies' data. Over lunch,
+one of them said: "The hardest part is to come up with a narrative." Plotting
+the numbers was the easy part. Saying what they meant took the time.
 
-inDOStry Navigator starts there. Pick an industry, upload its tables, and it
-plots them and asks a LangChain CSV agent to write the trend in an
-economist's voice. You can ask follow-up questions about the tables, or chat
-with the outlook PDFs, with a web search for current events. I built it for
-three industries, on public SingStat tables.
+inDOStry Navigator starts there. Pick an industry from a list of 16 and upload
+its tables. It plots each table, then asks a LangChain CSV agent to describe
+the trend as an economist in Singapore would. The agent writes pandas code,
+runs it on the table and explains the result, so the figures in the text come
+from the data and the model doesn't have to guess them. One agent handles a
+single table. For several tables at once I used OpenAI's function calling,
+which had come out that June.
 
 <Figure src={indostry} zoom alt="inDOStry Navigator flow: pick an industry, upload tables, plot, a CSV agent writes the trend, then ask follow-ups. A PDF chat tab reuses the DOSsier agent with an economist prompt and web search." caption="From tables to a first draft of the narrative." />
 
+You can then ask follow-up questions about the tables, or chat with the
+outlook PDFs through the DOSsier agent, with a web search for current events.
+I built it for three industries, on public SingStat tables: infocomm, finance
+and insurance, and accommodation.
+
+The agent was good at saying what went up and what went down. The narrative
+is the "why", and that still needed the outlook reports and the economist's
+judgement. The PDF chat was a first step towards joining the two.
+
 ### Sharing it with the department
 
-The deck was the main deliverable: a history of NLP, how transformers work,
-in-context learning, fine-tuning and LoRA, SetFit, LangChain, and open models.
-I ran Vicuna-13B on my MacBook's CPU with llama.cpp, and let an open model
-write the conclusion slide.
+The deck was the main deliverable: eight chapters, from the history of NLP to
+transformers, in-context learning, fine-tuning and LoRA, SetFit, LangChain and
+open models. Every chapter had a one-slide summary, and the detail went to an
+annex. I demoed all three prototypes. I also ran Vicuna-13B on my MacBook with
+llama.cpp, with its weights cut to 4 and 5 bits so it fit in memory, and let an
+open model write the conclusion slide.
 
-The roadmap said LLMs are one component among many. Check whether a use case
-is worth it first, then build the boring parts:
+The roadmap at the end said that LLMs are one component among many. Check
+whether a use case is worth it first, then build the parts around the model:
 
-- a vector database;
+- a vector database of our own;
 - embeddings that run offline;
-- retrieval;
-- fine-tuning, only where it pays.
+- a retrieval pipeline;
+- fine-tuning of open models, only where it pays.
 
 ## Reflections
 
-### Understanding the users
+### Listening to users
 
-My best ideas that summer came from the people who would use the tools, not
-from model release notes. The report prototype exists because an economist
-told me over lunch that the narrative was the hard part. The Q&A prototype
-exists because a colleague told me some questions took hours to answer. I now
-ask a team what is slow or painful before I decide what to build.
+My best ideas that summer came from the people who'd use the tools. The brief
+gave me a list of tasks. The economists gave me one sentence over lunch, and
+it told me more: the narrative was the hard part. If I'd built from the brief
+alone, I'd have built charts, which they could already make. The Q&A
+prototype shows its sources because a colleague told me the hard questions
+came from high-profile meetings, where every number gets checked.
 
-### Choosing the model
+The way people describe their problem is often the requirement. "Narrative"
+meant the tool had to write prose. "High-profile meeting" meant sources
+mattered more than fluent answers. I now ask a team what's slow or painful
+before I decide what to build, and I write their answer down in their words.
 
-Everyone wanted to try the biggest model. For coding survey answers into fixed
-categories, a small model trained on 32 examples was hundreds of times faster,
-cheaper and good enough. I start with the smallest model that can do the job,
-and move up only when it can't.
+### Pragmatism
 
-### Cloud costs
+The brief listed a dozen large models. For coding survey answers into fixed
+categories, a small model trained on 32 examples answered in 69 ms on a
+laptop, where the largest flan-t5 took 42.5 seconds. A classifier picks one
+label from a fixed set in one pass. A generator writes its answer one token at
+a time and pays for its size on every token, and most of what it knows goes
+unused on a fixed task.
 
-I left a cloud endpoint for a 13-billion-parameter model running for a week,
-and the bill was not small. Every experiment I run now has a budget alert and
-a plan to shut it down before it starts.
+In the deck I wrote that smaller specialist models still have a place, and
+that large models could make training data for them. I still start with the
+smallest model that can do the job, and measure cost per task as well as
+accuracy. At Carro, choosing the right model for each workflow is a big part
+of how we cut our LLM costs.
 
-### Prototypes and production
+### Ownership
 
-85% on a public benchmark and three good answers make a promising demo, not a
-system. The roadmap in the deck said what it would take to test the ideas on
-real data. Most of that is standard now, and LangChain, which many people called bloated that
-summer, runs a lot of production systems, including some of the agents I work
-on at Carro.
+To test hosting open models, I deployed LLaMA-13B on an AWS endpoint and left
+it running for a week. A GPU endpoint bills for every hour it's up, whether
+anyone uses it or not. The fees were high. I put it in my final talk anyway, under the challenges I'd faced, so
+the next person wouldn't make the same mistake.
+
+I knew endpoints cost money. The gap was in my process: nothing in my plan
+ended the test. Now a teardown step and a budget alert go into the plan before
+I deploy anything.
+
+### Explaining clearly
+
+My audience knew statistics far better than I did, but transformers and LLMs
+were new to most of them. I enjoy breaking down complex ideas into clear,
+practical terms, so I built the deck for them. Every chapter had a one-slide
+summary, and the detail went to the annex. To explain few-shot learning, I
+compared three students: a huge model that went to every tuition class, a
+smaller one that did all the past-year papers, and you, with only a handful of
+examples. With so few examples, you learn faster by comparing them in pairs,
+which is what SetFit does.
+
+If I can explain an idea that simply, I understand it. If I can't, I'm not
+ready to present it yet.
+
+### Systems thinking
+
+On the roadmap slide I wrote that LLMs are one component among many. Building
+the prototypes taught me that. Most of DOSsier's code reads, cleans and
+splits PDFs, keeps the page numbers, and shows the sources. The call to
+GPT-3.5 is a few lines. Wrong chunks or missing tables break an answer
+however good the model is.
+
+Not every call I made aged well. I wrote that open-source models "just aren't
+there yet (for now)", and the "for now" did a lot of work. That summer many
+people called LangChain bloated. Today it runs a lot of production systems,
+including the agents I work on at Carro, where most of our work goes into the
+harness around the model.
