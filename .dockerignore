@@ -2,7 +2,7 @@ node_modules
 dist
 .astro
 .git
-.github
+# .github stays in: the format check in `npm run verify` reads its YAML.
 .vscode
 .codex
 .claude
