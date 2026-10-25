@@ -12,8 +12,8 @@ only JavaScript is Astro's client router and a few small behaviour scripts
 
 ## Run locally
 
-Use the Node version in `.nvmrc` (Node 22.22 or newer) and the committed
-lockfile.
+Use the Node version in `.nvmrc` (Astro needs 22.23.4 or newer) and the
+committed lockfile.
 
 ```sh
 nvm use

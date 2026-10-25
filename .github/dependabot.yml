@@ -12,6 +12,10 @@ updates:
       tooling:
         patterns: ['eslint*', '@eslint/*', 'typescript-eslint', 'globals', 'prettier*']
         update-types: [minor, patch]
+    ignore:
+      # typescript-eslint supports TypeScript below 6.1; move up together, by hand.
+      - dependency-name: typescript
+        update-types: ['version-update:semver-major']
   - package-ecosystem: github-actions
     directory: /
     schedule:
@@ -20,3 +24,7 @@ updates:
     directory: /
     schedule:
       interval: weekly
+    ignore:
+      # The build stays on the Node 22 LTS line, matching .nvmrc; a major is a deliberate change.
+      - dependency-name: node
+        update-types: ['version-update:semver-major']
