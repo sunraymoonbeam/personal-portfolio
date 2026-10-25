@@ -2,6 +2,7 @@
 /**
  * A short vertical timeline: when, what, and a sentence or two. The last
  * entry is "now", so its dot carries the brand mark; earlier ones stay grey.
+ * `text` is trusted HTML written in the MDX, so it can hold links.
  */
 interface Props {
   items: { when: string; title: string; text: string }[];
@@ -13,7 +14,7 @@ const { items } = Astro.props;
     <li class:list={['entry', { now: i === items.length - 1 }]}>
       <span class="when t-14 tabular">{item.when}</span>
       <strong class="title">{item.title}</strong>
-      <p class="text">{item.text}</p>
+      <p class="text" set:html={item.text} />
     </li>
   ))}
 </ol>
