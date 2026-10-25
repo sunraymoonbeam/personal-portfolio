@@ -68,6 +68,40 @@ One of these alone is fine; several together are what a reader notices.
   "diarization", the standard technical spelling. Work bullets keep the
   résumé's American spelling because they are verbatim.
 
+## How he likes an article to read
+
+Learned over many rounds of edits in October 2026. Before writing a paragraph,
+ask: does it tell the story, explain something so it clicks, or give context
+the reader needs? If none, cut it.
+
+- **A story and a reference at once.** Tell what happened: the problem, what
+  was tried, what he decided ("I asked why…"), what he built, and the result
+  with a real number. Then explain enough that he can come back and learn from
+  his own page: "when I read my stuff I also want to understand wtf is SMPL".
+  An analogy is welcome when it truly clarifies (the phone call for NeMo's
+  window scales, the drinks in one glass for diarization).
+- **Context he gives goes in.** What the company is, its markets and services,
+  with a link. Link every company, tool, dataset and paper the first time.
+- **Depth follows recency.** Carro gets the most, AI Singapore is deep, NIE,
+  DOS and Tessaract are tighter. Hobbies stay short and personal.
+- **Visual breaks.** An image, clip, chart or `<Flow>` between sections so a
+  reader can picture the work, and a table for anything comparable
+  (components, stages, datasets, settings, factors). Tables can hold bullets.
+- **Lessons sit by their story.** A reflection can close the story it came
+  from; the Reflections section is for qualities, each earned by an event.
+- **Cut unneeded context:**
+  - meta and disclaimer lines ("the recordings are of children, so this page
+    shows none of them", "I ran this again in 2026");
+  - defensive lines ("I didn't…", "where my job ends");
+  - sections that don't serve the story ("Sharing it with the department");
+  - long justifications. "MDM gave the best results for its training time"
+    beats a paragraph.
+- **Precise, not cute.** "The pelvis position (x, y, z) in world
+  coordinates", not "where the pelvis is in the room".
+- **Layout.** Bullets only for three or more short, parallel items.
+  Paragraphs of two to four sentences, one idea each. Not cluttered, not a
+  string of one-liners.
+
 ## Page shapes
 
 - **Index pages:** h1 is the plain page name. One short lede, or none. No
