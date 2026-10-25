@@ -126,26 +126,6 @@ in step.
 
 <Figure src={review} zoom alt="A WhatsApp chat in which a customer tells the Carro Care bot it is one of the more competent AIs they have used, and asks which model it is." caption="A rave review from a Carro Care customer." />
 
-Getting there meant deciding what the model decides and what the code
-decides. In one test, a customer confirmed a noon slot. The workshop has no
-noon slot, because of the lunch break, so the booking failed, and the agent
-quietly booked 11.30 instead. The customer never agreed to 11.30. I added a
-check that the slot exists, and a rule that the tool never substitutes one:
-it hands the open times back, and the agent asks the customer again.
-
-| Decision | Who makes it |
-| --- | --- |
-| What to ask the customer next | The model, following the skill |
-| Whether the slot exists | The booking tool, against the calendar |
-| Whether a booking already exists | The tool, before it creates another |
-| What the confirmation says | Code, from a fixed template, after the booking succeeds |
-
-The other bugs that taught me most sat between systems. A plate number with
-spaces failed a lookup even though the booking was there. Our CRM stores
-times in UTC, and we sent Singapore time as if it were UTC, so a 10am booking
-showed as 6pm. Now I test identifier formats, time zones and the real
-response shape, not only the conversation.
-
 ### Department agents
 
 Internal teams wanted agents too, for their own workflows: investigating
@@ -212,11 +192,6 @@ write goes live straight away:
   { title: 'Go live', text: 'The approved version replaces the live one, and the old one stays in the history.' },
 ]} caption="Every change to a department agent, whether a person or the assistant wrote it, goes through one approval path." />
 
-I also built the planner, which interviews a manager and writes the SOP for
-each level of the agent tree. The plan has to reach the agent that does the
-work. In a test with mock tools, a check for missing documents ran fully
-correct in 5 of 12 runs without a plan, and in 11 of 12 with one.
-
 ### Harness and cost optimisations
 
 Agents get expensive fast at our volume, especially in Malaysia, our largest
@@ -266,25 +241,13 @@ around the model, so that every model would behave in the same way:
 | Remove risky tools | No grep, glob, sub-agents or file deletes. Ticket workflows don't need them, and they caused most of the loops. |
 | Lock the filesystem | Each agent reads its skills and writes only its own memory, never another customer's ticket. |
 | Cap the loops | Soft limits on tool and model calls, and a reminder when the agent calls the same tool again and again. |
+| Keep the prompt cache warm | A clock in the system prompt changed every minute, so the cache never held. The fix cut cache writes by 84% in testing. |
 
 <Figure src={repeat} zoom alt="A Langfuse trace. On the left, the same appointment-slot tool is called five times in a row. On the right, the harness adds a message: you have called the same tool several times in a row, try a different approach or tool." caption="The same tool called five times in a row, and the reminder the harness adds." />
 
 With the loop cap and the locked filesystem in place, triage sessions that
 cost more than a dollar went from 3.11 in every 1,000 to none, and the most
 expensive session fell from $10.01 to $0.66.
-
-The cache was its own story. An agent sends the model its instructions, tools
-and conversation again on every call. Prompt caching reuses the part at the
-start that hasn't changed, which is cheaper and faster. Our system prompt
-began with the current time, to the minute. So once a minute the start of the
-prompt changed, and everything after it had to be written to the cache again.
-Across 65 sessions, that clock caused 43% of all cache writes.
-
-My first theory was wrong. I blamed the message format, and a replay seemed to
-prove it, until I saw that the replay had simply warmed the cache. Reading the
-raw requests, and changing one thing at a time, led me to the clock. I moved
-the time to the newest message and fixed where the cache breakpoints fell. In
-a controlled test, cache writes fell from 129,320 tokens to 20,153, 84% less.
 
 Then we studied how each model behaves, and gave each one its own harness
 profile. Gemini almost never called tools in parallel and didn't plan unless
@@ -297,41 +260,6 @@ nothing, following
 Every model also gets the same base instructions:
 
 <Figure src={prompts} zoom alt="System prompt text with four headings: Plan before you act, Parallel tool calls, Use your tools to act, and Ground your answers." caption="Base instructions that every model gets: plan first, call tools in parallel, act instead of promising, and ground every answer." />
-
-### Evaluating model changes
-
-A cheaper model is only cheaper if it still does the job. So I built an
-evaluation pipeline on our production traces. It pins the SOP that was live,
-counts cost, tool calls and failures from the telemetry, then has LLM judges
-grade each ticket against the SOP. I check every high- and medium-severity
-violation by hand against the ticket and the rule it quotes.
-
-<Flow steps={[
-  { title: 'Pin', text: 'Same hours of the day, same SOP and prompt versions for both models.' },
-  { title: 'Measure', text: 'Cost, tool calls, reply time and failures, from the traces.' },
-  { title: 'Judge', text: 'Judges from different model families grade the same tickets against the SOP.' },
-  { title: 'Check', text: 'I read every serious violation against the ticket and the rule.', hot: true },
-  { title: 'Decide', text: 'One verdict per workflow, with the fixes needed before a switch.' },
-]} caption="The evaluation pipeline, from traces to a decision per workflow." />
-
-In September, DeepSeek V4 Flash ran our ticketing agents at night from 14 to
-17 September, against Claude Sonnet on the same hours of earlier nights:
-
-| Workflow | Tickets per model | SOP adherence, DeepSeek | SOP adherence, Sonnet | Cheaper per ticket |
-| --- | --- | --- | --- | --- |
-| Malaysia sell | 100 | 93.0% | 92.0% | 91% |
-| Malaysia buy | 70 | 92.9% | 97.1% | 88% |
-| Singapore sell | 40 | 95.0% | 90.0% | 92% |
-| Hong Kong buy | 40 | 92.5% | 85.0% | 90% |
-
-SOP adherence is the share of judged tickets with no high- or medium-severity
-violation. DeepSeek was 84–94% cheaper on every workflow, and as good or
-better on three of the four busiest. Malaysia buy was worse, and the reason
-wasn't the model: the triage agent hands over with an instruction to take no
-further action, and the buy agent sometimes obeyed it and never replied. That
-fix belongs in the handover. So I recommended the fixes first, then a staged
-switch, with ops sampling tickets and the business numbers tracked before and
-after.
 
 ### Automations
 
