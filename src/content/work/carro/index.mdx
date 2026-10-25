@@ -7,7 +7,7 @@ start: 2025-07
 title: Ticketing and department agents at Carro
 tagline: "Leading development of Carro's customer-facing ticketing agents. Currently working on an internal multi-agent orchestration platform for department workflows."
 summary: >-
-  Ticketing agents that handle Carro's customer journey, from triage to appointment booking, for 60,000+ tickets a month across three countries, plus an internal multi-agent orchestration platform for every department.
+  Ticketing agents that handle Carro's customer journey end to end, and an internal multi-agent orchestration platform for its departments.
 stack: [langgraph, hermes, googlecloud, n8n]
 bullets:
   - "Led development of Carro’s ticketing agents for **60,000+** monthly tickets across 3 countries. Worked with operations teams to turn their processes into agentic workflows spanning the customer journey (triage, inventory creation, appointments)."
@@ -35,11 +35,12 @@ import n8n from './n8n-workflow.png'
 
 ## The role
 
-I joined Carro as an AI engineer in July 2025. Carro is a used-car
-marketplace in Singapore, Malaysia and Hong Kong. It buys cars from owners,
-sells them to buyers, and services them in its own workshops, and it runs all
-of that through its own CRM. Every customer request becomes a ticket there: a
-question about a car, an offer to sell one, a workshop booking.
+I joined [Carro](https://carro.co) as an AI engineer in July 2025. Carro is
+a used-car marketplace in Singapore, Malaysia and Hong Kong. It buys cars from
+owners, sells them to buyers, services them in its own workshops, and also
+offers car loans and insurance. Every customer request, from a question about
+a car to an offer to sell one or a workshop booking, becomes a ticket in our
+in-house CRM (customer relationship management system).
 
 My job is mainly to translate those processes into agentic workflows, so that
 our people can spend their time on higher-value work.
@@ -58,7 +59,7 @@ Customers reach Carro through many workflows:
 - **Workshop:** booking a servicing appointment, or handling a repair
   diagnosis.
 
-These agents aren't simply chatbots that answer questions. We integrate them with
+These agents aren't just chatbots that answer common questions. We integrate them with
 Carro's CRM and internal systems, so they do the work across the customer's
 whole journey: they look up inventory, create and update tickets, book and move
 slots, and message customers on WhatsApp. We started with two agents. Today
@@ -111,25 +112,52 @@ tickets, pulling data, putting reports together. We started from
 and changed it to suit a company. It was built for one trusted person, so it
 had little security. These are the features I added:
 
-| Feature | What it does |
-| --- | --- |
-| Credential proxy | The agent never holds a key. A proxy adds credentials to its requests, so a jailbroken agent has no secrets to leak. |
-| Guardrails | Six layers against prompt injection and data leaks. Cheap pattern filters run first, and an LLM judge checks what gets past them. |
-| Lark integration | 47 native tools for Lark docs, Base, calendars and approvals, so the agent works where Carro's staff already work. |
-| A2A | Agents can call each other to get the data they need, using the open Agent2Agent protocol. |
+<table>
+  <thead>
+    <tr><th>Feature</th><th>What it does</th></tr>
+  </thead>
+  <tbody>
+    <tr><th colSpan={2} scope="colgroup">Security</th></tr>
+    <tr>
+      <td>Credential proxy</td>
+      <td>The agent never sees a key. A proxy adds the credentials to each request on its way out, so even a jailbroken agent has nothing to leak.</td>
+    </tr>
+    <tr>
+      <td>Guardrails</td>
+      <td>
+        <ul>
+          <li>Validator: rejects oversized or malformed messages</li>
+          <li>Injection scan: catches known prompt-injection patterns</li>
+          <li>Secret scan: finds keys and passwords in messages and tool output</li>
+          <li>LLM judge: checks what gets past the cheap filters</li>
+          <li>Tool-output wrapper: marks tool results as data, not instructions</li>
+          <li>Output scan: blocks a reply that would leak a secret</li>
+        </ul>
+      </td>
+    </tr>
+    <tr><th colSpan={2} scope="colgroup">Integrations</th></tr>
+    <tr>
+      <td>Lark</td>
+      <td>Carro runs on Lark. We gave the agent 47 native Lark tools: docs, sheets, Base, calendars, tasks, approvals, OKRs, even meetings and meeting rooms. So it works where staff already work.</td>
+    </tr>
+    <tr>
+      <td>A2A</td>
+      <td>Agents ask each other for the data they need, over the open Agent2Agent protocol.</td>
+    </tr>
+  </tbody>
+</table>
 
 Even with these, Nanobot was still a personal bot. When a whole team shared
 it, memory and context ran together, and it couldn't tell who was allowed to
-do what. So my team built department agents instead. Each one mirrors a real
-department: an orchestrator at the top, clusters of related work under it, and
-specialists under those. Role-based access control decides which people can
-use which agents, tools and skills.
+do what.
 
-My part is how these agents are changed safely. A business user proposes a
-change to a skill, tool, SOP or secret, and an admin approves it before any
-agent sees it. I also built the workflow planner, which turns a department's
-SOP into steps across its agents, and an assistant that suggests changes to
-an agent.
+So my team built department agents instead. Each one mirrors a real
+department. An orchestrator at the top takes every request from the team and
+decides who should handle it. Under it sit clusters of related work, and under
+each cluster, specialist agents that do one job well, with only the tools and
+data that job needs. Role-based access control decides which people can use
+which agents, tools and skills, so a whole department can share one set of
+agents and each person still sees only what they should.
 
 ### Harness and cost optimisations
 
@@ -220,9 +248,10 @@ live.
 
 ### Attention to detail
 
-Early on, I proposed storing the files users upload, so agents could use them
-in their skills and in the console app. It sounded like one line of work. My
-senior kept questioning me:
+My first full-time software engineering job taught me to be thorough. Early
+on, I proposed storing the files users upload, so agents could use them in
+their skills and in the console app. It sounded so simple. My senior kept
+questioning me:
 
 - What problem does it solve, and for whom?
 - What fetches the file, from where, and who's allowed to?
@@ -230,17 +259,18 @@ senior kept questioning me:
 - What happens when the file is missing, too large or the wrong type?
 - How will we test it, and how will we know it works in production?
 
-I realised that whatever I say as an engineer carries weight. Things don't
-happen by magic. Each of those questions hides a decision, and if we don't
-make it on purpose, the code makes it for us. So the habit that helps most is
-planning. Before I build, I write down what done looks like and which cases
-will break it, and I draw the design as an ERD or a sequence diagram. A
-diagram can't skip a step the way a sentence can.
+**I realised that whatever I say as an engineer carries weight.** Things
+don't happen by magic. Each of those questions hides a decision. If we don't
+think through the edge cases and the flow, we end up making assumptions, and
+the code makes those decisions for us.
+
+So the habit that helps most is planning. Before I build, I write down what
+done looks like and which cases will break it, and I draw the design as an ERD
+or a sequence diagram.
 
 ### Trade-offs
 
-When I propose something, a colleague will usually ask: what were the
-alternatives, and what's the trade-off? There's no perfect solution. An
+There's no perfect solution. An
 engineer should be able to defend how they built something: what they chose,
 what it costs, and what they gave up.
 
@@ -254,8 +284,9 @@ and pick the one that fits where the business is going.
 
 I try to make decisions on evidence, not on a hunch or the loudest opinion.
 In AI engineering that takes more work than usual, because it isn't like
-traditional software engineering. Code does what you write. A model does what it tends to, and a change that fixes one ticket can
-break ten others. So much of my work is experiments: a new model, a prompt
+traditional software engineering. Code does what you write. A model is non-deterministic: the same input can
+give a different answer, and a change that fixes one ticket can break ten
+others. So much of my work is experiments: a new model, a prompt
 change, a new harness module. Each one has to hold across many tickets, and I
 follow the same steps every time:
 
@@ -302,6 +333,6 @@ piece behaves, question what we assume, and keep learning as the ground moves.
 
 Systems aren't the only thing to read. I try to work out what my boss or a
 stakeholder really needs, and to notice how people like to work, so I can work
-better with them. A manager asking for "a number" usually needs a decision
-they can defend. An ops lead asking for "a bot" usually needs fewer repetitive
-chats.
+better with them. A lot of it comes down to simply being more aware:
+noticing what people care about, how they like to work, and what they're
+really asking for.

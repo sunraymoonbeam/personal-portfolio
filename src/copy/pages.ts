@@ -3,12 +3,10 @@ export const pages = {
   projects: {
     title: 'Projects',
     lede:
-      "Things I've built when I should probably be sleeping. My interests " +
-      'usually lean towards automations and computer vision, especially ' +
-      'segmentation and object detection.',
-    /** The lede is also the meta description; on the page it splits in two. */
+      'My interests usually lean towards automations and computer vision, ' +
+      'especially segmentation and object detection.',
+    /** The lede is also the meta description. */
     ledeLines: [
-      "Things I've built when I should probably be sleeping.",
       'My interests usually lean towards automations and computer vision, ' +
         'especially segmentation and object detection.',
     ],
@@ -20,10 +18,10 @@ export const pages = {
       'The work I enjoy most starts before any code. I like talking to people ' +
         "as much as I like writing code: working out what's really slowing " +
         'them down, and translating their pain points into a set of requirements.',
-      'I like building full-stack systems that are carefully designed, with AI ' +
-        'as one part of them. The model is usually a small piece. Most of the ' +
-        'work is the design around it: the data, the interfaces, and what ' +
-        'happens when the model gets it wrong.',
+      'I like building full-stack systems that are carefully designed. To me, ' +
+        'AI is usually a small piece of the product. What makes a product good ' +
+        'is everything around it: clear user flows, a sound data model, clear ' +
+        'interfaces, and a design that prevents errors and recovers from them.',
     ],
   },
   skills: {

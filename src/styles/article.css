@@ -34,6 +34,17 @@
 .prose a { color: var(--link); text-decoration: underline; text-underline-offset: 3px; }
 
 .prose ul, .prose ol { padding-left: 22px; display: flex; flex-direction: column; gap: 12px; }
+/* A list belongs to the sentence that introduces it, so it sits closer to it
+   than one paragraph sits to the next. */
+.prose p + ul, .prose p + ol { margin-top: 12px; }
+/* A list inside a table cell is a compact set of short items. */
+.prose td ul { padding-left: 18px; gap: 4px; }
+.prose td li { font-size: inherit; line-height: 1.5; }
+/* A group row names the set of rows under it, like a small heading. */
+.prose tbody th[scope="colgroup"] {
+  padding-top: 22px; color: var(--ink); font-weight: 600;
+  border-bottom-color: var(--border-strong);
+}
 .prose ul { list-style: disc; }
 .prose ol { list-style: decimal; }
 
