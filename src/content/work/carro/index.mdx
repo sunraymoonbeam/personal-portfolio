@@ -79,10 +79,9 @@ didn't hold up, so the team settled on
 [Google ADK](https://github.com/google/adk-python), which performed well in
 production.
 
-ADK had its own limit: context. A workflow like selling a car has many stages,
-and each stage has its own rules. That's too much context for one agent, so
-every stage became its own sub-agent, with tools and prompts that developers
-wrote in code. Every new workflow meant more developer work. We could only
+A workflow like selling a car has many stages, and each stage has its own
+rules. In our ADK setup, every stage became its own sub-agent, with tools and
+prompts that developers wrote in code. Every new workflow meant more developer work. We could only
 scale vertically, by making each bot do more, and not horizontally, by adding
 workflows cheaply.
 
@@ -233,8 +232,10 @@ way:
 - We didn't evaluate our workflows well, so every model choice was a guess.
 
 So the question became: how do we pick the best model for each workflow, and
-swap safely when a better one appears? We started with the harness, the code
-around the model, so that every model would behave in the same way:
+swap safely when a better one appears? We started with the harness:
+everything around the model, from the loop that calls it to the tools, the
+context it gets and the limits that stop a run. The goal was for every model
+to behave in the same way:
 
 | Change | Why |
 | --- | --- |
