@@ -53,7 +53,6 @@
 
   /* ── layout ── */
   --content: 980px;    /* a starting maximum, not a law */
-  --reading: 660px;
   --measure: 700px;    /* text in a one-column article: ~70ch at 19px */
   --gutter: clamp(20px, 5vw, 40px);
   --radius-s: 6px; --radius-m: 12px; --radius-l: 18px; --radius-pill: 980px;

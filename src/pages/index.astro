@@ -81,7 +81,7 @@ const hobbies = await getFeaturedHobbies(3);
   <section class="section">
     <div class="wrap">
       <SectionHead {...home.sections.hobbies} href="/hobbies/" linkLabel="All hobbies">
-        <CrayonWord slot="title" />
+        <Fragment slot="title"><CrayonWord /><span class="visually-hidden">Hobbies</span></Fragment>
         <Fragment slot="sub">Because there's more to life than <code>git push</code>.</Fragment>
       </SectionHead>
       <HobbyGrid items={hobbies} />

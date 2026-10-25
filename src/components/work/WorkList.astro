@@ -2,18 +2,15 @@
 import { Image } from 'astro:assets';
 import { formatRange, formatDuration } from '~/lib/date';
 import { splitEmphasis } from '~/lib/text';
+import type { ResolvedWork } from '~/lib/content';
 
-interface Row {
-  entry: { id: string; data: Record<string, any> };
-  employer: { data: { name: string; logo: ImageMetadata } };
-}
 /** `compact` drops the bullets and the link: the home page shows the shape of
     a career, not the detail of each role. */
 /** The role heading has to sit one level under whatever heading introduces the
     list: h2 on /work/, where the page title is the h1, and h3 on the home page,
     where the section already has an h2. Hard-coding h3 made /work/ skip a
     level six times. */
-interface Props { rows: Row[]; compact?: boolean; headingLevel?: 2 | 3 | undefined; }
+interface Props { rows: ResolvedWork[]; compact?: boolean; headingLevel?: 2 | 3 | undefined; }
 const { rows, compact = false, headingLevel = 3 } = Astro.props;
 const Heading = `h${headingLevel}` as 'h2' | 'h3';
 ---

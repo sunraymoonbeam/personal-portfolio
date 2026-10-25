@@ -10,6 +10,14 @@ interface Props {
   caption?: string | undefined;
 }
 const { bands, rows, caption } = Astro.props;
+// Each row is a 100% bar. A missing band or a total off 100 would draw
+// segments that no longer mean what the legend says, so the build stops.
+for (const r of rows) {
+  const total = r.values.reduce((a, b) => a + b, 0);
+  if (r.values.length !== bands.length) throw new Error(`StackBars: "${r.label}" has ${r.values.length} values for ${bands.length} bands`);
+  if (r.values.some((v) => !Number.isFinite(v) || v < 0)) throw new Error(`StackBars: "${r.label}" has a negative or missing value`);
+  if (Math.abs(total - 100) > 0.5) throw new Error(`StackBars: "${r.label}" adds up to ${total}, not 100`);
+}
 const tone = (i: number) => (i === bands.length - 1 ? 'hot' : `g${Math.min(i, 3)}`);
 const fmt = (v: number) => `${Number.isInteger(v) ? v : v.toFixed(1)}%`;
 ---

@@ -7,8 +7,6 @@ const MONTHS = [
   'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
 ] as const;
 
-export type Month = `${number}-${number}`;
-
 const parts = (m: string) => {
   const [y, mo] = m.split('-');
   return { year: Number(y), month: Number(mo) };
@@ -22,12 +20,6 @@ export const formatMonth = (m: string): string => {
 
 /** "2025-07" -> "2025" */
 export const yearOf = (m: string): string => m.slice(0, 4);
-
-/** Sortable integer. "2025-07" -> 202507 */
-export const monthKey = (m: string): number => {
-  const { year, month } = parts(m);
-  return year * 100 + month;
-};
 
 /** "Jul 2025 — Present" */
 export const formatRange = (start: string, end?: string): string =>

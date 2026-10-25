@@ -1,27 +1,8 @@
 ---
-import { getPublishedProjects, getWorkRows, getHobbiesIndex, resolveWork } from '~/lib/content';
-import { site } from '~/config/site';
-
-// The index is built at build time — no runtime search service, no API.
-const [projects, work, hobbies] = await Promise.all([
-  getPublishedProjects(), getWorkRows().then((r) => Promise.all(r.map(resolveWork))), getHobbiesIndex(),
-]);
-
-const items = [
-  ...site.nav.map((n) => ({ group: 'Pages', title: n.label, sub: '', href: n.href })),
-  { group: 'Pages', title: 'CV', sub: '', href: '/cv/' },
-  { group: 'Pages', title: 'Contact', sub: '', href: '/contact/' },
-  ...projects.filter((p) => p.data.writeup).map((p) => ({
-    group: 'Projects', title: p.data.title, sub: p.data.claim, href: `/projects/${p.id}/`,
-  })),
-  ...work.filter(({ entry }) => entry.data.writeup).map(({ entry, employer }) => ({
-    // Two roles share the title "AI Engineer"; the company is what tells them apart.
-    group: 'Work experience', title: `${entry.data.role} · ${employer.data.name}`, sub: entry.data.title, href: `/work/${entry.id}/`,
-  })),
-  ...hobbies.filter((h) => h.href).map((h) => ({
-    group: 'Hobbies', title: h.title, sub: h.caption, href: h.href,
-  })),
-];
+/** The ⌘K panel. It renders the index it is given; lib/content.ts builds it. */
+import type { SearchItem } from '~/lib/search';
+interface Props { items: SearchItem[]; }
+const { items } = Astro.props;
 ---
 <button type="button" class="trigger" data-search-open aria-label="Search">
   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"

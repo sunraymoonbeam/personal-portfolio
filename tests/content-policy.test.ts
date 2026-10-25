@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { z } from 'astro/zod';
 import { selectFeatured, getAdjacent, keyOf, type ArticleLink } from '../src/lib/select.ts';
-import { formatMonth, formatRange, formatDuration, monthKey, yearOf } from '../src/lib/date.ts';
+import { formatMonth, formatRange, formatDuration, yearOf } from '../src/lib/date.ts';
 import { readFileSync } from 'node:fs';
 
 // ── the schema behaviour the whole content contract rests on ────────────────
@@ -17,7 +17,8 @@ test('nested objects need their own .strict() — an outer one does not propagat
   // This is the trap: the outer .strict() accepts it and drops the typo.
   const loosely = loose.safeParse(bad);
   assert.equal(loosely.success, true);
-  assert.deepEqual(Object.keys((loosely as any).data.metrics[0]), ['value', 'label']);
+  assert.ok(loosely.success);
+  assert.deepEqual(Object.keys(loosely.data.metrics[0]!), ['value', 'label']);
 
   // Which is why every nested object in content.config.ts is .strict() too.
   const strict = z.object({
@@ -39,6 +40,10 @@ const entry = (id: string, featuredOrder?: number) => ({ id, data: { featuredOrd
 test('selectFeatured honours featuredOrder and ignores unfeatured entries', () => {
   const got = selectFeatured([entry('c', 3), entry('a', 1), entry('x'), entry('b', 2)], 2);
   assert.deepEqual(got.map((e) => e.id), ['a', 'b']);
+});
+
+test('selectFeatured stops on a duplicate featuredOrder and names both entries', () => {
+  assert.throws(() => selectFeatured([entry('a', 1), entry('b', 1)], 3), /Duplicate featuredOrder 1: a and b/);
 });
 
 test('selectFeatured returns nothing when nothing is featured', () => {
@@ -82,11 +87,6 @@ test('durations are inclusive of both endpoints', () => {
   assert.equal(formatDuration('2022-07', '2023-02'), '8 mos');
   assert.equal(formatDuration('2024-06', '2025-04'), '11 mos');
   assert.equal(formatDuration('2024-01', '2025-03'), '1 yr 3 mos');
-});
-
-test('monthKey sorts chronologically', () => {
-  assert.ok(monthKey('2025-07') > monthKey('2025-06'));
-  assert.ok(monthKey('2025-01') > monthKey('2024-12'));
 });
 
 /*

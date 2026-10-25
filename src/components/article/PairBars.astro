@@ -10,6 +10,11 @@ interface Props {
   caption?: string | undefined;
 }
 const { series, rows, caption } = Astro.props;
+// MDX props are not checked by the content schema, so a typo like 140 would
+// draw a bar past its track. Stop the build instead of drawing a false chart.
+for (const r of rows) for (const v of [r.a, r.b]) {
+  if (!Number.isFinite(v) || v < 0 || v > 100) throw new Error(`PairBars: "${r.label}" has ${v}, outside 0–100`);
+}
 const fmt = (v: number) => `${v.toFixed(0)}%`;
 ---
 <figure class="chart">

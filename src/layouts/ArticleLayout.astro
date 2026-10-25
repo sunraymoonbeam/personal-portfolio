@@ -83,8 +83,9 @@ const label = (dir: 'Previous' | 'Next') => (noun ? `${dir} ${noun}` : dir);
     const link = document.querySelector<HTMLAnchorElement>(`[data-adj="${e.key === 'ArrowLeft' ? 'prev' : 'next'}"]`);
     if (link) { e.preventDefault(); link.click(); }
   };
-  // The router re-runs this script on every article visit; bind only once.
-  // onKey looks the links up at press time, so the first binding stays right.
+  // A processed script runs once per document, but guard anyway so a second
+  // copy can never double-bind. onKey looks the links up at press time, so the
+  // one binding stays right on every article the router swaps in.
   const w = window as Window & { __adjKeys?: boolean };
   if (!w.__adjKeys) { w.__adjKeys = true; document.addEventListener('keydown', onKey); }
 </script>

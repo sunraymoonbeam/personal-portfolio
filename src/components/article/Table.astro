@@ -3,8 +3,10 @@
  * Every Markdown table in an article. Wide tables get `stack` and labelled
  * cells, so on a phone each row becomes a card (src/lib/table-labels.ts).
  */
+import type { HTMLAttributes } from 'astro/types';
 import { labelTableHtml } from '~/lib/table-labels';
 
+type Props = HTMLAttributes<'table'>;
 const { class: className, ...rest } = Astro.props;
 const { html, stack } = labelTableHtml(await Astro.slots.render('default'));
 ---

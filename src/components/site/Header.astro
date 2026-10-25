@@ -4,6 +4,10 @@ import Logo from './Logo.astro';
 import CrayonWord from './CrayonWord.astro';
 import Search from './Search.astro';
 import ThemeToggle from './ThemeToggle.astro';
+import type { SearchItem } from '~/lib/search';
+
+interface Props { searchItems: SearchItem[]; }
+const { searchItems } = Astro.props;
 
 const path = Astro.url.pathname;
 // Links end in a slash (the canonical form); compare both sides without it.
@@ -38,7 +42,7 @@ const active = (href: string) => bare(path) === bare(href) || path.startsWith(ba
     </ul>
 
     <div class="cluster">
-      <Search />
+      <Search items={searchItems} />
       <a href="/cv/" class:list={['quiet', { on: active('/cv') }]}>CV</a>
       <a href="/contact/" class="cta">Contact</a>
       <span class="theme-wide"><ThemeToggle bare /></span>

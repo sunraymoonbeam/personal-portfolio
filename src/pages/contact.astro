@@ -60,7 +60,7 @@ const githubHandle = site.socials.github.replace('https://', '');
         </ul>
       </div>
 
-      <form class="form" novalidate data-contact>
+      <form class="form" novalidate data-contact data-address={site.email} hidden>
         <div class="pair">
           <p class="field">
             <label for="name">Name</label>
@@ -105,69 +105,6 @@ const githubHandle = site.socials.github.replace('https://', '');
   </section>
 </SiteLayout>
 
-<script>
-  // Copy needs the async clipboard API; where it is missing the button stays
-  // hidden and the mailto link is the whole story.
-  const btn = document.querySelector<HTMLButtonElement>('[data-copy]');
-  if (btn && navigator.clipboard) {
-    btn.hidden = false;
-    const label = btn.querySelector('[data-copy-label]')!;
-    const status = document.querySelector('[data-copy-status]')!;
-    let timer = 0;
-    btn.addEventListener('click', async () => {
-      try {
-        await navigator.clipboard.writeText(btn.dataset.copy!);
-        btn.dataset.done = '';
-        label.textContent = 'Copied';
-        status.textContent = 'Email address copied.';
-        clearTimeout(timer);
-        timer = window.setTimeout(() => { delete btn.dataset.done; label.textContent = 'Copy'; status.textContent = ''; }, 2000);
-      } catch {
-        label.textContent = 'Press ⌘C';
-      }
-    });
-  }
-</script>
-<script is:inline define:vars={{ address: site.email }}>
-  const form = document.querySelector('[data-contact]');
-  if (form) {
-    const status = form.querySelector('[data-status]');
-    const show = (id, msg) => {
-      const el = form.querySelector('#err-' + id);
-      const input = form.querySelector('#' + id);
-      if (!el || !input) return;
-      el.textContent = msg ?? '';
-      el.hidden = !msg;
-      input.setAttribute('aria-invalid', msg ? 'true' : 'false');
-      input.setAttribute('aria-describedby', msg ? 'err-' + id : '');
-    };
-
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const data = Object.fromEntries(new FormData(form));
-      const name = String(data.name ?? '').trim();
-      const email = String(data.email ?? '').trim();
-      const message = String(data.message ?? '').trim();
-
-      show('name', name ? '' : 'What should I call you?');
-      show('email', /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email) ? '' : 'Enter a valid email so I can reply.');
-      show('message', message ? '' : 'Add a line or two.');
-
-      const firstBad = form.querySelector('[aria-invalid="true"]');
-      if (firstBad) { status.textContent = ''; firstBad.focus(); return; }
-
-      // Honeypot tripped: say nothing happened, and do nothing.
-      if (String(data.company ?? '')) { status.textContent = 'Thanks.'; return; }
-
-      const body = message + '\n\n--\n' + name + '\n' + email;
-      window.location.href =
-        'mailto:' + address +
-        '?subject=' + encodeURIComponent('Hello from ' + name) +
-        '&body=' + encodeURIComponent(body);
-      status.textContent = 'Opening your mail app.';
-    });
-  }
-</script>
 
 <style>
   .title { margin-top: var(--s-4); max-width: 14ch; }

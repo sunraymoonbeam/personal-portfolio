@@ -1,5 +1,5 @@
 /* Article typography. Scoped to .prose because Astro's scoped styles do not
-   reach MDX-rendered children. One measure; images may break out, text never. */
+   reach MDX-rendered children. One measure: text, pictures and tables share it. */
 .prose { max-width: var(--measure); }
 .prose > * + * { margin-top: max(3.2vmin, 24px); }
 
@@ -90,7 +90,7 @@
 }
 /* Four or more columns of prose can't share a phone screen, so each row becomes
    a card: the first cell is its title, and every other value carries its
-   column name (data-label, from src/lib/rehype-table-labels.ts). */
+   column name (data-label, from src/lib/table-labels.ts, via components/article/Table.astro). */
 @media (max-width: 734px) {
   .prose table.stack { display: block; overflow: visible; font-size: 15px; }
   .prose table.stack thead { display: none; }

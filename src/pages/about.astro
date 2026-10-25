@@ -51,7 +51,7 @@ const a = pages.about;
 
   <section class="section"><div class="wrap">
     <SectionHead href="/hobbies/" linkLabel="All hobbies">
-      <CrayonWord slot="title" />
+      <Fragment slot="title"><CrayonWord /><span class="visually-hidden">Hobbies</span></Fragment>
     </SectionHead>
     <HobbyGrid items={hobbies} />
   </div></section>

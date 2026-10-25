@@ -1,5 +1,7 @@
 import { getCollection, getEntry, type CollectionEntry } from 'astro:content';
 import { isPublished, sortByMonthDesc, keyOf, selectFeatured, type EntryKey } from './select';
+import { buildSearchItems, type SearchItem } from './search';
+import { site } from '~/config/site';
 
 // Pure policy lives in ./select.ts so it can be unit-tested without Astro.
 export {
@@ -103,31 +105,19 @@ export async function getFeaturedHobbies(limit: number) {
   return featured.flatMap((k) => byKey.get(k) ?? []);
 }
 
-// ── skills ──────────────────────────────────────────────────────────────────
+// ── search ──────────────────────────────────────────────────────────────────
 
-export type SkillUse = { label: string; href?: string | undefined };
-
-/**
- * Where each technology was actually used, read from the `stack` of every
- * published role and project. The skills page shows this when a chip is
- * opened, so a claim on the page always points at the work behind it.
- */
-export async function getSkillEvidence(): Promise<Record<string, SkillUse[]>> {
-  const [roles, projects] = await Promise.all([getPublishedWork(), getPublishedProjects()]);
-  const out: Record<string, SkillUse[]> = {};
-  const add = (id: string, use: SkillUse) => (out[id] ??= []).push(use);
-  for (const entry of roles) {
-    const { employer } = await resolveWork(entry);
-    for (const id of entry.data.stack) add(id, {
-      label: `${entry.data.role} at ${employer.data.name}`,
-      href: entry.data.writeup ? `/work/${entry.id}/` : undefined,
-    });
-  }
-  for (const p of projects) {
-    for (const id of p.data.stack) add(id, {
-      label: p.data.shortTitle ?? p.data.title,
-      href: p.data.writeup ? `/projects/${p.id}/` : undefined,
-    });
-  }
-  return out;
+/** The search index, built once per page at build time. No runtime service. */
+export async function getSearchItems(): Promise<SearchItem[]> {
+  const [projects, work, hobbies] = await Promise.all([
+    getPublishedProjects(), getWorkRows().then((r) => Promise.all(r.map(resolveWork))), getHobbiesIndex(),
+  ]);
+  return buildSearchItems({
+    nav: site.nav,
+    projects: projects.map((p) => ({ id: p.id, title: p.data.title, claim: p.data.claim, writeup: p.data.writeup })),
+    work: work.map(({ entry, employer }) => ({
+      id: entry.id, title: `${entry.data.role} · ${employer.data.name}`, sub: entry.data.title, writeup: entry.data.writeup,
+    })),
+    hobbies,
+  });
 }

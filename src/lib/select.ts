@@ -30,16 +30,23 @@ export function sortByMonthDesc<T extends { id: string }>(entries: T[], month: (
 
 /**
  * The only home-selection mechanism. Entries without `featuredOrder` are never
- * featured — there is no competing list anywhere in the codebase.
+ * featured — there is no competing list anywhere in the codebase. Two entries
+ * with the same order would make the home order depend on load order, so the
+ * build stops and names both.
  */
-export function selectFeatured<T extends { data: { featuredOrder?: number | undefined } }>(
+export function selectFeatured<T extends { id: string; data: { featuredOrder?: number | undefined } }>(
   entries: T[],
   limit: number,
 ): T[] {
-  return entries
-    .filter((e) => e.data.featuredOrder !== undefined)
-    .sort((a, b) => a.data.featuredOrder! - b.data.featuredOrder!)
-    .slice(0, limit);
+  const featured = entries.filter((e) => e.data.featuredOrder !== undefined);
+  const seen = new Map<number, string>();
+  for (const e of featured) {
+    const order = e.data.featuredOrder!;
+    const other = seen.get(order);
+    if (other !== undefined) throw new Error(`Duplicate featuredOrder ${order}: ${other} and ${e.id}`);
+    seen.set(order, e.id);
+  }
+  return featured.sort((a, b) => a.data.featuredOrder! - b.data.featuredOrder!).slice(0, limit);
 }
 
 /**

@@ -1,7 +1,5 @@
 /** Home page copy. Edit sentences here, never in a component. */
 export const home = {
-  name: 'Ren Hwa (Zack) Low',
-
   /**
    * The opening. Three paragraphs, mirroring the résumé summary. `em` sets a
    * phrase in the ink colour and `hi` sets it in the accent, so the emphasis

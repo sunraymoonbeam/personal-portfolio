@@ -8,6 +8,7 @@ import Header from '~/components/site/Header.astro';
 import Footer from '~/components/site/Footer.astro';
 import { ClientRouter } from 'astro:transitions';
 import { site } from '~/config/site';
+import { getSearchItems } from '~/lib/content';
 
 interface Props {
   title?: string | undefined; description?: string | undefined;
@@ -92,17 +93,17 @@ const jsonLd = isHome && {
     <script is:inline>
       (function () {
         try {
-          var v = localStorage.getItem('theme');
-          var dark = v === 'dark' || (v !== 'light' &&
+          const v = localStorage.getItem('theme');
+          const dark = v === 'dark' || (v !== 'light' &&
             window.matchMedia('(prefers-color-scheme: dark)').matches);
           document.documentElement.dataset.theme = dark ? 'dark' : 'light';
-        } catch (e) { /* private mode: CSS @media fallback covers it */ }
+        } catch { /* private mode: CSS @media fallback covers it */ }
       })();
     </script>
   </head>
   <body>
     <a href="#main" class="skip">Skip to content</a>
-    <Header />
+    <Header searchItems={await getSearchItems()} />
     <main id="main"><slot /></main>
     <Footer />
 
@@ -115,14 +116,15 @@ const jsonLd = isHome && {
       import { initLightbox } from '~/scripts/lightbox';
       import { initClips } from '~/scripts/clips';
       import { initToc } from '~/scripts/toc';
+      import { initContact } from '~/scripts/contact';
 
       // Before the swapped page paints: the new document has no data-theme, so
       // without this every navigation flashes light.
       document.addEventListener('astro:after-swap', syncDocument);
 
-      // Fires on first load and after every navigation. Both inits are
-      // idempotent, so re-running them only re-binds the new DOM.
-      const start = () => { initTheme(); initCursor(); initMenu(); initSearch(); initFilters(); initLightbox(); initClips(); initToc(); };
+      // Fires on first load and after every navigation. Each init binds the
+      // elements of the page now in the DOM; the router has replaced the old ones.
+      const start = () => { initTheme(); initCursor(); initMenu(); initSearch(); initFilters(); initLightbox(); initClips(); initToc(); initContact(); };
       document.addEventListener('astro:page-load', start);
     </script>
 

@@ -10,7 +10,8 @@ import { TECHNOLOGIES } from './data/technologies';
 const techId = z.enum(Object.keys(TECHNOLOGIES) as [string, ...string[]]);
 
 /**
- * Three collections, three strict schemas, one small shared base.
+ * Three article collections (work, projects, hobbies) and a shared employer
+ * collection: strict schemas with one small shared base.
  *
  * Every object is `.strict()` — INCLUDING nested ones. An outer `.strict()`
  * does not propagate: a typo inside a nested `metrics` entry is silently
@@ -117,7 +118,8 @@ const work = defineCollection({
          * marks where the emphasis falls; it adds no words. See lib/text.ts.
          */
         bullets: z.array(z.string().min(1).max(280)).max(6).optional(),
-        metrics: z.array(metric).max(4).optional(),
+        /** The Outcomes band lays out one, two or three; docs/writing.md caps it at three. */
+        metrics: z.array(metric).max(3).optional(),
       })
       .strict()
       .refine((d) => !d.end || d.end >= d.start, {
