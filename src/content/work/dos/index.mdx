@@ -80,9 +80,11 @@ a multilingual MiniLM with 12 layers, fits easily on a laptop.
 
 <Figure src={setfit} zoom alt="The SetFit pipeline: 32 labelled examples become sentence pairs; phase one fine-tunes a MiniLM sentence transformer with a cosine loss; phase two trains a logistic regression head; then it predicts one sentence or a CSV in batches." caption="SetFit trains in two phases and runs on a laptop." />
 
-I built DOSetFit around it, for people who don't code: classify one sentence,
-classify a whole CSV file in batches, or train a new model by uploading two
-CSV files of labelled examples.
+I built DOSetFit around it, for people who don't code:
+
+- classify one sentence;
+- classify a whole CSV file in batches;
+- train a new model by uploading two CSV files of labelled examples.
 
 <Figure src={setfitApp} zoom alt="The DOSetFit app in a browser. A news headline about AMD's dual-core Opteron chips is entered, and the app returns the label Sci/Tech with a probability of 0.89. The sidebar offers a choice of CPU or Apple GPU." caption="DOSetFit classifying a public news headline. I ran the 2023 code and model again on my laptop in 2026 for this screenshot." />
 
@@ -109,7 +111,9 @@ AG News gives each one, and the model's answer:
 Both errors are confident ones. Most readers would call a Google browser tech
 news and the Paralympics sport, so you could argue with the benchmark too. For
 survey coding, that means a confidence threshold alone won't catch every
-mistake, and the label definitions matter as much as the model. With 3,000
+mistake, and the label definitions matter as much as the model.
+
+With 3,000
 classes instead of 4, there would be many more pairs like Business and
 Sci/Tech. In the deck I proposed class weights, more balanced sampling, and a
 hierarchy of SetFit models, one for each group of related labels.
@@ -161,6 +165,7 @@ The $1.28 million came from a worked example in the publication. Industry A
 isn't a real industry. The answer was correct for the example, but a reader
 could take it as an official figure, and for a statistics office that's worse
 than no answer. My prompt asked the model to answer "elaborately", and it did.
+
 Three questions showed the idea could work. A real test would need every FAQ
 item and real past questions, scored by the team, and a prompt that cites the
 page and says "I don't know" when the documents don't have the answer.
@@ -176,7 +181,9 @@ inDOStry Navigator starts there. Pick an industry from a list of 16 and upload
 its tables. It plots each table, then asks a LangChain CSV agent to describe
 the trend as an economist in Singapore would. The agent writes pandas code,
 runs it on the table and explains the result, so the figures in the text come
-from the data and the model doesn't have to guess them. One agent handles a
+from the data and the model doesn't have to guess them.
+
+One agent handles a
 single table. For several tables at once I used OpenAI's function calling,
 which had come out that June.
 
@@ -255,7 +262,9 @@ I deploy anything.
 My audience knew statistics far better than I did, but transformers and LLMs
 were new to most of them. I enjoy breaking down complex ideas into clear,
 practical terms, so I built the deck for them. Every chapter had a one-slide
-summary, and the detail went to the annex. To explain few-shot learning, I
+summary, and the detail went to the annex.
+
+To explain few-shot learning, I
 compared three students: a huge model that went to every tuition class, a
 smaller one that did all the past-year papers, and you, with only a handful of
 examples. With so few examples, you learn faster by comparing them in pairs,

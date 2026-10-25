@@ -38,10 +38,13 @@ import n8n from './n8n-workflow.png'
 I joined [Carro](https://carro.co) as an AI engineer in July 2025. Carro is
 a used-car marketplace in eight markets across Asia-Pacific: Singapore,
 Malaysia, Indonesia, Thailand, Japan, Taiwan, Hong Kong and Australia. Our
-agents serve Singapore, Malaysia and Hong Kong. Carro buys cars from owners, sells them to buyers, services them in its own workshops, and also
-offers car loans and insurance. Every customer request, from a question about
-a car to an offer to sell one or a workshop booking, becomes a ticket in our
-in-house CRM (customer relationship management system).
+agents serve Singapore, Malaysia and Hong Kong.
+
+Carro offers a wide range of services: it buys cars from owners, sells them to
+buyers, services them in its own workshops, and offers car loans and
+insurance. Every customer request, from a question about a car to an offer to
+sell one or a workshop booking, becomes a ticket in our in-house CRM
+(customer relationship management system).
 
 My job is mainly to translate those processes into agentic workflows, so that
 our people can spend their time on higher-value work.
@@ -60,12 +63,13 @@ Customers reach Carro through many workflows:
 - **Workshop:** booking a servicing appointment, or handling a repair
   diagnosis.
 
-These agents aren't just chatbots that answer common questions. We integrate them with
-Carro's CRM and internal systems, so they do the work across the customer's
-whole journey: they look up inventory, create and update tickets, book and move
-slots, and message customers on WhatsApp. We started with two agents. Today
-the team runs fifteen customer-facing agents, all of them on the new ticketing
-agent platform whose development I led.
+These agents aren't just simple chatbots that answer common questions. We
+integrate them with Carro's CRM and internal systems, so they do the work
+across the customer's whole journey: they look up inventory, create and update
+tickets, book and move slots, and message customers on WhatsApp.
+
+We started with two agents. Today the team runs fifteen customer-facing agents,
+all of them on the new ticketing agent platform whose development I led.
 
 <Figure src={sell} zoom alt="A WhatsApp chat on a staging account. A customer says they want to sell. The agent asks for the plate, make, model, variant, year, transmission and engine size, confirms the details it found, asks for the customer's area, and lists three inspection centres in Kuala Lumpur." caption="A seller on WhatsApp. The agent checks the car's details, then finds inspection centres nearby. Staging, with test data." />
 
@@ -94,9 +98,11 @@ each, and built three proofs of concept:
 [LangChain Deep Agents](https://github.com/langchain-ai/deepagents). Deep
 Agents won, with skills that use progressive disclosure. The agent sees a
 short list of what each skill does, and loads the full instructions only when
-it needs them. So one general agent can run many workflows, and ops can write
-their own policies as skills instead of waiting for us to build a new bot.
-Setting up a new workflow went from about two weeks to about two hours.
+it needs them.
+
+So one general agent can run many workflows, and ops can write their own
+policies as skills instead of waiting for us to build a new bot. Setting up a
+new workflow went from about two weeks to about two hours.
 
 The one I'm proudest of is the Carro Care bot, for our workshop. It handles the
 whole customer journey on WhatsApp: it answers questions, books a servicing
@@ -271,9 +277,8 @@ or a sequence diagram.
 
 ### Trade-offs
 
-There's no perfect solution. An
-engineer should be able to defend how they built something: what they chose,
-what it costs, and what they gave up.
+There's no perfect solution. An engineer should be able to defend how they
+built something: what they chose, what it costs, and what they gave up.
 
 Every choice also has a cost later. A shortcut that ships this week can mean
 months of maintenance, lock-in to one provider, or a harder job for the next
@@ -285,11 +290,13 @@ the business is going.
 
 I try to make decisions on evidence, not on a hunch or the loudest opinion.
 In AI engineering that takes more work than usual, because it isn't like
-traditional software engineering. Code does what you write. A model is non-deterministic: the same input can
-give a different answer, and a change that fixes one ticket can break ten
-others. So much of my work is experiments: a new model, a prompt
-change, a new harness module. Each one has to hold across many tickets, and I
-follow the same steps every time:
+traditional software engineering. Code does what you write. A model is
+non-deterministic: the same input can give a different answer, and a change
+that fixes one ticket can break ten others.
+
+So much of my work is experiments: a new model, a prompt change, a new harness
+module. Each one has to hold across many tickets, and I follow the same steps
+every time:
 
 1. Set the objective, and how I'll know I've met it.
 2. Get the current context: the requirements, the modules, the traces, the

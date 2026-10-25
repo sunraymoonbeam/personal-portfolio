@@ -26,13 +26,14 @@ import sweep from './vad-tuning-sweep-voxconverse.png';
 import vad from './vad-probability-voxconverse.svg';
 import scales from './multiscale-windows-voxconverse.svg';
 import der from './der-pyannote-vs-nemo-voxconverse.png';
+import gecko from './gecko-demo.png';
 
 ## The project
 
 The [National Institute of Education](https://www.nie.edu.sg) (NIE) trains
 Singapore's teachers and researches how students learn. From October 2023 to
-March 2024, alongside my degree at NTU, I worked there part-time, about ten
-hours a week, for a learning sciences research group.
+March 2024, alongside my degree at NTU, I worked there part-time for professors
+in a learning sciences research group.
 
 The group had recorded students' group discussions in class. They wanted to
 know how each student took part: who spoke, when, how often and for how long.
@@ -40,17 +41,21 @@ The job description put it as turn-taking, speaking frequency, duration and
 pitch for each student, with transcripts to follow.
 
 All of that depends on one step first: working out who spoke when. That's
-speaker diarization. People call it the cocktail party problem, and classroom
-audio is a hard version of it. The microphones pick up the whole room,
-students talk over each other, and quiet students barely register. My brief
-was to review the state of the art, then build a pipeline that turns a
-recording into talk time per student.
+speaker diarization. It's a version of the
+[cocktail party problem](https://en.wikipedia.org/wiki/Cocktail_party_effect),
+and when people talk over each other it's one of the
+[hardest problems in the field](https://www.pyannote.ai/blog/overlapping-speech-and-speaker-separation-the-hardest-problem-in-diarization).
+Imagine pouring several drinks into one glass, then being asked which sip came
+from which bottle.
+
+To make it harder, the data was far from clean. The microphones picked up the
+whole room, students talked over each other, and quiet students barely
+registered. My job was to process the recordings so that each student's speech
+could be traced: who spoke when, and for how long. I started by reviewing the
+state of the art, then built a pipeline that turns a recording into talk time
+per student.
 
 <Figure src={pipeline} zoom alt="The pipeline: classroom audio, optional speech enhancement, voice activity detection with MarbleNet, speaker embeddings with TitaNet, spectral clustering to pick the number of speakers, an RTTM file of turns, human correction in the Gecko tool, then participation measures: talk time, turns and share per student." caption="From a recording to talk time per student. Dashed steps were explored but not used in the final runs." />
-
-The recordings are of children, so this page shows none of them. Every
-example uses a public clip instead: a four-speaker news debate from the
-[VoxConverse](https://github.com/joonson/voxconverse) benchmark.
 
 ## Highlights
 
@@ -73,36 +78,55 @@ talk time per student, is arithmetic on lines like this.
 
 ### Voice data processing
 
-The audio needed little cleaning: downmix to one channel, and resample to
-16 kHz. The harder problem was that nobody knew the right answer for any
-recording, so nobody could say whether the output was right.
+The data had a lot of quality problems, and two of them shaped the work.
 
-So I made one. I set up [Gecko](https://github.com/gong-io/gecko), an
+**Background noise.** I tried speech enhancement first, with a deep-learning
+denoiser. It added artefacts and smoothed away some of what makes one voice
+different from another. When I checked the output, the system could no longer
+tell two of the speakers apart: the raw clip gave two speakers, the cleaned one
+gave one.
+
+The reason is a train-test mismatch. Speaker models learn from real, noisy
+speech, so heavily processed audio is something they never saw in training.
+[Speaker verification research](https://arxiv.org/abs/1904.03601) reports the
+same: enhancement artefacts can lower the scores. Enhancement stayed out of the
+pipeline.
+
+I also read up on beamforming, which uses the tiny delay between
+microphones to focus on one voice. It needs two or more microphones recorded
+on separate channels, so it stayed in my reading notes.
+
+**No labels.** There were no transcripts and no speaker labels for any
+recording. Without labelled data you can't measure a pipeline, let alone tune
+or fine-tune one. So I set up [Gecko](https://github.com/gong-io/gecko), an
 open-source annotation tool, on my own machine, so the audio never left it. I
 loaded NeMo's output as a draft and corrected it turn by turn: moving
 boundaries, splitting and merging turns, fixing speaker labels, and tagging
 noise, cross-talk and laughter.
 
-Correcting a draft is much faster than labelling from scratch, and at ten
-hours a week that mattered. It has a cost: a boundary that already looks
-right is easy to accept, so labels made this way flatter the system a little.
-I chose speed, and read every score with that in mind.
+<Figure src={gecko} zoom alt="The Gecko annotation tool: an audio waveform with coloured regions, one colour per speaker, playback buttons, and a panel for labelling segments, including crosstalk and NA tags." caption="Gecko in its own demo: each colour is one speaker. Screenshot from the Gecko repository." />
 
-I also tested cleaning the audio. I diarized a test clip as it was, then again
-after a speech enhancement model. The raw clip gave two speakers; the cleaned
-one gave one. The enhancer had smoothed away some of what made the two voices
-different, so enhancement stayed out of the pipeline. I read up on
-beamforming too, which uses the tiny delay between microphones to focus on
-one voice. It needs two or more microphones recorded on separate channels, so
-it stayed in my reading notes.
+Correcting a draft is much faster than labelling from scratch. It has a cost:
+a boundary that already looks right is easy to accept, so labels made this way
+flatter the system a little. I chose speed, and read every score with that in
+mind.
 
 ### Diarization pipeline
 
-Diarization is a chain of smaller models. To learn the field, I first rebuilt
-it step by step from [pyannote](https://github.com/pyannote/pyannote-audio)'s
-parts. For the classroom recordings I used
-[NVIDIA NeMo](https://github.com/NVIDIA/NeMo)'s clustering diarizer, with the
-settings from its meeting preset:
+Diarization answers one question, who spoke when, in a series of steps:
+
+1. **Voice activity detection:** find where anyone is speaking at all, and drop
+   the silence and noise.
+2. **Segmentation:** cut the speech into short, overlapping windows.
+3. **Speaker embeddings:** turn each window into a voiceprint, a list of
+   numbers that describes what the voice sounds like.
+4. **Clustering:** group the windows whose voiceprints are close. Each group is
+   one speaker.
+
+To learn the field, I first rebuilt these steps one by one from
+[pyannote](https://github.com/pyannote/pyannote-audio)'s parts. For the
+classroom recordings I used [NVIDIA NeMo](https://github.com/NVIDIA/NeMo)'s
+clustering diarizer, with the settings from its meeting preset:
 
 | Stage | Model or method | What it does |
 | --- | --- | --- |
@@ -114,11 +138,20 @@ settings from its meeting preset:
 
 <Figure src={vad} zoom alt="MarbleNet's speech probability over the first 60 seconds of the public clip, with the onset line at 0.9 and the offset line at 0.5. Below, human speech segments and VAD segments. Between 34 and 52 seconds, where speakers overlap, the VAD splits speech into many short pieces." caption="Voice activity detection on the public clip. Where speakers talk over each other, around 34 to 52 seconds, the speech gets broken into pieces." />
 
-The window scales are the part I found most interesting. A long window gives
-a steady voiceprint but blurs the moment one speaker hands over to another. A
-short window catches the change but is noisy. NeMo uses both: it computes
-voiceprints at every scale, compares windows at each scale, and adds the
-comparisons together. The preset weights every scale equally.
+The window scales are the part I found most interesting. Think about knowing a
+friend's voice on the phone. From a whole sentence, you know who it is; from
+one syllable, you might not. So a longer window gives a more reliable
+voiceprint. But a long window can hold the end of one person's sentence and the
+start of the next person's, and then its voiceprint belongs to neither, and you
+can't say exactly when the handover happened. A short window gives precise
+timing but a shaky voiceprint.
+
+NeMo doesn't choose one length. It cuts the audio at six lengths, from 3
+seconds down to half a second, all lined up on the shortest. For every short
+window, it compares voiceprints at each length and adds the scores together,
+so each decision gets the reliable voiceprint of the long windows and the
+precise timing of the short ones. The meeting preset weights every length
+equally.
 
 <Figure src={scales} zoom alt="NeMo's windows for the first 16 seconds of the public clip at six scales: 3 seconds with a 1.5 second shift, down to 0.5 seconds with a 0.25 second shift. The human speaker turns are drawn above for comparison." caption="The six window scales over the first 16 seconds of the public clip, with the number of windows each scale makes over the whole clip." />
 
@@ -168,10 +201,20 @@ clean public clip, the speaker who talked least lost the most:
   ]}
   caption="NeMo on the public clip, by speaker. S4 talked least and lost more than half of it, most of it never detected as speech. Most of S2's loss went to another speaker." />
 
-Missed speech looked like a threshold problem, so I swept two settings on the
-public clip: the shortest speech segment to keep, and the shortest gap to
-fill. Filling gaps under half a second cut the detection error from 17.2% to
-15.0%. I tuned and tested on the same single clip, so that's the best case.
+Every stage has settings that change what gets counted as speech and who it
+belongs to:
+
+| Stage | Settings | What they change |
+| --- | --- | --- |
+| Voice activity detection | Onset and offset thresholds; padding before and after each segment; shortest speech to keep; shortest gap to fill | How eagerly the system starts and stops counting speech, and whether short pauses split a turn |
+| Segmentation and embeddings | Window lengths and shifts at each scale; the weight of each scale | The trade-off between reliable voiceprints and precise timing |
+| Clustering | Maximum number of speakers, or the true number when it's known; how widely it searches for the best graph | How many speakers it can find, and how easily it splits or merges them |
+
+Missed speech looked like a voice detection problem, so on the public clip I
+swept two of those settings: the shortest speech segment to keep, and the
+shortest gap to fill. Filling gaps under half a second lowered the detection
+error the most. I tuned and tested on the same single clip, so that's the best
+case.
 
 <Figure src={sweep} alt="Detection error against the minimum gap that gets filled. It starts at 17.2% with no filling and reaches its lowest, 15.0%, at 0.5 seconds." caption="Detection error as the minimum filled gap grows. Half a second was best on this clip." />
 
