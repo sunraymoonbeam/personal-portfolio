@@ -3,6 +3,7 @@ import { site } from '~/config/site';
 import Logo from './Logo.astro';
 import CrayonWord from './CrayonWord.astro';
 import Search from './Search.astro';
+import ThemeToggle from './ThemeToggle.astro';
 
 const path = Astro.url.pathname;
 // Links end in a slash (the canonical form); compare both sides without it.
@@ -11,7 +12,7 @@ const active = (href: string) => bare(path) === bare(href) || path.startsWith(ba
 ---
 {/* A 64px bar across the wide frame, like Dave Evans' site: the wordmark on
     the left, everything else gathered on the right, no boxes. Two groups. Every item in the bar is
-    one height (34px) and one type size, so they sit on the same line — the
+    one height (44px, the touch target) and one type size, so they sit on the same line — the
     old mono labels and a 36px search field did not, which made search look
     like it floated above the links. The bar stays transparent until the page
     scrolls, then a hairline and blur appear. */}
@@ -40,6 +41,7 @@ const active = (href: string) => bare(path) === bare(href) || path.startsWith(ba
       <Search />
       <a href="/cv/" class:list={['quiet', { on: active('/cv') }]}>CV</a>
       <a href="/contact/" class="cta">Contact</a>
+      <span class="theme-wide"><ThemeToggle bare /></span>
       <button type="button" class="burger" data-menu-toggle
               aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
         <span class="bars" aria-hidden="true"><i></i><i></i><i></i></span>
@@ -67,6 +69,9 @@ const active = (href: string) => bare(path) === bare(href) || path.startsWith(ba
       </li>
       <li>
         <button type="button" class="sheet-link sheet-search" data-search-open>Search</button>
+      </li>
+      <li class="sheet-link sheet-theme">
+        <span>Theme</span><ThemeToggle />
       </li>
     </ul>
   </div>
@@ -111,7 +116,7 @@ const active = (href: string) => bare(path) === bare(href) || path.startsWith(ba
   }
   .right { display: flex; align-items: center; gap: 28px; }
 
-  .brand { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+  .brand { display: flex; align-items: center; gap: 10px; flex-shrink: 0; min-height: 44px; }
   .wordmark { font-size: 15px; font-weight: 600; letter-spacing: -0.02em; }
 
   /* Sans at 14px: these are the site's sections, not metadata. Mono at 12.8px
@@ -120,7 +125,7 @@ const active = (href: string) => bare(path) === bare(href) || path.startsWith(ba
   .links { display: none; align-items: center; gap: 28px; }
   .nav-link {
     position: relative; display: inline-flex; align-items: center;
-    height: 34px;
+    height: 44px;
     font-size: 14px; letter-spacing: -0.01em; line-height: 1;
     color: var(--ink-2); transition: color 160ms ease;
   }
@@ -128,7 +133,7 @@ const active = (href: string) => bare(path) === bare(href) || path.startsWith(ba
 
   /* One flourish: a hairline that grows from the left. */
   .nav-link::after {
-    content: ''; position: absolute; left: 0; bottom: 4px; height: 1px; width: 100%;
+    content: ''; position: absolute; left: 0; bottom: 9px; height: 1px; width: 100%;
     background: var(--link); transform: scaleX(0); transform-origin: left;
     transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1);
   }
@@ -136,7 +141,7 @@ const active = (href: string) => bare(path) === bare(href) || path.startsWith(ba
 
   .cluster { display: flex; align-items: center; gap: 16px; flex-shrink: 0; }
   .quiet {
-    display: none; align-items: center; height: 34px;
+    display: none; align-items: center; height: 44px;
     font-size: 14px; letter-spacing: -0.01em; color: var(--ink-2);
     transition: color 160ms ease;
   }
@@ -144,7 +149,7 @@ const active = (href: string) => bare(path) === bare(href) || path.startsWith(ba
 
   /* Contact is the one item in ink and weight 500; no pill, the type does it. */
   .cta {
-    display: none; align-items: center; height: 34px;
+    display: none; align-items: center; height: 44px;
     font-size: 14px; font-weight: 500; letter-spacing: -0.01em; color: var(--ink);
     transition: color 200ms ease;
   }
@@ -187,17 +192,22 @@ const active = (href: string) => bare(path) === bare(href) || path.startsWith(ba
   }
   .sheet li:last-child .sheet-link { border-bottom: 0; }
   .sheet-search {
-    width: 100%; border: 0; border-bottom: 1px solid var(--border);
+    width: 100%; padding-inline: 0; border: 0; border-bottom: 1px solid var(--border);
     background: none; font: inherit; text-align: left; cursor: pointer;
   }
   .sheet-link:hover, .sheet-link.on { color: var(--ink); }
+  .sheet-theme { justify-content: space-between; padding-block: 8px; border-bottom: 0; }
+  .sheet-theme:hover { color: var(--ink-2); }
+  /* On a wide screen the theme switch joins the cluster; on a phone it is in the menu. */
+  .theme-wide { display: none; }
 
   /* Contact is the conversion target; it used to disappear on a phone. */
   .cta { display: flex; }
-  @media (max-width: 420px) { .burger-label { display: none; } }
+  /* The word stays at every width: an icon alone was missed. Tighter gaps make room. */
+  @media (max-width: 420px) { .cluster { gap: 10px; } }
 
   @media (min-width: 880px) {
-    .links, .quiet { display: flex; }
+    .links, .quiet, .theme-wide { display: flex; }
     .burger, .sheet { display: none; }
   }
 </style>

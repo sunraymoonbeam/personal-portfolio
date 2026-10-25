@@ -64,6 +64,7 @@ const { prev, next } = getAdjacent(links, keyOf('work', entry.id));
   </div>
 
   <Toc slot="aside" headings={headings} />
+  <Toc slot="contents" headings={headings} compact />
 
   <Content components={articleComponents} />
   <Gallery items={d.gallery} />
@@ -87,9 +88,14 @@ const { prev, next } = getAdjacent(links, keyOf('work', entry.id));
   }
   .label { font-size: 17px; line-height: 1.35; letter-spacing: -0.016em; color: var(--ink); text-wrap: balance; }
   .context { margin: 0; font-size: 14px; line-height: 1.45; color: var(--ink-3); text-wrap: pretty; }
+  /* On a phone each outcome is one row, number left and words right, so three
+     of them take a third of the height and the story starts sooner. */
   @media (max-width: 640px) {
     .grid, .grid.n-2 { grid-template-columns: 1fr; gap: var(--s-5); }
-    .value { font-size: 40px; }
+    .metric { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.4fr); gap: 2px 16px; align-items: start; }
+    .value { grid-column: 1; grid-row: 1 / span 2; font-size: 30px; white-space: normal; overflow-wrap: anywhere; }
+    .label { grid-column: 2; font-size: 16px; }
+    .context { grid-column: 2; }
   }
   /* Facts: four short columns under the outcomes, label over value; the stack
      takes the full row so its chips wrap instead of squeezing a column. */

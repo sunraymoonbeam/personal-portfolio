@@ -73,7 +73,9 @@ SPEAKER aepyx 1 2.500 3.660 <NA> <NA> spk00 <NA> <NA>
 ```
 
 That line says speaker `spk00` starts talking 2.5 seconds into the file
-`aepyx` and talks for 3.66 seconds. Everything downstream, from scoring to
+`aepyx` and talks for 3.66 seconds. The label only says that these turns share
+one voice. It doesn't say whose voice it is; matching `spk00` to a student is
+a separate step. Everything downstream, from scoring to
 talk time per student, is arithmetic on lines like this.
 
 ### Voice data processing
@@ -157,9 +159,11 @@ equally.
 
 Then the system has to decide how many speakers there are, which nobody
 tells you in a classroom. NME-SC links every window to the windows that sound
-most like it, which gives a graph with one tight group per speaker. The
-graph's eigenvalues then show a clear jump after the last real group, and
-where that jump falls is the speaker count, up to a cap of eight.
+most like it, which gives a graph where each speaker should form one tightly
+linked group. It then looks for the biggest gap in the graph's eigenvalues,
+and takes the position of that gap as its estimate of the speaker count, up
+to a cap of eight. On noisy audio the gap is less clear, which is where
+miscounts come from.
 
 While I was learning, I also compared three other voiceprint models,
 ECAPA-TDNN, Resemblyzer and wav2vec2, with three clustering methods, and used
@@ -228,19 +232,15 @@ guess.
 
 ### Rigour
 
-My first pyannote build looked wrong as soon as I read its output: one
-speaker label kept switching between the female and the male anchor. "Looks
-wrong" told me there was a problem, but not where it was, or whether my next
-change made it better or worse. The error rate did. It split the problem into
-missed speech, false alarms and wrong speakers, and 46 of the 53.6 points
-were wrong speakers. That pointed straight at one long segment that held two
-people.
+"Looks wrong" told me my pyannote build had a problem, but not where it was,
+or whether my next change made it better or worse. The error rate did, by
+splitting the problem into its parts.
 
-**A number I can compare beats an impression.** The same thinking is why I
-spent two days correcting the classroom output by hand before I tuned
-anything. You can't build good AI models without good data, and you can't
-judge them without it either. On any new problem now, I build a small
-labelled set first, even a rough one, and only then start changing settings.
+**A number I can compare beats an impression.** It's also why I corrected
+the classroom output by hand before I tuned anything. You can't build good AI
+models without good data, and you can't judge them without it either. On any
+new problem now, I build a small labelled set first, even a rough one, and
+only then start changing settings.
 
 ### Judgement
 
@@ -256,12 +256,8 @@ the case that decision depends on.
 
 ### Scepticism
 
-Cleaning the audio sounded like an easy win, so I tested it before I added
-it. On the raw test clip the system found two speakers. After speech
-enhancement it found one. The enhancer had smoothed away some of what made
-the two voices different.
-
-What helps a person listen and what helps a model can be different things.
+Cleaning the audio sounded like an easy win, and it made things worse. What
+helps a person listen and what helps a model can be different things.
 So every pre-processing step has to earn its place in the final score: I run
 the pipeline with it and without it, and keep it only if the number improves.
 At Carro I treat prompt and parser changes the same way.
@@ -283,10 +279,7 @@ library.
 
 ### Care with data
 
-The recordings were of children. Before I touched them, I took a
-human-subjects research course and signed an undertaking to keep the data
-confidential. I worked on my own machine, and I ran the annotation tool
-locally so the audio never went to a server.
-
-I can describe the work, but the data was never mine to share. That's why
-every example on this page uses a public clip.
+Before I touched the recordings, I took a human-subjects research course and
+signed an undertaking to keep the data confidential. I worked on my own
+machine, and ran the annotation tool locally so the audio never went to a
+server. I can describe the work, but the data was never mine to share.

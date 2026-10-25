@@ -61,6 +61,8 @@ export function initSearch() {
     (visible ?? document.querySelector<HTMLButtonElement>('[data-menu-toggle]'))?.focus();
   });
 
+  panel.querySelector('[data-search-close]')?.addEventListener('click', () => panel.close());
+
   // Click the backdrop to dismiss. Escape is handled by <dialog> itself.
   panel.addEventListener('click', (e) => { if (e.target === panel) panel.close(); });
 

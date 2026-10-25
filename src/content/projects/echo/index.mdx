@@ -36,12 +36,21 @@ It works, which is the funny part and the unsettling part at the same time.
 
 ## Preparing the data
 
-A chat export is a pile of JSON with no notion of a turn, a topic or a reply.
-Most of the work was turning it into something a model could learn from:
-deciding what counts as a conversation, who said what, which messages to keep
-and how to pair a prompt with a response.
+A chat export is a long list of messages, each with a sender and a time, but
+no idea of where one conversation ends and the next begins. Most of the work
+was turning it into something a model could learn from: deciding what counts
+as a conversation, who said what, which messages to keep and how to pair a
+prompt with a response.
 
-<Figure src={dataprep} alt="The data preparation screen, showing statistics about the processed chat export." caption="Statistics on the processed chat export. This step decided how good the result was." />
+<Flow steps={[
+  { title: 'Read the export', text: 'Message text, sender and time for every chat.' },
+  { title: 'Assign roles', text: 'My messages become the assistant; the other person’s become the user.' },
+  { title: 'Split', text: 'A long silence or a token limit ends one conversation and starts the next.', hot: true },
+  { title: 'Merge and trim', text: 'Back-to-back messages from one person join into one turn. Each block starts with the user and ends with me.' },
+  { title: 'Write', text: 'The blocks are saved as JSONL training examples.' },
+]} caption="From a chat export to training examples. Where a conversation is split decides which prompt each reply is paired with." />
+
+<Figure src={dataprep} alt="The data preparation screen, showing statistics about the processed chat export." caption="Statistics on the processed chat export." />
 
 ## How I built it
 

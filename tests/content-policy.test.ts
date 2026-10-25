@@ -108,7 +108,7 @@ test('every work row child is placed explicitly, so auto-placement cannot move i
 // ── wide tables stack on a phone ─────────────────────────────────────────────
 
 test('a wide table is labelled for stacking; narrow tables and group rows are left alone', async () => {
-  const { labelTableHtml, STACK_FROM } = await import('../src/lib/table-labels.ts');
+  const { labelTableHtml, STACK_FROM, WORDY_CELL } = await import('../src/lib/table-labels.ts');
   const head = (n: number) => `<thead><tr>${Array.from({ length: n }, (_, i) => `<th>H<em>${i}</em> &amp; co</th>`).join('')}</tr></thead>`;
   const row = (n: number) => `<tr>${Array.from({ length: n }, (_, i) => `<td>v${i}</td>`).join('')}</tr>`;
 
@@ -121,4 +121,10 @@ test('a wide table is labelled for stacking; narrow tables and group rows are le
   const narrow = labelTableHtml(`${head(STACK_FROM - 1)}<tbody>${row(STACK_FROM - 1)}</tbody>`);
   assert.equal(narrow.stack, false);
   assert.doesNotMatch(narrow.html, /data-label/);
+
+  // Three columns stack only once a cell runs to a sentence.
+  const sentence = 'x'.repeat(WORDY_CELL + 1);
+  const wordy = labelTableHtml(`${head(3)}<tbody><tr><td>a</td><td>b</td><td>${sentence}</td></tr></tbody>`);
+  assert.equal(wordy.stack, true);
+  assert.equal(labelTableHtml(`${head(2)}<tbody><tr><td>a</td><td>${sentence}</td></tr></tbody>`).stack, false);
 });

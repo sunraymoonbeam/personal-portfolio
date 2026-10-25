@@ -33,8 +33,12 @@ const items = [
 </button>
 
 <dialog class="panel" data-search-panel aria-label="Search">
-  <input type="search" class="input" placeholder="Search the site"
-         autocomplete="off" data-search-input aria-label="Search" />
+  <div class="top">
+    <input type="search" class="input" placeholder="Search the site"
+           autocomplete="off" data-search-input aria-label="Search" />
+    {/* A phone keyboard has no Escape key, so the way out is a button. */}
+    <button type="button" class="close" data-search-close>Close</button>
+  </div>
   <ul class="results" data-search-results>
     {items.map((it) => (
       <li data-item data-text={`${it.title} ${it.sub} ${it.group}`.toLowerCase()}>
@@ -51,13 +55,13 @@ const items = [
 
 
 <style>
-  /* A button that says what it does. Same 34px height and 14px type as every
+  /* A button that says what it does. Same 44px height and 14px type as every
      other item in the bar, so it sits on their line; it used to be a 36px
      empty field with the word hidden, which read as an input and floated
      visibly above the nav text. The shortcut rides inside on wide screens. */
   .trigger {
     display: none; align-items: center; gap: 8px;
-    height: 34px; padding: 0 6px;
+    height: 44px; padding: 0 6px;
     border: 0; border-radius: var(--radius-s, 8px);
     background: none; color: var(--ink-2);
     font: inherit; font-size: 14px; letter-spacing: -0.01em; line-height: 1;
@@ -83,13 +87,20 @@ const items = [
   }
   .panel::backdrop { background: rgba(0, 0, 0, 0.35); backdrop-filter: blur(3px); }
 
+  .top { display: flex; align-items: center; border-bottom: 1px solid var(--border); }
   .input {
-    width: 100%; box-sizing: border-box; padding: var(--s-5);
-    border: 0; border-bottom: 1px solid var(--border);
+    flex: 1; min-width: 0; box-sizing: border-box; padding: var(--s-5);
+    border: 0;
     background: transparent; color: var(--ink);
     font: inherit; font-size: 19px;
   }
   .input:focus { outline: none; }
+  .close {
+    min-width: 44px; min-height: 44px; margin-right: var(--s-3); padding-inline: 12px;
+    border: 0; border-radius: var(--radius-s, 8px); background: transparent;
+    color: var(--ink-2); font: inherit; font-size: 14px; cursor: pointer;
+  }
+  .close:hover { color: var(--ink); background: var(--chip-bg); }
 
   .results { max-height: 52vh; overflow-y: auto; padding: var(--s-2); }
   .results a {

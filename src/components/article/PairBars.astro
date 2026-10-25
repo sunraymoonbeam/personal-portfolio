@@ -1,7 +1,8 @@
 ---
 /**
- * Two bars per row, on one 0–100% scale: what a thing is a share of (grey)
- * against what it costs (accent). The gap between the two is the point.
+ * Two bars per row, on one true 0–100% scale: what a thing is a share of
+ * (grey) against what it costs (accent). The gap between the two is the point.
+ * Each bar sits in a full-width track, so 72% is drawn as 72% of the track.
  */
 interface Props {
   series: [string, string];
@@ -9,8 +10,6 @@ interface Props {
   caption?: string | undefined;
 }
 const { series, rows, caption } = Astro.props;
-const max = Math.max(...rows.flatMap((r) => [r.a, r.b]));
-const w = (v: number) => `${(v / max) * 100}%`;
 const fmt = (v: number) => `${v.toFixed(0)}%`;
 ---
 <figure class="chart">
@@ -23,8 +22,8 @@ const fmt = (v: number) => `${v.toFixed(0)}%`;
       <div class="row">
         <dt class="label t-14">{r.label}</dt>
         <dd class="pair" aria-label={`${series[0]} ${fmt(r.a)}, ${series[1]} ${fmt(r.b)}`}>
-          <span class="line"><span class="bar a" style={`width:${w(r.a)}`} /><b class="tabular">{fmt(r.a)}</b></span>
-          <span class="line"><span class="bar b" style={`width:${w(r.b)}`} /><b class="tabular hot">{fmt(r.b)}</b></span>
+          <span class="line"><span class="track"><span class="bar a" style={`width:${r.a}%`} /></span><b class="tabular">{fmt(r.a)}</b></span>
+          <span class="line"><span class="track"><span class="bar b" style={`width:${r.b}%`} /></span><b class="tabular hot">{fmt(r.b)}</b></span>
         </dd>
       </div>
     ))}
@@ -43,9 +42,11 @@ const fmt = (v: number) => `${v.toFixed(0)}%`;
   .row { display: grid; grid-template-columns: 96px minmax(0, 1fr); align-items: center; gap: 12px; }
   .label { color: var(--ink); }
   .pair { display: flex; flex-direction: column; gap: 5px; margin: 0; }
-  .line { display: flex; align-items: center; gap: 10px; }
-  .bar { height: 16px; min-width: 3px; border-radius: 4px; max-width: calc(100% - 48px); }
-  .line b { font-size: 13px; font-weight: 500; color: var(--ink-2); }
+  .line { display: grid; grid-template-columns: minmax(0, 1fr) 40px; align-items: center; gap: 10px; }
+  /* The faint track is the 100% mark, so the scale is visible without an axis. */
+  .track { display: block; min-width: 0; border-radius: 4px; background: color-mix(in srgb, var(--ink) 5%, transparent); }
+  .bar { display: block; height: 16px; border-radius: 4px; }
+  .line b { font-size: 13px; font-weight: 500; color: var(--ink-2); text-align: right; }
   .line b.hot { color: var(--hue-1); font-weight: 600; }
   .a { background: color-mix(in srgb, var(--ink) 22%, transparent); }
   .b { background: var(--hue-1); }

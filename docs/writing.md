@@ -84,8 +84,15 @@ One of these alone is fine; several together are what a reader notices.
   `src/styles/article.css`). The Outcomes band holds at most three numbers.
   Carro and AI Singapore are the reference pages; NIE, DOS and Tessaract follow
   the same shape since the October 2026 rewrite. A table of four or more
-  columns turns into one card per row on a phone (`components/article/Table.astro`),
-  so keep its first column a short title.
+  columns, or three with a sentence in any cell, turns into one card per row
+  on a phone (`components/article/Table.astro`), so keep its first column a
+  short title. Draw a process of three to five steps with `<Flow>`, not a
+  picture of boxes and arrows: it follows the theme and turns vertical on a
+  phone.
+- **Sources for article facts:** nothing that only appears in the DOS deck
+  marked RESTRICTED (internal FAQ tests, survey category counts, colleagues'
+  workload). Reflections state what he did and learnt, not habits inferred
+  from his files afterwards.
 - **Numbers on work pages:** the bullets follow the résumé, even where the
   number is his call (Carro: 80% cost, 30% SOP deviations, 30% revenue). He
   also chose, on 24 Oct 2026, to show "30% fewer bot incidents and

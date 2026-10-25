@@ -4,10 +4,14 @@
  * screens. Sections (##) are plain; items under them (###) carry the same
  * count as the red rule in the text, so the two read as one system.
  * src/scripts/toc.ts marks the section in view.
+ *
+ * `compact` is the phone version: the same list, folded into a native
+ * <details> above the text, since the rail is hidden below 1001px. It has no
+ * data-toc-link, so the scroll-spy keeps one set of targets.
  */
 import type { MarkdownHeading } from 'astro';
-interface Props { headings: MarkdownHeading[]; }
-const { headings } = Astro.props;
+interface Props { headings: MarkdownHeading[]; compact?: boolean; }
+const { headings, compact = false } = Astro.props;
 const items: Array<MarkdownHeading & { n?: number }> = [];
 let n = 0;
 for (const h of headings) {
@@ -15,7 +19,19 @@ for (const h of headings) {
   else if (h.depth === 3) { n += 1; items.push({ ...h, n }); }
 }
 ---
-{items.length >= 3 && (
+{items.length >= 3 && compact && (
+  <details class="toc compact">
+    <summary class="t-14">On this page</summary>
+    <ol>
+      {items.map((h) => (
+        <li class:list={[`d${h.depth}`]}>
+          <a href={`#${h.slug}`}>{h.n && <span class="n">{h.n}</span>}{h.text}</a>
+        </li>
+      ))}
+    </ol>
+  </details>
+)}
+{items.length >= 3 && !compact && (
   <nav class="toc" aria-label="On this page" data-toc>
     <p class="t-14 head">On this page</p>
     <ol>
@@ -46,4 +62,19 @@ for (const h of headings) {
   a:hover { color: var(--ink); }
   a[aria-current='true'] { color: var(--ink); border-left-color: var(--mark); }
   a[aria-current='true'] .n { color: var(--mark); }
+  .compact { border-block: 1px solid var(--border); }
+  .compact summary {
+    display: flex; align-items: center; justify-content: space-between; min-height: 48px;
+    color: var(--ink); font-weight: 500; cursor: pointer; list-style: none;
+  }
+  .compact summary::-webkit-details-marker { display: none; }
+  .compact summary::after {
+    content: ''; width: 8px; height: 8px; margin-right: 4px;
+    border-right: 1.5px solid var(--ink-2); border-bottom: 1.5px solid var(--ink-2);
+    transform: translateY(-2px) rotate(45deg); transition: transform 200ms ease;
+  }
+  .compact[open] summary::after { transform: translateY(2px) rotate(-135deg); }
+  .compact ol { margin-bottom: var(--s-4); }
+  .compact a { min-height: 44px; align-items: center; padding-block: 8px; }
+  @media (prefers-reduced-motion: reduce) { .compact summary::after { transition: none; } }
 </style>

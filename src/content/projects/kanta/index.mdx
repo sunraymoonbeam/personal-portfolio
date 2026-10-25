@@ -30,8 +30,8 @@ scrolling through hundreds.
 
 The backend is FastAPI on Azure Container Apps. Image files go to Azure Blob
 Storage, and the metadata used to search them goes to Azure PostgreSQL. Face
-clustering runs separately as an AWS Lambda job, so a burst of uploads after a
-group photo doesn't slow the app down.
+clustering runs separately as an AWS Lambda job, outside the app that takes
+the uploads.
 
 <Figure src={storage} alt="FastAPI on Azure Container Apps connects to Blob Storage for image files and PostgreSQL for queryable photo data." caption="Files in Blob Storage, everything you search by in PostgreSQL." />
 

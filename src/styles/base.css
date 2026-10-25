@@ -114,10 +114,10 @@ a:hover { color: var(--link); }
 .btn-ghost:hover { background: var(--chip-bg); color: var(--ink); border-color: var(--control); }
 
 .link-arrow {
-  display: inline-flex; align-items: center; gap: 6px;
+  display: inline-flex; align-items: center; gap: 6px; min-height: 44px;
   color: var(--link); font-size: 17px; letter-spacing: -0.016em;
 }
-.link-arrow svg { transition: transform 200ms cubic-bezier(.25,.75,.5,1.25); }
+.link-arrow svg { transition: transform 200ms cubic-bezier(0.22, 1, 0.36, 1); }
 .link-arrow:hover svg { transform: translateX(4px); }
 
 /*

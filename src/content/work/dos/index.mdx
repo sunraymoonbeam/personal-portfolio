@@ -48,9 +48,9 @@ Two limits shaped everything I built:
   divisions, so every prototype had to prove itself on public data first.
 
 I read through the field, then asked two teams what took them the most time,
-and built for that. In twelve weeks I built three prototypes in Streamlit and
-presented what I found in a deck of about 190 slides, with a roadmap at the
-end.
+and built for that. In twelve weeks I built three prototypes in
+[Streamlit](https://streamlit.io), and presented what I found, with a roadmap
+for what to try next.
 
 <Figure src={overview} zoom alt="Three prototypes. DOSetFit labels survey text from a few examples with SetFit. DOSsier answers questions from official publications with a LangChain agent, GPT-3.5 and FAISS. inDOStry Navigator drafts the narrative for an industry review from CSV tables." caption="The three prototypes, one for each use case. All ran on public data." />
 
@@ -58,10 +58,9 @@ end.
 
 ### Text classification
 
-Every survey answer has to be coded into a fixed category. The Household
-Expenditure Survey has about 3,000 expense categories, and the Singapore
-Standard Industrial Classification has 1,023 industry codes. Much of that
-coding is done by hand.
+Survey answers have to be coded into fixed categories, such as the industry
+codes of the Singapore Standard Industrial Classification (SSIC). With hundreds or thousands of categories and few labelled examples, that's a
+hard classification problem.
 
 The brief asked how many labelled examples per class are enough. In 2023 the
 obvious answer was to prompt a large model with a few examples. I tried
@@ -113,9 +112,9 @@ news and the Paralympics sport, so you could argue with the benchmark too. For
 survey coding, that means a confidence threshold alone won't catch every
 mistake, and the label definitions matter as much as the model.
 
-With 3,000
+With thousands of
 classes instead of 4, there would be many more pairs like Business and
-Sci/Tech. In the deck I proposed class weights, more balanced sampling, and a
+Sci/Tech. So I proposed class weights, more balanced sampling, and a
 hierarchy of SetFit models, one for each group of related labels.
 
 It's also fast. One prediction took 69 ms on my laptop's CPU. The flan-t5
@@ -123,18 +122,16 @@ models took 0.9 to 42.5 seconds.
 
 <Figure src={latency} alt="One prediction on a laptop CPU, log scale: SetFit 69 ms, flan-t5-small 0.86 s, flan-t5-base 4.1 s, flan-t5-large 12.8 s, flan-t5-xl 42.5 s." caption="One timed run each, on a laptop CPU in 2023. flan-t5 generated text and SetFit classified one sentence, so read it as an order of magnitude." />
 
-The deck also made the case for using both kinds of model together: a large
+I also made the case for using both kinds of model together: a large
 model generates training data, and the small one does the labelling at
 volume.
 
 ### Question answering
 
-SingStat gets a steady stream of questions. Vague ones arrive by e-mail from
-the public. Hard ones come up at high-profile meetings such as the Committee
-of Supply debate, where every answer has to be right. A colleague on the
-Input-Output Tables team told me one of those could take two to three hours to
-answer. The answers were in the department's own publications, if you knew
-where to look.
+Analysts spend a lot of time answering questions about the statistics. The
+answers are usually somewhere in the department's own publications, if you
+know where to look, and a number that goes into an official answer has to be
+checked.
 
 DOSsier reads those publications for you. I started from an open-source
 "chat with your PDF" app and adapted it to the department's documents. It
@@ -147,28 +144,16 @@ question.
 A LangChain agent on GPT-3.5 answers the question. It works in a loop: think,
 pick a tool, read the result, and decide again. Its prompt sets the order:
 look in the documents first, then arXiv, then the web. The answer comes with
-the pages and links it used, because a number quoted at a ministry meeting
-has to be checked.
+the pages and links it used, so a person can check it.
 
 <Figure src={rag} zoom alt="DOSsier architecture. Indexing: PDF upload, text extraction, cleaning, chunking at 1,000 characters with 200 overlap, OpenAI embeddings into FAISS. Answering: a ReAct agent on GPT-3.5 calls a lookup tool over FAISS, arXiv search, web search or a summariser, and returns the answer with its sources." caption="DOSsier searches the department's documents first, then arXiv, then the web." />
 
-I loaded five public Input-Output Tables publications, 32 to 585 pages each,
-and asked three questions from the team's FAQ:
-
-| Question | What DOSsier did |
-| --- | --- |
-| What is the output multiplier? | Gave the right definition, then added that "the output multiplier for Industry A is $1.28 million" |
-| What are backward and forward linkages? | Right, and more detailed than the FAQ |
-| What is the Domestic Supply Table? | Right, and more detailed than the FAQ |
-
-The $1.28 million came from a worked example in the publication. Industry A
-isn't a real industry. The answer was correct for the example, but a reader
-could take it as an official figure, and for a statistics office that's worse
-than no answer. My prompt asked the model to answer "elaborately", and it did.
-
-Three questions showed the idea could work. A real test would need every FAQ
-item and real past questions, scored by the team, and a prompt that cites the
-page and says "I don't know" when the documents don't have the answer.
+Retrieval only hands the model the evidence. The model still has to read it
+correctly: a worked example in a publication, with made-up numbers, can come
+back as if it were an official figure. For a statistics office, a wrong
+number is worse than no answer, so a real test would need questions scored by
+the team, and a prompt that cites the page and says "I don't know" when the
+documents don't have the answer.
 
 ### Report drafting
 
@@ -206,12 +191,12 @@ My best ideas that summer came from the people who'd use the tools. The brief
 gave me a list of tasks. The economists gave me one sentence over lunch, and
 it told me more: the narrative was the hard part. If I'd built from the brief
 alone, I'd have built charts, which they could already make. The Q&A
-prototype shows its sources because a colleague told me the hard questions
-came from high-profile meetings, where every number gets checked.
+prototype shows its sources because every number in an official answer gets
+checked.
 
 The way people describe their problem is often the requirement. "Narrative"
-meant the tool had to write prose. "High-profile meeting" meant sources
-mattered more than fluent answers. I now ask a team what's slow or painful
+meant the tool had to write prose. "Checked" meant sources mattered more than
+fluent answers. I now ask a team what's slow or painful
 before I decide what to build, and I write their answer down in their words.
 
 ### Pragmatism
@@ -223,7 +208,7 @@ label from a fixed set in one pass. A generator writes its answer one token at
 a time and pays for its size on every token, and most of what it knows goes
 unused on a fixed task.
 
-In the deck I wrote that smaller specialist models still have a place, and
+In my findings I wrote that smaller specialist models still have a place, and
 that large models could make training data for them. I still start with the
 smallest model that can do the job, and measure cost per task as well as
 accuracy. At Carro, choosing the right model for each workflow is a big part

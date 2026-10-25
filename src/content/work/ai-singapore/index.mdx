@@ -16,7 +16,7 @@ bullets:
   - "Auto-labeled training data with multimodal video LLMs, improving text-to-motion metrics by **20%** over baseline."
   - "Optimized GitLab CI/CD pipelines, reducing testing and deployment time by **80%**."
 metrics:
-  - { value: "0.780", label: "R-precision (top 3)", context: "our final model, against 0.749 reported for MDM" }
+  - { value: "0.780", label: "R-precision (top 3)", context: "our tuned MDM, against 0.731 with its default settings" }
   - { value: "10×", label: "faster CI pipeline", context: "20 minutes down to 2, with smaller images and caching" }
   - { value: "7 months", label: "kickoff to sign-off", context: "nine sprints with a game studio and SUTD" }
 featuredOrder: 2
@@ -85,11 +85,14 @@ each frame, it describes a person with three sets of numbers:
 
 - **Pose (θ), 72 numbers:** a 3D rotation for each of 24 joints. The first
   joint is the pelvis, the root, which sets which way the whole body faces.
+  Each rotation is 3 numbers: an axis to turn about, with the angle as its
+  length.
   Every other joint turns relative to its parent, so when the shoulder turns,
   the elbow and the hand go with it.
-- **Shape (β), 10 numbers:** the body's build, such as height, weight and
-  proportions, as a mix of 10 basic body shapes. All zeros is the average
-  body.
+- **Shape (β), 10 numbers:** the body's build. SMPL learned the main ways
+  real bodies differ from thousands of body scans, and each number says how
+  much of one of them to add: taller, heavier, broader. All zeros is the
+  average body.
 - **Translation, 3 numbers:** the pelvis position (x, y, z) in world
   coordinates.
 
@@ -136,6 +139,14 @@ like. So motion data usually goes through a few stages before training:
 | 7 | Animate | Renders random samples as stick figures. | Numbers can't show a body lying on its side. This check is how we found AIST++ motions that weren't upright. |
 | 8 | Aggregate | Merges several processed datasets into one. | One model can then train on more than one dataset, such as HumanML3D and AIST++ for dance. |
 
+Those statistics were also where the pipeline ran out of memory. The
+reference code loaded every motion into one array to compute them, which
+crashed on the bigger datasets. When I rebuilt the module into its eight
+stages, I replaced that step with
+[Welford's algorithm](https://en.wikipedia.org/wiki/Algorithms_for_calculating_variance#Welford's_online_algorithm),
+which updates a running mean and variance one motion at a time. I also added
+SMPL-X support, so Motion-X could go through the same pipeline.
+
 <Figure src={dataPipeline} zoom alt="The data processing pipeline. Motions go through pose extraction from SMPL parameters, mirroring, normalisation to a target skeleton facing Z+, and conversion to a 263-dimensional motion representation. Annotations go through text cleaning and part-of-speech tagging." caption="The data pipeline for motions (top) and captions (bottom)." />
 
 ### Training pipeline
@@ -146,11 +157,11 @@ datasets, and each one taught the model something different:
 | Dataset | What's in it | Size | Captions |
 | --- | --- | --- | --- |
 | [HumanML3D](https://github.com/EricGuo5513/HumanML3D) | Studio motion capture of daily activities (walking, jumping), sports (swimming, karate), acrobatics (cartwheels) and some dance. Clips last 7 seconds on average. SMPL+H body, 22 joints used. | 14,616 motions | 44,970, about 3 per motion |
-| [AIST++](https://google.github.io/aistplusplus_dataset/) | Studio dance in 10 genres, such as ballet jazz, breaking, house and hip-hop. SMPL body with no shape, at 60 fps. | 1,408 dance clips | None. We wrote template captions from each clip's genre and move. |
-| [Motion-X](https://motion-x-dataset.github.io/) | Whole-body motion with hands and face (SMPL-X), much of it taken from online video. We used 7 of its subsets: martial arts such as kung fu and tai chi, people playing instruments, acting, everyday actions and more. | 25,865 sequences, 51,370 with mirroring | Yes |
+| [AIST++](https://google.github.io/aistplusplus_dataset/) | Dance in 10 genres, such as ballet jazz, breaking, house and hip-hop, rebuilt in 3D from multi-camera video. SMPL body with no shape, at 60 fps. | 1,408 dance clips | None. We wrote template captions from each clip's genre and move. |
+| [Motion-X](https://motion-x-dataset.github.io/) | Whole-body motion with hands and face (SMPL-X), much of it taken from online video. We used 7 of its subsets: martial arts such as kung fu and tai chi, people playing instruments, acting, everyday actions and more. | 25,865 sequences | Yes |
 
-HumanML3D is the standard benchmark, so every published model trains and
-scores on it. But it has little dance, and few moves outside a mocap studio.
+HumanML3D is the standard benchmark, so most published text-to-motion models
+train and score on it. But it has little dance, and few moves outside a mocap studio.
 AIST++ has the dance the studio wanted, without a single caption. Motion-X has
 much more variety than both:
 
@@ -218,9 +229,11 @@ Three choices make this work for motion:
   transformers are built for sequences, like the words in a sentence. MDM
   treats each frame as a token, and attention lets every frame look at every
   other frame, so a step can depend on what came before and after it.
-- **It predicts the clean motion, not the noise.** So the output at every step
-  is a real motion, and the paper can add losses on joint positions, speeds
-  and foot contact, which reduce sliding feet.
+- **It predicts the clean motion, not the noise.** So at every step the model
+  gives its best guess of the finished motion. That lets the paper add losses
+  on joint positions, speeds and foot contact, which reduce sliding feet. It
+  uses them for action-to-motion; its text-to-motion model on HumanML3D
+  trains without them.
 - **The text goes through CLIP.** A frozen CLIP text encoder turns the prompt
   into numbers. CLIP already knows many words and styles, so the model
   doesn't have to learn language from 44,970 captions alone.
@@ -232,8 +245,12 @@ more closely. In training, the caption is sometimes masked out (the "random
 mask" in the diagram), so the same model also learns to move with no text at
 all. When generating, the model runs twice at each step, with the caption and
 without it. The difference between the two is what the text adds, and we push
-the output further in that direction: 2.5 times as far in our setup. A higher
-value follows the prompt more closely, but gives less variety.
+the output further in that direction:
+
+`guided = without text + 2.5 × (with text − without text)`
+
+At 1, that's just the prediction with the text. We used 2.5. A higher value
+follows the prompt more closely, but gives less variety.
 
 <Clips caption="“Man jumping in excitement”, from the T2M baseline and from our final MDM.">
   <Clip label="T2M" src="/work/ai-singapore/jump-t2m.mp4" poster="/work/ai-singapore/jump-t2m.webp"
@@ -265,7 +282,7 @@ the same space:
 | Metric | What it asks | Better |
 | --- | --- | --- |
 | R-precision (top 3) | Is the motion's own caption among the 3 closest of 32? | Higher |
-| FID | Does the spread of motions look like real motion capture? | Lower |
+| FID | How far the generated motions are from real ones, compared as whole distributions in the encoder's space | Lower |
 | Multimodal distance | How far is each motion from its caption? | Lower |
 | Diversity | How different are motions for different captions? | Close to real data |
 | Multimodality | How different are motions for the same caption? | Higher, within reason |

@@ -51,11 +51,12 @@ const fmt = (v: number) => `${Number.isInteger(v) ? v : v.toFixed(1)}%`;
   .seg { display: flex; align-items: center; justify-content: center; min-width: 3px; transition: filter 160ms ease; }
   .seg b { font-size: 13px; font-weight: 500; }
   .end { font-size: 15px; font-weight: 600; color: var(--hue-1); text-align: right; }
-  .g0 { background: color-mix(in srgb, var(--ink) 9%, transparent); color: var(--ink-2); }
-  .g1 { background: color-mix(in srgb, var(--ink) 17%, transparent); color: var(--ink-2); }
+  /* Labels sit on the bands, so every band keeps 4.5:1 for 13px text in both themes. */
+  .g0 { background: color-mix(in srgb, var(--ink) 9%, transparent); color: var(--ink); }
+  .g1 { background: color-mix(in srgb, var(--ink) 17%, transparent); color: var(--ink); }
   .g2 { background: color-mix(in srgb, var(--ink) 30%, transparent); color: var(--ink); }
-  .g3 { background: color-mix(in srgb, var(--ink) 42%, transparent); color: var(--canvas); }
-  .hot { background: var(--hue-1); color: #fff; }
+  .g3 { background: color-mix(in srgb, var(--ink) 70%, transparent); color: var(--canvas); }
+  .hot { background: var(--hue-1); color: var(--canvas); }
   .cap { margin-top: var(--s-5); }
   @media (max-width: 520px) {
     .chart { padding: var(--s-4); }

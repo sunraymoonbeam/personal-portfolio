@@ -1,0 +1,66 @@
+---
+/**
+ * A process in a few steps: "the request comes in, the agent picks a skill,
+ * loads it, calls its tools". Across the column on a wide screen, so it reads
+ * left to right like a diagram; down the page on a phone, like the Timeline.
+ * Drawn in HTML with the theme's own colours, so it is sharp, searchable and
+ * right in dark mode, which a picture of boxes and arrows is not.
+ * `text` is trusted HTML written in the MDX, so it can hold links and code.
+ * The step marked `hot` is the one the story is about; it takes the accent.
+ */
+interface Props {
+  steps: { title: string; text: string; hot?: boolean }[];
+  caption?: string | undefined;
+}
+const { steps, caption } = Astro.props;
+---
+<figure class="flow" style={`--n:${steps.length}`}>
+  <ol class="steps">
+    {steps.map((s, i) => (
+      <li class:list={['step', { hot: s.hot }]}>
+        <span class="dot tabular" aria-hidden="true">{i + 1}</span>
+        <strong class="title">{s.title}</strong>
+        <p class="text" set:html={s.text} />
+      </li>
+    ))}
+  </ol>
+  {caption && <figcaption class="t-14 small cap">{caption}</figcaption>}
+</figure>
+<style>
+  .flow {
+    margin: var(--s-8) 0; padding: var(--s-6);
+    border: 1px solid var(--border); border-radius: var(--radius-m); background: var(--subtle);
+  }
+  .steps {
+    list-style: none; margin: 0; padding: 0;
+    display: grid; grid-template-columns: repeat(var(--n), minmax(0, 1fr)); gap: var(--s-4);
+  }
+  .step { position: relative; display: flex; flex-direction: column; gap: 4px; margin: 0; padding: 0; }
+  /* The line runs from this step's dot to the next one's. */
+  .step:not(:last-child)::before {
+    content: ''; position: absolute; top: 13px; left: 30px; right: calc(var(--s-4) * -1 + 2px);
+    height: 2px; background: var(--border-strong);
+  }
+  .dot {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 28px; height: 28px; margin-bottom: var(--s-2); border-radius: 50%;
+    border: 2px solid var(--border-strong); background: var(--canvas);
+    font-size: 13px; font-weight: 600; color: var(--ink-2);
+  }
+  .hot .dot { border-color: var(--mark); background: var(--mark); color: var(--canvas); }
+  .title { font-size: 15px; line-height: 1.3; font-weight: 600; color: var(--ink); letter-spacing: -0.01em; }
+  .text { margin: 0; font-size: 14px; line-height: 1.45; color: var(--ink-2); text-wrap: pretty; }
+  .cap { margin-top: var(--s-5); }
+  /* Five steps need about 120px each; below that the row turns into a column. */
+  @media (max-width: 760px) {
+    .flow { padding: var(--s-5) var(--s-4); }
+    .steps { grid-template-columns: 1fr; gap: var(--s-4); }
+    .step { display: grid; grid-template-columns: 28px minmax(0, 1fr); column-gap: var(--s-3); row-gap: 2px; }
+    .dot { grid-row: 1 / span 2; margin: 0; }
+    .title { align-self: center; padding-top: 4px; }
+    .text { grid-column: 2; }
+    .step:not(:last-child)::before {
+      top: 30px; bottom: calc(var(--s-4) * -1 - 2px); left: 13px; right: auto; width: 2px; height: auto;
+    }
+  }
+</style>

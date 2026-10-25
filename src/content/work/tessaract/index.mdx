@@ -36,8 +36,8 @@ document templates, training and testing.
 My part was mostly the data. Each new firm arrived with years of records in an
 old legal-practice system or in Excel, and every firm kept its books a little
 differently. I moved those records into the firm's own PostgreSQL database
-without losing or changing anything, set the firm up on the platform, and
-rebuilt its documents. My tools were Python, pandas and SQL, and a lot of
+and checked them on the way, set the firm up on the platform, and rebuilt its
+documents. My tools were Python, pandas and SQL, and a lot of
 checking. From December 2022 I stayed on as a contractor, as an analyst in the
 same team.
 
@@ -65,7 +65,7 @@ have failed or landed in the wrong accounts across a year and a half of
 entries. So the list of codes came first: each one needed a mapping to an
 existing account, or a new account, before its lines could load.
 
-<Figure src={ledger} alt="A check report for 2021 and January to June 2022: raw rows 353,848 and 253,141, cleaned lines 264,759 and 188,913, journal entries 89,089 and 64,228, debits equal credits in both years, 237 and 139 account codes missing from the new chart, 268 distinct in total." caption="The ledger's check report. Money amounts are left out." />
+<Figure src={ledger} alt="A check report for 2021 and January to June 2022: raw rows 353,848 and 253,141, cleaned lines 264,759 and 188,913, journal entries 89,089 and 64,228, debits equal credits in both years, 237 and 139 account codes missing from the new chart, 268 distinct in total." caption="The ledger's check report for both years." />
 
 ### A repeatable migration
 
@@ -205,17 +205,6 @@ The onboarding went ahead smoothly. Not every request was in on day one, but
 the accountants felt supported and knew what to expect and when. I learned
 that a clear "not yet, and here's why" builds more trust than a "yes" we can't
 keep.
-
-### Care with production data
-
-As an intern I had write access to law firms' live databases: their clients,
-their cases, their trust money. Nobody checked my queries before they ran, so
-the checking had to be mine.
-
-The habits I took from it: wrap every write in a transaction, check how many
-rows it touched, and only then commit. Passwords and tokens go in environment variables, never in a
-notebook. I bring the same rules to the agents I build at Carro: the least
-access they need, and an approval before any write.
 
 ### Automation
 
