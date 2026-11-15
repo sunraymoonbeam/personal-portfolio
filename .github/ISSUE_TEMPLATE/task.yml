@@ -1,0 +1,33 @@
+name: Task
+description: A change for an agent (or a person) to build. Label it `claude` to start the cloud agent.
+body:
+  - type: textarea
+    id: story
+    attributes:
+      label: Story
+      description: As a ___, I want to ___, so that ___.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Done when
+      description: The checks a reviewer can tick. One per line.
+      placeholder: |
+        - [ ] ...
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Pages and files
+      description: Routes or files it touches, if known.
+  - type: textarea
+    id: out-of-scope
+    attributes:
+      label: Not in this task
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: Screenshots, links, earlier PRs or issues, facts from Zack. An agent never invents facts or reflections; put them here.
