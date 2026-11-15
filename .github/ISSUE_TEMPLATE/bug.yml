@@ -1,0 +1,23 @@
+name: Bug
+description: Something on renhwa.com is broken. Label it `claude` to start the cloud agent.
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happens
+      description: What you saw, and what you expected instead.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: How to see it
+      description: The URL, the device and width, light or dark theme, the steps.
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: Screenshots, console errors, links.
